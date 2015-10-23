@@ -1,0 +1,322 @@
+UR for Transcript : http://userpages.umbc.edu/~ mariaps1/IS721/HW3/transcript.txt
+
+
+mariaps1@mariaps1-VirtualBox:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 38
+Server version: 5.5.24-0ubuntu0.12.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2011, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE DATABASE memcache;
+Query OK, 1 row affected (0.06 sec)
+
+mysql> use memcache;
+Database changed
+mysql> CREATE TABLE memc
+    -> (
+    ->  personID int NOT NULL AUTO_INCREMENT,
+    ->  PRIMARY KEY(personID),
+    ->  FirstName varchar(15),
+    ->  LastName varchar(15),
+    ->  Age int
+    -> );
+Query OK, 0 rows affected (0.30 sec)
+
+mysql> INSERT INTO memc (FirstName, LastName, Age) VALUES('Memory', 'Cache', '100');
+Query OK, 1 row affected (0.06 sec)
+mysql> select * from memc;
++----------+------------+------------------+------+
+| personID | FirstName  | LastName         | Age  |
++----------+------------+------------------+------+
+|        1 | Memory     | Cache            |  100 |
+|        2 | Adam       | Pong             |   28 |
+|        3 | Patrick    | Gray             |   28 |
+|        4 | Ankita     | Shrivastava      |   25 |
+|        5 | Mohini     | Agarwal          |   25 |
+|        6 | Milind     | Patil            |   29 |
+|        7 | Ashwin     | Ganeshan         |   29 |
++----------+------------+------------------+------+
+7 rows in set (0.01 sec)
+mysql> \q
+Bye
+
+
+
+Queries
+
+maraips1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc.php
+FirstName: Memory
+LastName: Cache
+Age: 100
+Retrieved from the Database
+
+real	0m0.396s
+user	0m0.008s
+sys	0m0.100s
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/mc.php
+FirstName: Memory
+LastName: Cache
+Age: 100
+Retrieved From Cache
+
+real	0m0.256s
+user	0m0.020s
+sys	0m0.104s
+
+
+1
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc1.php
+FirstName: Adam
+LastName: Pong
+Age: 28
+Retrieved from the Database
+
+real	0m0.196s
+user	0m0.008s
+sys	0m0.084s
+
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc1.php
+FirstName: Adam
+LastName: Pong
+Age: 28
+Retrieved From Cache
+
+real	0m0.148s
+user	0m0.016s
+sys	0m0.056s
+
+2
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc2.php
+FirstName: Patrick
+LastName: Gray
+Retrieved from the Database
+
+real	0m0.166s
+user	0m0.012s
+sys	0m0.076s
+
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc2.php
+FirstName: Patrick
+LastName: Gray
+Retrieved From Cache
+
+real	0m0.230s
+user	0m0.024s
+sys	0m0.092s
+
+3
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc2.php
+First Name of record which has Maximum Age: Memory
+Retrieved from the Database
+
+
+real	0m0.360s
+user	0m0.024s
+sys	0m0.068s
+
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc2.php
+First Name of record which has Maximum Age: Memory
+Retrieved From Cache
+
+
+real	0m0.207s
+user	0m0.024s
+sys	0m0.080s
+
+4
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc2.php
+FirstName: Milind
+LastName: Patil
+Age: 29
+Retrieved from the Database
+
+real	0m0.193s
+user	0m0.012s
+sys	0m0.088s
+
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc2.php
+FirstName: Milind
+LastName: Patil
+Age: 29
+Retrieved From Cache
+
+real	0m0.187s
+user	0m0.020s
+sys	0m0.076s
+
+5
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc3.php
+Person whose first name starts with 'A' and age<29
+FirstName: Ankita
+LastName: Shrivastava
+Age: 25
+Retrieved from the Database
+
+real	0m0.169s
+user	0m0.016s
+sys	0m0.072s
+
+mariaps1@mariaps1-VirtualBox:~$ time lynx -dump http://localhost/mc3.php
+Person whose first name starts with 'A' and age<29
+FirstName: Ankita
+LastName: Shrivastava
+Age: 25
+Retrieved From Cache
+
+real	0m0.230s
+user	0m0.028s
+sys	0m0.076s
+
+LIBRARY 
+
+QUERY 1
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books1.php
+Books for MySQL
+Title: MySQL
+Author: Paul DuBois
+Publisher: New Riders
+
+Retrieved from the Database
+
+real	0m0.184s
+user	0m0.000s
+sys	0m0.144s
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books1.php
+Books for MySQL
+Title: MySQL
+Author: Paul DuBois
+Publisher: New Riders
+Retrieved From Cache
+
+real	0m0.252s
+user	0m0.016s
+sys	0m0.148s
+
+
+
+QUERY 2
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books2.php
+Books that cost more than 45
+Title: MySQL
+Author: Paul DuBois
+Publisher: New Riders
+Retrieved from the Database
+
+real	0m0.296s
+user	0m0.000s
+sys	0m0.168s
+
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books2.php
+Books that cost more than 45
+Title: MySQL
+Author: Paul DuBois
+Publisher: New Riders
+Retrieved From Cache
+
+real	0m0.192s
+user	0m0.004s
+sys	0m0.160s
+
+
+
+QUERY 3
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books3.php
+Free books
+Title: Thinking in Java
+Author: Bruce Eckel
+Publisher: Prentice Hall
+Topic: Java
+Comment: Well written, free on the web
+Price: 0
+Retrieved from the Database
+
+real	0m0.196s
+user	0m0.004s
+sys	0m0.160s
+
+
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books3.php
+Free books
+Title: Thinking in Java
+Author: Bruce Eckel
+Publisher: Prentice Hall
+Topic: Java
+Comment: Well written, free on the web
+Price: 0
+Retrieved From Cache
+
+real	0m0.220s
+user	0m0.000s
+sys	0m0.160s
+
+
+
+QUERY 4
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books4.php
+Published by Wrox
+Title: David Hunter
+Author: Wrox
+Publisher: XML
+Topic: Well recommended, fairly comprehensive
+Comment: 39.99
+Price:
+Retrieved from the Database
+
+real	0m0.228s
+user	0m0.004s
+sys	0m0.176s
+
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books4.php
+Published by Wrox
+Title: Beginning XML
+Author: David Hunter
+Publisher: Wrox
+Topic: XML
+Comment: Well recommended, fairly comprehensive
+Price: 39.99
+Retrieved From Cache
+
+real	0m0.260s
+user	0m0.008s
+sys	0m0.176s
+
+
+
+QUERY 5
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books5.php
+Book written by Larry
+Author: Larry Wall
+Publisher: O'Reilly
+Retrieved from the Database
+
+real	0m0.248s
+user	0m0.016s
+sys	0m0.176s
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books5.php
+Book written by Larry
+Author: Larry Wall
+Publisher: O'Reilly
+Retrieved From Cache
+
+real	0m0.224s
+user	0m0.016s
+sys	0m0.160s

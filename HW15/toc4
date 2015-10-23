@@ -1,0 +1,34 @@
+hduser@mariaps1:/usr/local/hadoop$ bin/hadoop dfs -cat /user/hduser/gutenberg-output-mariaps12-2/part-00000 | more
+Warning: $HADOOP_HOME is deprecated.
+
+"(Lo)cra"	2
+"1490	2
+"1498,"	2
+"35"	2
+"40,"	2
+"A	4
+"AS-IS".	2
+"A_	2
+"Absoluti	2
+"Alack!	2
+"Alack!"	2
+"Alla	2
+"Allegorical	2
+"Alpha	2
+"Alpha,"	2
+.
+.
+.
+Æschylus	2
+Æsop	6
+É	2
+Élus,_	2
+� 	6
+� pieza;	2
+æons	2
+æsthetic	2
+è	14
+è:	2
+ècrit_	2
+état_.	2
+The	6

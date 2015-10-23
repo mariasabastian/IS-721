@@ -1,0 +1,59 @@
+Step 1:
+
+maria@maria-VirtualBox:~$ curl -X PUT --user mariaps1:naveen8988 http://localhost:5984/catalog-a
+{"ok":true}
+maria@maria-VirtualBox:~$ curl -X PUT --user mariaps1:naveen8988 http://localhost:5984/catalog-b
+{"ok":true}
+
+Step 2:
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/catalog-a \
+> -H "Content-Type: application/json" \
+> -d'{}'
+{"ok":true,"id":"188e512c5d0f52941c47e6741b0006c8","rev":"1-967a00dff5e02add41819138abb3284d"}
+maria@maria-VirtualBox:~$ 
+
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/catalog-a/_all_docs
+{"total_rows":1,"offset":0,"rows":[
+{"id":"188e512c5d0f52941c47e6741b0006c8","key":"188e512c5d0f52941c47e6741b0006c8","value":{"rev":"1-967a00dff5e02add41819138abb3284d"}}
+]}
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/catalog-b/_all_docs
+{"total_rows":0,"offset":0,"rows":[]}
+
+
+Step 3:
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/_replicate \
+> -H "Content-Type: application/json" \
+> -d \
+> '{ 
+> "source":"catalog-a",
+> "target":"catalog-b"
+>  }'
+{"ok":true,"session_id":"55464472945be4bc953d8a7e972464dc","source_last_seq":1,"history":[{"session_id":"55464472945be4bc953d8a7e972464dc","start_time":"Sat, 05 Oct 2013 19:01:11 GMT","end_time":"Sat, 05 Oct 2013 19:01:11 GMT","start_last_seq":0,"end_last_seq":1,"recorded_seq":1,"missing_checked":0,"missing_found":1,"docs_read":1,"docs_written":1,"doc_write_failures":0}]}
+
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/catalog-b/_all_docs
+{"total_rows":1,"offset":0,"rows":[
+{"id":"188e512c5d0f52941c47e6741b0006c8","key":"188e512c5d0f52941c47e6741b0006c8","value":{"rev":"1-967a00dff5e02add41819138abb3284d"}}
+]}
+
+
+Step 4:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/catalog-a/_all_docs
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/catalog-a/_all_docs
+{"total_rows":1,"offset":0,"rows":[
+{"id":"188e512c5d0f52941c47e6741b001b55","key":"188e512c5d0f52941c47e6741b001b55","value":{"rev":"1-3b32c3ffbe66fa97be6788dfc08a0673"}}
+]}
+
+{"id":"188e512c5d0f52941c47e6741b001b55","key":"188e512c5d0f52941c47e6741b001b55","value":{"rev":"1-3b32c3ffbe66fa97be6788dfc08a0673"}}
+]}
+
+
+Step 5 :
+
+Screenshot !
+
+

@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  h4 {color: blue;}
+</style>
+</head>
+
+<body>
+  <h4>New Course</h4>
+  <hr width="600px" align="left"/>
+  <form method="POST" action="onew.php">
+    <table>
+      <tr>
+        <td>
+          Course: 
+        </td>
+        <td>
+          <input type="text" name="course" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Description: 
+        </td>
+        <td>
+          <input type="text" name="desc" />
+        </td>
+      </tr>
+    </table>
+    <input type="submit" value="Submit" />
+  </form>
+  
+<div style="position: fixed;
+  bottom: 0;
+  right: 0;
+  background: yellow;">
+  <a href="index.html">Home</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,264 @@
+1. How is a collection different than a relational table?
+
+Collection in MongoDB is similar to table in relational database. Relational table is made up of rows whereas collection is made 
+up of documents where each document is an individual entity. Rows have different attributes which is categorized as columns. 
+In documents there are different fields instead of columns. In relational table, there is a schema which specifies different 
+columns every row has in common and thus they are structural. As documents are individual entities, each document can be different 
+thus they are schemaless. A relational database is a database that has a collection of tables of data items, all of which is 
+formally described and organized according to the relational model. Data in a single table represents relation, from which the 
+name of the database type comes. In typical solutions, tables may have additionally defined relationships with each other.
+Relational tables follow certain integrity rules to ensure that the data they contain stay accurate and are always accessible. 
+First, the rows in a relational table should all be distinct. If there are duplicate rows, there can be problems resolving which 
+of two possible selections is the correct one.
+A table is referred to as a relation in the sense that it is a collection of objects of the same type (rows). Data in a table 
+can be related according to common keys or concepts, and the ability to retrieve related data from a table is the basis for the 
+term relational database. 
+Tables and collections are similar because they both contain many Records/Objects. They both frequently have indexing structures
+for faster access. However tables have a very rigid structure because all rows in a table must have the same fields. 
+A collection may contain objects of different classes by using inheritance (Polymorphism)
+
+
+
+2. How are embedded documents similar to joins? How different?
+
+Both joins and embedded documents are use to deal with many-one and many-many relationships. Joins in relational database is used
+to combine the results of 2 or more tables based on the relationship between the two tables. Similarly embedded documents is used 
+to combine multiple docs where documents from the same collection might reference documents from a different collection from each 
+other. In RDBMS, data in table2 can be accessed through table1 if both has a relationship, similarly in embedded document, objects 
+within a document stored inside another document can be accessed through the id of the outer document containing it. Joins are 
+non-scalable while embedded documents are scalable. Foreign key is needed to perform join functions while they are not needed 
+in embedded documents. Joins are performed in runtime when a query is executed while embedded documents are prejoined and embedded 
+documents can be queried with a dot notation. There are different types of join operations that can be performed while embedded 
+documents can be developed only by one way.Embedded documents and arrays reduce need for joins.
+It would be nice for MongoDB to support JOIN-esque operations by using a special "document expander" query command. 
+It is common practice in MongoDB to store partial documents as references, including the DocID and some other attributes useful 
+for displaying that document in the context of the parent document. For instance if I have a document with a "users" key it might 
+contain several users that look like:
+{ "_id":DocID("ab2372a4a24"), "name":"User Name", "photo":"http://profile.photo.url"}
+Presumably in these cases the embedded document could be considered a "fragment" of the document referenced in the ID. It would, 
+therefore, be extremely useful to be able to automatically "expand" that fragment into the full document when necessary via the 
+query syntax. Let's say that a "posts" collection has documents with a "users" key containing many fragments as described above. 
+If I perform a query that looks like this:
+db.posts.find().join(
+{"users":"users"}
+)
+Then MongoDB would automatically replace each of the embedded documents in the "users" key with the full document specified in 
+the "users" collection (the document's key being the key in the join argument, the collection being the value). 
+Additionally, passing a "1" value instead would denote that the values contained in the _id field of the given key are 
+DB References that should be dereferenced individually.
+Note that this should work in the following cases:
+Specified key is an array of strings (assume each string represents a DocID) or DocIDs
+Specified key is an array of embedded documents, each with an _id field
+Specified key is a single string (assume string is a DocID) or DocID
+Specified key is a DBRef
+Specified key is an array of embedded documents, each with an _id field that contains a DBRe
+The joy of a Document database is that it eliminates lots of Joins. Your first instinct should be to place as much in a single 
+document as you can. Because MongoDB documents have structure, and because you can efficiently query within that structure there 
+is no immediate need to normalize data like you would in SQL. In particular any data that is not useful apart from its parent 
+document should be part of the same document.
+
+
+
+3. Why is Mongodb good for a logging use case?
+
+MongoDb provides ability to run write commands faster. This can be done in two ways. We can perform write command and make it return
+before it actually writes or we can control the writes using journaling concept. As MongoDb is schemaless, we can make use of that 
+create a collection with a predefined size. When the collection is full with documents, any new document inserted will be replaced 
+by old documents which are purged. This collection is called capped collections. In this we can also provide the maximum number of 
+documents in a collection instead of size. Insertion is preserved thus we don't have to provide a seperate index for time based sorting. 
+We have to use db.getLastError() command to check if the write encountered any error. As MongoDb is schemaless any field can be added 
+into the document any time. 
+Servers generate a large number of events (i.e. logging,) that contain useful information about their operation including errors, 
+warnings, and users behavior. By default, most servers, store these data in plain text log files on their local file systems.
+While plain-text logs are accessible and human-readable, they are difficult to use, reference, and analyze without holistic 
+systems for aggregating and storing these data.
+The solution described below assumes that each server generates events also consumes event data and that each server can access 
+the MongoDB instance. Furthermore, this design assumes that the query rate for this logging data is substantially lower than common 
+for logging applications with a high-bandwidth event stream.
+MongoDB inserts can be done asynchronously.  One wouldn’t want a user’s experience to grind to a halt if logging were slow, stalled 
+or down.  MongoDB provides the ability to fire off an insert into a log collection and not wait for a response code.  
+(If one wants a response, one calls getLastError() — we would skip that here.)
+Old log data automatically LRU’s out.  By using capped collections, we preallocate space for logs, and once it is full, 
+the log wraps and reuses the space specified.  No risk of filling up a disk with excessive log information, and no need to 
+write log archival / deletion scripts.It’s fast enough for the problem.  
+First, MongoDB is very fast in general, fast enough for problems like this.  Second, when using a capped collection, insertion 
+order is automatically preserved: we don’t need to create an index on timestamp.  This makes things even faster, and is important 
+given that the logging use case has a very high number of writes compared to reads (opposite of most database problems).
+Document-oriented / JSON is a great format for log information.  Very flexible and “schemaless” in the sense we can throw in an 
+extra field any time we want.
+
+
+
+4. What are compound keys? When specifically would you use one for Mongodb? Give a real-world example using PHP.
+
+Compound keys are a special kind of indexes which are used to reference multiple fields within documents. A compound key are used to 
+reference to more than one field of any document. They are specifically used in MongoDB when you want to create indexes on multiple 
+fields within a document. The order of your index (1 for ascending & -1 for descending) matters for compound indexes when you are 
+sorting or using a range condition. Eg;
+<?php
+$c = new MongoCollection($db, 'student');
+// create a compound index in database 'student' on fields 'name' ascending and 'age' descending
+$c->ensureIndex(array('name' => 1, 'age' => -1));
+?>
+
+The unique constraint on indexes ensures that only one document can have a value for a field in a collection. 
+For sharded collections these unique indexes cannot enforce uniqueness because insert and indexing operations are local to each shard. [1]
+If your need to ensure that a field is always unique in all collections in a sharded environment, there are two options:
+
+Enforce uniqueness of the shard key.
+MongoDB can enforce uniqueness for the shard key. For compound shard keys, MongoDB will enforce uniqueness on the entire key combination, 
+and not for a specific component of the shard key.
+You cannot specify a unique constraint on a hashed index.
+Use a secondary collection to enforce uniqueness.
+Create a minimal collection that only contains the unique field and a reference to a document in the main collection. 
+If you always insert into a secondary collection before inserting to the main collection, MongoDB will produce an error if you attempt to use a duplicate key.
+
+
+5. What issues related to adaptabilty were important to the Guardian decision?
+
+Guardian wanted to create their system such that it is simple for them to change whenever it requires. During the modern era, every time 
+the team wanted to do a release, it was required to update the schema of the database. Hence to update this, the tools used by the 
+jounalists had to be disabled and they were not able to work. This caused them a lot of trouble.  The load on the main database was 
+going up to a dangerous level. Their application was very tightly coupled to DB and the ORM didnt serve any purpose in reducing the 
+complexity. Hence was the introduction of NoSQL which helped to scale the reads and also helped in reducing their datbase load. Hence 
+was the decision to implement NoSQL DB. MongoDB was selected because if offered flexibility in terms of consistency. 
+Guardian had large no of documents which were more or less had a similar structure with very minor changes hence MongoDB suited. 
+A mapping layer is required and uses language like Java or Scala and this makes the object that you are mapping it to more complex.
+
+
+
+6. Describe the evolution of the Guradian architecture in stages with special attention to the model at each stage.
+
+1995, The Early Period ("Lash it together" era)
+The system was script based and CGI based which was powered by an Apache web server. It all was on top of an Oracle database. 
+It was very experimental and everything involved manual process. The development team could not really do a great job.
+1997-2003, Mid Period (The "Vendor based CMS era")2005-2009, Modern Period ("J2EE Monolithic" era)
+At this time, Guardian was a standard read-only website. It was based on Vignette but then migrated to AOL server.
+ Most of the site was written in TCL which was difficult to scale. Apache was also used and the core of the website was Oracle database. 
+Everthing was stored on RDBMS. It was pretty good for online publishing. The initial scale up was greater than the early period 
+of CGI scripts, but it quickly reached the limit to develop new features. The vendors could not provide what they actually wanted 
+so they had to heavily customize it. The vendors CMS didnt do what they actually wanted. There was a mish mash in templates. 
+In this template driven model, there wasnt any real model expect for the relational model in the database. So after many years, 
+they reached to a position where it was not practically possible to extend their system, database schema became fixed because of 
+dependencies. The system was more conventional. Bunch of webserver with data server and all application sitting on top of RDBMS. 
+It used modern Java application in Spring/Hibernate platform. Domain driven design and test driven development with a strong model 
+in Java but still used RDBS. But used ORM in Hibernate and abstracted the DB. IT was pretty successfull and developed lot of features. 
+Application still had a tight binding with the DB.  The ORM was not actually reducing any complexity.
+2009-2010, Partial NoSQL ("Sticking Plaster" era) 
+Guardian was looking to technologies which would supercharge the DB. It could not completely get rid of Oracle. 
+but it tried to scale reads and its ability to develop new software. They have to include more caching which also increases more 
+complexity. So they had to build API to scale out database reads. The aim here was to decouple applications from database by building 
+API's but still the writes go to the RDBMS. The content API is a read only API. Build using Apache server. It was hosted on the cloud 
+so read traffic could be scaled. It was a hybrid architecture between relational and non relational. Worked very well for reads easy to scale.
+It has a loose schema and the database traffic was also reduced. But the problem was the complexity increased. Now it had 3 models, 
+RDBMS where the writes were going, Java objects in the domain model and XML and JSON API. 
+
+
+
+7. How is database query different for Mongodb vs. Couchdb vs. Relational? Include discussion of update queries.
+
+CouchDb uses MapReduce function for database querying. MongoDb on the other side uses dynamic querying similar to relational
+for simple queries. When it comes to complex queries MongoDb uses MapReduce function like CouchDb does. CouchDb uses index
+building schemes to generate index for every possible query that will be used. MongoDb has a query optimizer decides for which 
+all query index needs to be created. MongoDb has high write performance compared to CouchDb as it uses traditional update in place 
+store whereas CouchDb uses MVCC. CouchDb MVCC operation gets complicated as it uses Master-Master replication having it to provide 
+version control, offline database which resync later, they also have to be compacted when there are many updates. MongoDb on the other 
+hand uses Master-Slave replication with autofailure configurations. CouchDb will need progammer's manual intervention while MongoDb does not.
+Relational databases enforces ACID. So, you will have schema based transaction oriented data stores. It's proven and suitable for 99% of the 
+real world applications. You can practically do anything with relational databases.
+But, there are limitations on speed and scaling when it comes to massive high availability data stores. For example, Google and Amazon have 
+terabytes of data stored in big data centers. Querying and inserting is not performant in these scenarios because of the blocking/schema/transaction 
+nature of the RDBMs. That's the reason they have implemented their own databases (actually, key-value stores) for massive performance gain and scalability.
+NoSQL databases have been around for a long time - just the term is new. Some examples are graph, object, column, XML and document databases.
+NoSQL solutions are usually meant to solve a problem that relational databases are either not well suited for, too expansive to use (Oracle) or require 
+you to implement something that breaks the relational nature of your db anyway.
+Advantages are usually specific to your usage, but unless you have some sort of problem modeling your data in a RDBMS I see no reason why you would choose NoSQL.
+I myself use MongoDB and Riak for specific problems where a RDBMS is not a viable solution, for all other things I use MySQL (or SQLite for testing).
+If you need a NoSQL db you usually know about it, possible reasons are:
+client wants 99.999% availability on a high traffic site.
+your data makes no sense in SQL, you find yourself doing multiple JOIN queries for accessing some piece of information.
+you are breaking the relational model, you have CLOBs that store denormalized data and you generate external indexes to search that data.
+If you don't need a NoSQL solution keep in mind that these solutions weren't meant as replacements for an RDBMS but rather as alternatives where the former 
+fails and more importantly that they are relatively new as such they still have a lot of bugs and missing features.
+
+
+8. What are important schema upgrade/change issues?
+
+MongoDB is a JSON-style data store.  The documents stored in the database can have varying sets of fields, with different types for each field. 
+Schema design in MongoDB is very different from schema design in a relational DBMS. In MongoDB, the schema design is not only a function of the
+data to be modeled but also of the use case. The schema design is optimized for our most common use case. Hence each document under MongoDB 
+can have a different schema.  Consider the Actors database which had 2 collections, one with the actors details and a Job collection which 
+explains their job. Both the collection here are linked together. Hence if the schema of a document in Job collection is changed, it might affect 
+the Actor collection. Hence if the relationship is designed in a complex way where there are links between many collections or array objects 
+between collections, the issues might arise.
+Insufficient rights error: Usually Schema Upgrade LDIF files contain changes for both the schema and configuration directory partitions. 
+By default, only Schema Admins can modify objects in the schema directory partition, and only enterprise administrators or root domain 
+administrators can modify objects in the configuration directory partition.
+Nonadditive schema changes impact the running application data model and require shutting down the production database. 
+Additive schema changes are nondisruptive; these changes do not impact Siebel application usage. Therefore, you can apply additive schema changes 
+to the live production database before you perform the in-place upgrade. This reduces the number of steps that must be performed when the database 
+is offline and this reduces database downtime.
+It depends on the nature of the change. In cases where data representation has changed then it's probably a good idea to process all the documents. 
+If you're adding/removing keys to the documents, you don't necessarily have to do anything as long as the application code can handle null/missing keys or 
+in the case of removals, ignores extra keys. 
+A matching problem is that if you add a new field, you may want to add a default value for existing records. Your DB will have its own features for this. 
+Lucene/Solr text search has row-size storage and there is now a project to add column-oriented storage and the ability to update one field. 
+This problem is a little different in Solr because there are a lot of tweaks about exactly how to search; some sites change the schema often and have to 
+re-index to get the new features.
+
+
+9. What are important replication issues for MongoDB? Include sharding, consistency, flexibility, others, etc.
+
+MongoDB uses a modified master/slave approach. To use the built-in replication, you set up a replica set with one or more mongod nodes. 
+These nodes then elect a primary node to handle all writes, with all the other servers becoming secondary, with the ability to handle reads, 
+but without the ability to handle any writes. The secondaries then replicate all writes on the primary to themselves, staying in sync as much
+as possible.Some of the issues are, the secondary nodes does not handle and writes. All secondaries read from the same primary. It is not 
+possible for us to specify which collection is to be replicated and which collections need not be replicated. It is also not possible to 
+maintain multiple primaries which can handle writes. There can only be one primary. Bidirectional replication between the primaries also 
+not possible. Replica sets automate most administrative tasks associated with database replication. But several operations related to 
+deployment and systems management require administrator intervention. Consistency issues can also occur during replication. There is an 
+option for the clients to choose from where the data for read is to be fetched, either from primary or from a secondary. Because of this 
+there can occur a situation where a secondary S2 decides to replicate from another secondary S1 and data consistency can fail as the data 
+fetched may be of previous state and not the current updated one like in the primary.
+Traditional sharding involves breaking tables into a small number of pieces and running each piece in a separate machine. Because of the 
+large shard size, this mechanism can be prone to imbalances due to hot spots and unequal growth. If all members of a replica set within a 
+shard are unavailable, all data held in on that shard is unavailable.
+
+
+
+10. Describe the new Guardian identity model with Mongodb. How does it fit into the current complete architecture and API? What is the future plan for the architecture?
+
+Identity project is one of the new projects which Guardian is currenly executing which tries to shift from Oracle to NoSQL. MongoDB 
+suited to their needs as its was very simple to install and use. It also fitted their mindset as it was the DB which was used in their Content
+API and also produced good results. Since their model was primarily based on JSON and queries were also similar to the relational DB, 
+they felt it was the best choice. MongoDB parses the JSON directly and allows you to query the index directly within the JSON. They also 
+wanted a DB which would be flexible with consistency and MongoDB was the best. It can express complex queries and and can work at 
+both large and small scales. It allows you to have a fully consistent DB or a non consistent DB which was so important in terms of scaling 
+a system. There was also no schema so there was no tight binding with a DB and can also change the schema during runtime. It was more 
+suited in many ways as they wanted an application to scale at a smaller level as they develop an application in few hours and release it. 
+Currently it is trying to build an API which can support both MongoDB and Oracle. When a user logs in the API will first look for the user in 
+the MongoDB. If the user is not there then it will look in Oracle and check for the user and store details in a JSON document and write it to 
+MongoDB. This process is called lazy migration. Hence over time all details all transferred to MongoDB and Oracle can be completely 
+decomissioned. In Identity model users will have fields like users, named group fields, dates, statuses. It has only 2 collections in the DB. I
+In future can also add Redis or Solr API for better performance for searching.
+ 
+
+
+11. Summarize and discuss problems and controversies for Mongodb.
+
+In 2010, Foursquare suffered a total site outage for eleven hours. The outage was caused by unexpected and uneven growth in their MongoDB database 
+that their monitoring didn't detect. The system outage was prolonged when an attempt to add a partition didn't work due to fragmentation and 
+required taking the database offline to compact it. Chunks get split by MongoDB as they grow past 200 MB, into two 100 MB. The end result was 
+that when the total system grew past 116 GB of data, one partition was 50 GB in size but another one had exceeded the 66 GB of RAM available 
+on the machine, causing unacceptable performance for requests that hit that shard.
+In December 2011, an anonymous posting alleged that MongoDB has numerous severe flaws that resulted in data loss, poor performance and a host 
+of other potentially game-changing problems. It stated that by writing data in "unsafe ways," MongoDB provides high writing and access speeds 
+but undermines its own reliability by removing confirmations that operations have been performed. The post also said that records simply 
+vanished on occasion, that corrupt database recoveries were unsuccessful. Also the product's sharding feature doesn't perform well under high 
+load conditions, and the entire system suffers from reliability issues.
+The majority of the controversy centers on a combination of performance problems and data loss. There were some problems cited by the 
+company Urban Airship. The problem was MongoDB’s inability to utilize multiple cores on their primary server. Though it had 16 available, 
+the global write lock effectively limited them to a single core. In an attempt to work around this limitation they attempted to use multiple 
+mongods on the server. A mongod is “the primary database process that runs on an individual server”. But the use of multiple mongods involves 
+sharding, which makes it very complex.
+

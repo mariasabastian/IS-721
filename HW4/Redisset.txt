@@ -1,0 +1,17 @@
+<?php
+require_once 'src/redisent/Redis.php';
+$redis = new redisent\Redis('redis://localhost');
+
+$redis->set('awesome2', 'absolutely');
+echo "Is Redisent awesome? ", $redis->get('awesome2'), "\n";
+$redis->sadd('particles2', 'proton2');
+$redis->sadd('particles2', 'electron2');
+$redis->sadd('particles2', 'neutron2');
+$particle_count = sizeof('particles2');
+echo "<p>The {$particle_count} particles that make up atoms are:</p>";
+echo "<ul>";
+foreach ($particles as $particle) {
+  echo "<li>{$particle}</li>";
+}
+echo "</ul>";
+?>

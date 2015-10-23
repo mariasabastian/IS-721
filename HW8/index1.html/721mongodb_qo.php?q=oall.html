@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<!-- this loads all the js libraries needed to make this work -->
+  <script src="jquery-1.7.1.min.js" type="text/javascript"></script>
+  <script src="jquery.tmpl.min.js" type="text/javascript"></script>
+  <script src="jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+  <script src="jquery.tinysort.min.js" type="text/javascript"></script>
+
+  <style type="text/css">
+    .fname {
+      font-style:italic
+    }
+    .tag {
+      color: blue;
+    }
+    .view {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<!-- this creates a template that can be reused below - same code really as for the movie stars -->
+<script id="listTemplate" type="text/x-jquery-tmpl"> 
+  <li>
+    <div class="fn"><b>CourseName</b>: <span class="fname">${course}</span><br /></div>
+    <form class="fn view" method="POST" action="http://userpages.umbc.edu/~mariaps1/IS721/HW8/index1.html/oupdate.php">
+      <b>CourseName</b>: <span class="fname"><input type="text" name="course" value='${course}' /></span>
+      <input type="submit" value="Go"/>
+      <input type="hidden" name="id" value="${_id.$oid}"/>
+    </form>
+
+    <div class="fn"><b>Description</b>: <span class="fname">${desc}</span><br /></div>
+    <form class="fn view" method="POST" action="http://userpages.umbc.edu/~mariaps1/IS721/HW8/index1.html/oupdate.php">
+      <b>Description</b>: <span class="fname"><input type="text" name="desc" value='${desc}' /></span>
+      <input type="submit" value="Go"/>
+      <input type="hidden" name="id" value="${_id.$oid}"/>
+    </form>
+
+    <form method="POST" action="http://userpages.umbc.edu/~mariaps1/IS721/HW8/index1.html/odelete.php">
+        <b style="color:red">DELETE</b>: <input type="submit" value="X"/>
+        <input type="hidden" name="id" value="${_id.$oid}"/>
+    </form><hr width="400" align="left"/>
+  </li>
+</script>
+
+<div id="list"> <!-- this contains the div with the id for update with the template list -->
+  <h3>Courses</h3>
+  <button>EDIT</button>
+  <ul id="starList"></ul>
+</div>
+
+<!-- this is the ajax request for the php that returns a json doc -->
+<script type="text/javascript"> 
+  var stars = [];
+  $.ajax({
+    type: "GET",
+    url: '721mongodb2.php?q=oall',
+    async: false,
+    dataType: 'json',
+    success: function (json) {stars = json;}
+  });
+
+  $( "#listTemplate" ).tmpl( stars ).appendTo( "#starList" );
+  $('ul#starList>li').tsort('span.lname');
+</script>
+
+<!-- this toggles the form field display when you click on the button -->
+<script> 
+  $("button").click(function () {
+    $(".fn").toggleClass("view");
+  });
+</script>
+
+<div style="position: fixed;
+  bottom: 0;
+  right: 0;
+  background: yellow;">
+  <a href="index.html">Home</a>
+</div>
+
+</body>
+</html>

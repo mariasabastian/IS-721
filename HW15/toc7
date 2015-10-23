@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+import sys
+foundKey = ""
+foundValue = ""
+isFirst = 1
+currentCount = 0
+# remember - we want it to sort last
+currentcounty = "Z"
+currentstate2digit = "Z"
+iscountyMappingLine = False
+currentFiveDigitCode = "Z"
+currentpopulation = 0
+# STDIN - watch indents and note unix pipe
+for line in sys.stdin:
+    # remove leading and trailing whitespace.
+    line = line.strip()
+    #print '%s' % (line)
+    try:
+       FiveDigitCode,countyname,State2Digit,Population = line.split('^')
+        #print '%s\t%s\t%s\t%s\t%s' % (FiveDigitCode,countyname,State2digit,Population)
+	#print '%s^%s' % (FiveDigitCode,State2Digit)
+        # the first line should be a mapping line from sort.
+        if State2Digit != "Z":
+            #print '%s\t%s' % (currentstate2digit,State2Digit)
+	    if currentstate2digit != State2Digit:
+                #print 'New state'
+		if isFirst == 1:
+			isFirst = 0
+			currentstate2digit = State2Digit
+		else:
+			print '%s\t%d' % (currentstate2digit,currentpopulation)
+			currentstate2digit = State2Digit
+			currentpopulation = 0
+	    
+	    currentFiveDigitCode = FiveDigitCode
+            currentcounty = countyname
+            #currentpopulation = int(Population)
+            #currentCountry2digit = state2digit
+            #iscountyMappingLine = False
+        else:
+                # this is a mapping line.
+            iscountyMappingLine = True
+	    if currentFiveDigitCode == FiveDigitCode:
+	    	currentpopulation += int(Population)
+
+       
+    except: pass
+print '%s\t%d' % (currentstate2digit,currentpopulation)
+
+

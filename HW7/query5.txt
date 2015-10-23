@@ -1,0 +1,82 @@
+http://content.guardianapis.com/search?q=food&section=british-gas-smart-homes&from-date=2011-04-03&to-date=2012-10-18&page=1&page-size=1&order-by=relevance&format=xml&show-fields=all&show-tags=all&show-factboxes=all&show-references=all&show-refinements=all&refinement-size=2&ids=british-gas-smart-homes%2Fcutting-costs&date-id=date%2Flast30days&show-redistributable-only=monitor
+
+
+
+<response user-tier="free" current-page="1" start-index="1" order-by="relevance" page-size="1" pages="1" total="1" status="ok">
+<results>
+<content section-id="british-gas-smart-homes" api-url="http://content.guardianapis.com/british-gas-smart-homes/cutting-costs" web-publication-date="2012-10-12T23:01:17Z" id="british-gas-smart-homes/cutting-costs" section-name="British Gas Smart Homes" web-title="Cutting costs" web-url="http://www.guardian.co.uk/british-gas-smart-homes/cutting-costs">
+<fields>
+<field name="trail-text">
+<p>Thanks to her smart energy monitor, Lucy Jolin can now be as careful about not wasting energy as she is about not wasting food – and, in doing so, save around £60 a year</p>
+</field>
+<field name="headline">Cutting costs</field>
+<field name="show-in-related-content">true</field>
+<field name="last-modified">2012-10-12T23:01:17Z</field>
+<field name="has-story-package">false</field>
+<field name="score">0.83195025</field>
+<field name="standfirst">
+Thanks to her smart energy monitor, Lucy Jolin can now be as careful about not wasting energy as she is about not wasting food – and, in doing so, save around £60 a year
+</field>
+<field name="short-url">http://gu.com/p/3b3b2</field>
+<field name="thumbnail">
+http://static.guim.co.uk/sys-images/Guardian/Pix/commercial/2012/10/11/1349947287437/Lucy-Jolin-tending-her-ga-005.jpg
+</field>
+<field name="commentable">false</field>
+<field name="is-premoderated">false</field>
+<field name="publication">guardian.co.uk</field>
+<field name="should-hide-adverts">false</field>
+<field name="live-blogging-now">false</field>
+<field name="comment-close-date">2012-10-12T23:01:17Z</field>
+</fields>
+<tags>
+<tag type="keyword" web-title="British Gas Smart Homes" section-name="British Gas Smart Homes" id="british-gas-smart-homes/british-gas-smart-homes" api-url="http://content.guardianapis.com/british-gas-smart-homes/british-gas-smart-homes" section-id="british-gas-smart-homes" web-url="http://www.guardian.co.uk/british-gas-smart-homes/british-gas-smart-homes">
+<references/>
+</tag>
+<tag type="tone" api-url="http://content.guardianapis.com/tone/sponsoredfeatures" id="tone/sponsoredfeatures" web-title="Sponsored features" web-url="http://www.guardian.co.uk/tone/sponsoredfeatures">
+<references/>
+</tag>
+<tag type="series" web-title="Smart homes blog" section-name="British Gas Smart Homes" id="british-gas-smart-homes/series/smart-homes-blog" api-url="http://content.guardianapis.com/british-gas-smart-homes/series/smart-homes-blog" section-id="british-gas-smart-homes" web-url="http://www.guardian.co.uk/british-gas-smart-homes/series/smart-homes-blog">
+<references/>
+</tag>
+<tag type="type" api-url="http://content.guardianapis.com/articles" id="type/article" web-title="Article" web-url="http://www.guardian.co.uk/articles">
+<references/>
+</tag>
+</tags>
+<factboxes/>
+<references/>
+</content>
+</results>
+<refinement-groups>
+<refinement-group type="date">
+<refinements>
+<refinement refined-url="http://content.guardianapis.com/search?format=xml&from-date=2012-10-12&order-by=relevance&page-size=1&q=food&refinement-size=2&section=british-gas-smart-homes&show-fields=all&show-references=all&show-refinements=all&show-tags=all&to-date=2012-10-12" id="date/yesterday" count="1" api-url="http://content.guardianapis.com/search?from-date=2012-10-12&to-date=2012-10-12" display-name="Yesterday"/>
+<refinement refined-url="http://content.guardianapis.com/search?format=xml&from-date=2012-10-12T16:13:51.619Z&order-by=relevance&page-size=1&q=food&refinement-size=2&section=british-gas-smart-homes&show-fields=all&show-references=all&show-refinements=all&show-tags=all&to-date=2012-10-13T16:13:51.619Z" id="date/last24hours" count="1" api-url="http://content.guardianapis.com/search?from-date=2012-10-12T16:13:51.619Z&to-date=2012-10-13T16:13:51.619Z" display-name="Last 24 hours"/>
+</refinements>
+</refinement-group>
+<refinement-group type="section">
+<refinements>
+<refinement refined-url="http://content.guardianapis.com/search?format=xml&from-date=2011-04-03&order-by=relevance&page-size=1&q=food&refinement-size=2&section=british-gas-smart-homes&show-fields=all&show-references=all&show-refinements=all&show-tags=all&to-date=2012-10-18" id="british-gas-smart-homes" count="1" api-url="http://content.guardianapis.com/british-gas-smart-homes" display-name="British Gas Smart Homes"/>
+</refinements>
+</refinement-group>
+<refinement-group type="keyword">
+<refinements>
+<refinement refined-url="http://content.guardianapis.com/search?format=xml&from-date=2011-04-03&order-by=relevance&page-size=1&q=food&refinement-size=2&section=british-gas-smart-homes&show-fields=all&show-references=all&show-refinements=all&show-tags=all&tag=british-gas-smart-homes/british-gas-smart-homes&to-date=2012-10-18" id="british-gas-smart-homes/british-gas-smart-homes" count="1" api-url="http://content.guardianapis.com/british-gas-smart-homes/british-gas-smart-homes" display-name="British Gas Smart Homes"/>
+</refinements>
+</refinement-group>
+<refinement-group type="type">
+<refinements>
+<refinement refined-url="http://content.guardianapis.com/search?format=xml&from-date=2011-04-03&order-by=relevance&page-size=1&q=food&refinement-size=2&section=british-gas-smart-homes&show-fields=all&show-references=all&show-refinements=all&show-tags=all&tag=type/article&to-date=2012-10-18" id="type/article" count="1" api-url="http://content.guardianapis.com/articles" display-name="Article"/>
+</refinements>
+</refinement-group>
+<refinement-group type="tone">
+<refinements>
+<refinement refined-url="http://content.guardianapis.com/search?format=xml&from-date=2011-04-03&order-by=relevance&page-size=1&q=food&refinement-size=2&section=british-gas-smart-homes&show-fields=all&show-references=all&show-refinements=all&show-tags=all&tag=tone/sponsoredfeatures&to-date=2012-10-18" id="tone/sponsoredfeatures" count="1" api-url="http://content.guardianapis.com/tone/sponsoredfeatures" display-name="Sponsored features"/>
+</refinements>
+</refinement-group>
+<refinement-group type="series">
+<refinements>
+<refinement refined-url="http://content.guardianapis.com/search?format=xml&from-date=2011-04-03&order-by=relevance&page-size=1&q=food&refinement-size=2&section=british-gas-smart-homes&show-fields=all&show-references=all&show-refinements=all&show-tags=all&tag=british-gas-smart-homes/series/smart-homes-blog&to-date=2012-10-18" id="british-gas-smart-homes/series/smart-homes-blog" count="1" api-url="http://content.guardianapis.com/british-gas-smart-homes/series/smart-homes-blog" display-name="Smart homes blog"/>
+</refinements>
+</refinement-group>
+</refinement-groups>
+</response>

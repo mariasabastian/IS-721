@@ -1,0 +1,278 @@
+maria@maria-VirtualBox:~$ mongo
+MongoDB shell version: 2.0.4
+connecting to: test
+> db.unicorns.insert({name: 'Aurora', gender: 'f', weight: 450})
+> db.unicorns.find()
+{ "_id" : ObjectId("525c8c1f43d49aac563c16c8"), "name" : "Aurora", "gender" : "f", "weight" : 450 }
+{ "_id" : ObjectId("525c8cad43d49aac563c16c9"), "name" : "Leto", "gender" : "m", "home" : "Arrakeen", "worm" : false }
+{ "_id" : ObjectId("525c8d3a43d49aac563c16ca"), "name" : "Horny", "dob" : ISODate("1992-03-13T12:47:00Z"), "loves" : [ "carrot", "papaya" ], "weight" : 600, "gender" : "m", "vampires" : 63 }
+{ "_id" : ObjectId("525c8d5943d49aac563c16cb"), "name" : "Horny", "dob" : ISODate("1992-03-13T12:47:00Z"), "loves" : [ "carrot", "grape" ], "weight" : 600, "gender" : "f", "vampires" : 43 }
+{ "_id" : ObjectId("525c8da643d49aac563c16cc"), "name" : "Horny", "dob" : ISODate("1992-03-13T12:47:00Z"), "loves" : [ "energon", "redbull" ], "weight" : 984, "gender" : "m", "vampires" : 182 }
+{ "_id" : ObjectId("525c8e2843d49aac563c16cd"), "name" : "Roooooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16ce"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16cf"), "name" : "Ayna", "dob" : ISODate("1998-03-07T13:30:00Z"), "loves" : [ "strawberry", "lemon" ], "weight" : 733, "gender" : "f", "vampires" : 40 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d0"), "name" : "Kenny", "dob" : ISODate("1997-07-01T14:42:00Z"), "loves" : [ "grape", "lemon" ], "weight" : 690, "gender" : "m", "vampires" : 39 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d1"), "name" : "Raleigh", "dob" : ISODate("2005-05-03T04:57:00Z"), "loves" : [ "apple", "sugar" ], "weight" : 421, "gender" : "m", "vampires" : 2 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d2"), "name" : "Pilot", "dob" : ISODate("1997-03-01T10:03:00Z"), "loves" : [ "apple", "watermelon" ], "weight" : 650, "gender" : "m", "vampires" : 54 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d3"), "name" : "Nimue", "dob" : ISODate("1999-12-20T21:15:00Z"), "loves" : [ "grape", "carrot" ], "weight" : 540, "gender" : "f" }
+{ "_id" : ObjectId("525c94b243d49aac563c16d4"), "name" : "Horny", "dob" : ISODate("1992-03-13T12:47:00Z"), "loves" : [ "carrot", "papaya" ], "weight" : 600, "gender" : "m", "vampires" : 63 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d5"), "name" : "Aurora", "dob" : ISODate("1991-01-24T18:00:00Z"), "loves" : [ "carrot", "grape" ], "weight" : 450, "gender" : "f", "vampires" : 43 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d6"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d7"), "name" : "Ayna", "dob" : ISODate("1998-03-07T13:30:00Z"), "loves" : [ "strawberry", "lemon" ], "weight" : 733, "gender" : "f", "vampires" : 40 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d8"), "name" : "Kenny", "dob" : ISODate("1997-07-01T14:42:00Z"), "loves" : [ "grape", "lemon" ], "weight" : 690, "gender" : "m", "vampires" : 39 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d9"), "name" : "Raleigh", "dob" : ISODate("2005-05-03T04:57:00Z"), "loves" : [ "apple", "sugar" ], "weight" : 421, "gender" : "m", "vampires" : 2 }
+{ "_id" : ObjectId("525c94b243d49aac563c16da"), "name" : "Pilot", "dob" : ISODate("1997-03-01T10:03:00Z"), "loves" : [ "apple", "watermelon" ], "weight" : 650, "gender" : "m", "vampires" : 54 }
+{ "_id" : ObjectId("525c94b243d49aac563c16db"), "name" : "Nimue", "dob" : ISODate("1999-12-20T21:15:00Z"), "loves" : [ "grape", "carrot" ], "weight" : 540, "gender" : "f" }
+has more
+> db.system.indexes.find()
+{ "v" : 1, "key" : { "_id" : 1 }, "ns" : "test.nettuts", "name" : "_id_" }
+{ "v" : 1, "key" : { "_id" : 1 }, "ns" : "test.unicorns", "name" : "_id_" }
+> b.unicorns.insert({name: 'Leto', gender: 'm', home: 'Arrakeen', worm: false})
+> rt({name: 'Horny', dob: new Date(1992,2,13,7,47), loves: ['carrot','papaya'],
+... 
+... weight: 600, gender: 'm', vampires: 63});
+> 
+> {name: 'Aurora', dob: new Date(1991, 0, 24, 13, 0), loves: ['carrot', 'grape'
+... 
+... ], weight: 450, gender: 'f', vampires: 43});
+> 
+> ert({name: 'Unicrom', dob: new Date(1973, 1, 9, 22, 10), loves: ['energon', '
+... 
+... redbull'], weight: 984, gender: 'm', vampires: 182});
+Mon Oct 14 21:11:17 SyntaxError: unterminated string literal (shell):1
+> 
+> t({name: 'Roooooodles', dob: new Date(1979, 7, 18, 18, 44), loves: ['apple'],
+... 
+... weight: 575, gender: 'm', vampires: 99});
+> 
+> name: 'Solnara', dob: new Date(1985, 6, 4, 2, 1), loves:['apple', 'carrot', '
+... 
+... chocolate'], weight:550, gender:'f', vampires:80});
+Mon Oct 14 21:11:17 SyntaxError: unterminated string literal (shell):1
+> 
+> {name:'Ayna', dob: new Date(1998, 2, 7, 8, 30), loves: ['strawberry', 'lemon'
+... 
+... ], weight: 733, gender: 'f', vampires: 40});
+> 
+> ({name:'Kenny', dob: new Date(1997, 6, 1, 10, 42), loves: ['grape', 'lemon'],
+... 
+... weight: 690, gender: 'm', vampires: 39});
+> 
+> name: 'Raleigh', dob: new Date(2005, 4, 3, 0, 57), loves: ['apple', 'sugar'],
+... 
+... weight: 421, gender: 'm', vampires: 2});
+> 
+> name: 'Leia', dob: new Date(2001, 9, 8, 14, 53), loves: ['apple', 'watermelon
+... 
+... '], weight: 601, gender: 'f', vampires: 33});
+Mon Oct 14 21:11:17 SyntaxError: unterminated string literal (shell):1
+> 
+> name: 'Pilot', dob: new Date(1997, 2, 1, 5, 3), loves: ['apple', 'watermelon'
+... 
+... ], weight: 650, gender: 'm', vampires: 54});
+> 
+> name: 'Nimue', dob: new Date(1999, 11, 20, 16, 15), loves: ['grape', 'carrot'
+... 
+... ], weight: 540, gender: 'f'});
+> 
+> .insert({name: 'Dunx', dob: new Date(1976, 6, 18, 18, 18), loves: ['grape', '
+... 
+... watermelon'], weight: 704, gender: 'm', vampires: 165});
+Mon Oct 14 21:11:19 SyntaxError: unterminated string literal (shell):1
+> db.unicorns.find({gender: 'm', weight: {$gt: 700}})
+{ "_id" : ObjectId("525c8da643d49aac563c16cc"), "name" : "Horny", "dob" : ISODate("1992-03-13T12:47:00Z"), "loves" : [ "energon", "redbull" ], "weight" : 984, "gender" : "m", "vampires" : 182 }
+> db.unicorns.find({gender: 'm', weight: {$gt: 700}});
+{ "_id" : ObjectId("525c8da643d49aac563c16cc"), "name" : "Horny", "dob" : ISODate("1992-03-13T12:47:00Z"), "loves" : [ "energon", "redbull" ], "weight" : 984, "gender" : "m", "vampires" : 182 }
+> nder: 'f', $or: [{loves: 'apple'}, {loves: 'orange'}, {weight: {$lt: 500}}]})
+{ "_id" : ObjectId("525c8c1f43d49aac563c16c8"), "name" : "Aurora", "gender" : "f", "weight" : 450 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d5"), "name" : "Aurora", "dob" : ISODate("1991-01-24T18:00:00Z"), "loves" : [ "carrot", "grape" ], "weight" : 450, "gender" : "f", "vampires" : 43 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f006"), "name" : "Aurora", "dob" : ISODate("1991-01-24T18:00:00Z"), "loves" : [ "carrot", "grape" ], "weight" : 450, "gender" : "f", "vampires" : 43 }
+{ "_id" : ObjectId("525c95aa380ed22f63542584"), "name" : "Aurora", "gender" : "f", "weight" : 450 }
+{ "_id" : ObjectId("525c9635380ed22f63542587"), "name" : "Aurora", "dob" : ISODate("1991-01-24T18:00:00Z"), "loves" : [ "carrot", "grape" ], "weight" : 450, "gender" : "f", "vampires" : 43 }
+> db.unicorns.find({_id: ObjectId("525c9635380ed22f63542587")})
+{ "_id" : ObjectId("525c9635380ed22f63542587"), "name" : "Aurora", "dob" : ISODate("1991-01-24T18:00:00Z"), "loves" : [ "carrot", "grape" ], "weight" : 450, "gender" : "f", "vampires" : 43 }
+> db.unicorns.update({name: 'Roooooodles'}, {weight: 590})
+> db.unicorns.find({name: 'Roooooodles'})
+{ "_id" : ObjectId("525c94b243d49aac563c16d6"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f007"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c95254fabf2ef0678f00d"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c9635380ed22f63542588"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+> weight: 590}, {$set: {name: 'Roooooodles', dob: new Date(1979, 7, 18, 18, 44)
+... 
+... , loves: ['apple'], gender: 'm', vampires: 99}})
+> 
+> db.unicorns.find({name: 'Roooooodles'})
+{ "_id" : ObjectId("525c93fe43d49aac563c16ce"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooodles", "vampires" : 99, "weight" : 590 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d6"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f007"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c95254fabf2ef0678f00d"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+{ "_id" : ObjectId("525c9635380ed22f63542588"), "name" : "Roooooodles", "dob" : ISODate("1979-08-18T22:44:00Z"), "loves" : [ "apple" ], "weight" : 575, "gender" : "m", "vampires" : 99 }
+> db.unicorns.update({name: 'Roooooodles'}, {$set: {weight: 590}})
+> db.unicorns.update({name: 'Pilot'}, {$inc: {vampires: -2}})
+> db.unicorns.update({name: 'Aurora'}, {$push: {loves: 'sugar'}})
+> db.hits.update({page: 'unicorns'}, {$inc: {hits: 1}}, true);
+> 
+> db.hits.find();
+{ "_id" : ObjectId("525c99537d766ca17ecc6e04"), "hits" : 1, "page" : "unicorns" }
+> db.hits.update({page: 'unicorns'}, {$inc: {hits: 1}}, true);
+> 
+> db.hits.find();
+{ "_id" : ObjectId("525c99537d766ca17ecc6e04"), "hits" : 2, "page" : "unicorns" }
+> db.unicorns.update({}, {$set: {vaccinated: true }});
+> 
+> db.unicorns.find({vaccinated: true});
+{ "_id" : ObjectId("525c8cad43d49aac563c16c9"), "gender" : "m", "home" : "Arrakeen", "name" : "Leto", "vaccinated" : true, "worm" : false }
+> db.unicorns.update({}, {$set: {vaccinated: true }}, false, true);
+> 
+> db.unicorns.find({vaccinated: true});
+{ "_id" : ObjectId("525c93fe43d49aac563c16ce"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooodles", "vaccinated" : true, "vampires" : 99, "weight" : 590 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d6"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooodles", "vaccinated" : true, "vampires" : 99, "weight" : 575 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f007"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooodles", "vaccinated" : true, "vampires" : 99, "weight" : 575 }
+{ "_id" : ObjectId("525c95254fabf2ef0678f00d"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooodles", "vaccinated" : true, "vampires" : 99, "weight" : 575 }
+{ "_id" : ObjectId("525c9635380ed22f63542588"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooodles", "vaccinated" : true, "vampires" : 99, "weight" : 575 }
+{ "_id" : ObjectId("525c8cad43d49aac563c16c9"), "gender" : "m", "home" : "Arrakeen", "name" : "Leto", "vaccinated" : true, "worm" : false }
+{ "_id" : ObjectId("525c8d3a43d49aac563c16ca"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c8d5943d49aac563c16cb"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "f", "loves" : [ "carrot", "grape" ], "name" : "Horny", "vaccinated" : true, "vampires" : 43, "weight" : 600 }
+{ "_id" : ObjectId("525c8da643d49aac563c16cc"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "energon", "redbull" ], "name" : "Horny", "vaccinated" : true, "vampires" : 182, "weight" : 984 }
+{ "_id" : ObjectId("525c8e2843d49aac563c16cd"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooooodles", "vaccinated" : true, "vampires" : 99, "weight" : 575 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16cf"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d0"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d1"), "dob" : ISODate("2005-05-03T04:57:00Z"), "gender" : "m", "loves" : [ "apple", "sugar" ], "name" : "Raleigh", "vaccinated" : true, "vampires" : 2, "weight" : 421 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d2"), "dob" : ISODate("1997-03-01T10:03:00Z"), "gender" : "m", "loves" : [ "apple", "watermelon" ], "name" : "Pilot", "vaccinated" : true, "vampires" : 52, "weight" : 650 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d3"), "dob" : ISODate("1999-12-20T21:15:00Z"), "gender" : "f", "loves" : [ "grape", "carrot" ], "name" : "Nimue", "vaccinated" : true, "weight" : 540 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d4"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d5"), "dob" : ISODate("1991-01-24T18:00:00Z"), "gender" : "f", "loves" : [ "carrot", "grape" ], "name" : "Aurora", "vaccinated" : true, "vampires" : 43, "weight" : 450 }
+{ "_id" : ObjectId("525c94b243d49aac563c16db"), "dob" : ISODate("1999-12-20T21:15:00Z"), "gender" : "f", "loves" : [ "grape", "carrot" ], "name" : "Nimue", "vaccinated" : true, "weight" : 540 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f00c"), "dob" : ISODate("1999-12-20T21:15:00Z"), "gender" : "f", "loves" : [ "grape", "carrot" ], "name" : "Nimue", "vaccinated" : true, "weight" : 540 }
+{ "_id" : ObjectId("525c95aa380ed22f63542584"), "gender" : "f", "name" : "Aurora", "vaccinated" : true, "weight" : 450 }
+has more
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> db.unicorns.find(null, {name: 1});
+{ "_id" : ObjectId("525c93fe43d49aac563c16ce"), "name" : "Roooooodles" }
+{ "_id" : ObjectId("525c94b243d49aac563c16d6"), "name" : "Roooooodles" }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f007"), "name" : "Roooooodles" }
+{ "_id" : ObjectId("525c95254fabf2ef0678f00d"), "name" : "Roooooodles" }
+{ "_id" : ObjectId("525c9635380ed22f63542588"), "name" : "Roooooodles" }
+{ "_id" : ObjectId("525c8cad43d49aac563c16c9"), "name" : "Leto" }
+{ "_id" : ObjectId("525c8d3a43d49aac563c16ca"), "name" : "Horny" }
+{ "_id" : ObjectId("525c8d5943d49aac563c16cb"), "name" : "Horny" }
+{ "_id" : ObjectId("525c8da643d49aac563c16cc"), "name" : "Horny" }
+{ "_id" : ObjectId("525c8e2843d49aac563c16cd"), "name" : "Roooooooodles" }
+{ "_id" : ObjectId("525c93fe43d49aac563c16cf"), "name" : "Ayna" }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d0"), "name" : "Kenny" }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d1"), "name" : "Raleigh" }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d2"), "name" : "Pilot" }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d3"), "name" : "Nimue" }
+{ "_id" : ObjectId("525c94b243d49aac563c16d4"), "name" : "Horny" }
+{ "_id" : ObjectId("525c94b243d49aac563c16d5"), "name" : "Aurora" }
+{ "_id" : ObjectId("525c94b243d49aac563c16db"), "name" : "Nimue" }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f00c"), "name" : "Nimue" }
+{ "_id" : ObjectId("525c95aa380ed22f63542584"), "name" : "Aurora" }
+has more
+> db.unicorns.find().sort({weight: -1})
+{ "_id" : ObjectId("525c8da643d49aac563c16cc"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "energon", "redbull" ], "name" : "Horny", "vaccinated" : true, "vampires" : 182, "weight" : 984 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16cf"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d7"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f008"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c9635380ed22f63542589"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d0"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d8"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f009"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c9635380ed22f6354258a"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d2"), "dob" : ISODate("1997-03-01T10:03:00Z"), "gender" : "m", "loves" : [ "apple", "watermelon" ], "name" : "Pilot", "vaccinated" : true, "vampires" : 52, "weight" : 650 }
+{ "_id" : ObjectId("525c94b243d49aac563c16da"), "dob" : ISODate("1997-03-01T10:03:00Z"), "gender" : "m", "loves" : [ "apple", "watermelon" ], "name" : "Pilot", "vaccinated" : true, "vampires" : 54, "weight" : 650 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f00b"), "dob" : ISODate("1997-03-01T10:03:00Z"), "gender" : "m", "loves" : [ "apple", "watermelon" ], "name" : "Pilot", "vaccinated" : true, "vampires" : 54, "weight" : 650 }
+{ "_id" : ObjectId("525c9635380ed22f6354258c"), "dob" : ISODate("1997-03-01T10:03:00Z"), "gender" : "m", "loves" : [ "apple", "watermelon" ], "name" : "Pilot", "vaccinated" : true, "vampires" : 54, "weight" : 650 }
+{ "_id" : ObjectId("525c8d3a43d49aac563c16ca"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c8d5943d49aac563c16cb"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "f", "loves" : [ "carrot", "grape" ], "name" : "Horny", "vaccinated" : true, "vampires" : 43, "weight" : 600 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d4"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f005"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c9635380ed22f63542586"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16ce"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooodles", "vaccinated" : true, "vampires" : 99, "weight" : 590 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d6"), "dob" : ISODate("1979-08-18T22:44:00Z"), "gender" : "m", "loves" : [ "apple" ], "name" : "Roooooodles", "vaccinated" : true, "vampires" : 99, "weight" : 575 }
+has more
+> 
+> 
+> db.unicorns.find().sort({name: 1, vampires: -1})
+{ "_id" : ObjectId("525c94b243d49aac563c16d5"), "dob" : ISODate("1991-01-24T18:00:00Z"), "gender" : "f", "loves" : [ "carrot", "grape" ], "name" : "Aurora", "vaccinated" : true, "vampires" : 43, "weight" : 450 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f006"), "dob" : ISODate("1991-01-24T18:00:00Z"), "gender" : "f", "loves" : [ "carrot", "grape" ], "name" : "Aurora", "vaccinated" : true, "vampires" : 43, "weight" : 450 }
+{ "_id" : ObjectId("525c9635380ed22f63542587"), "dob" : ISODate("1991-01-24T18:00:00Z"), "gender" : "f", "loves" : [ "carrot", "grape" ], "name" : "Aurora", "vaccinated" : true, "vampires" : 43, "weight" : 450 }
+{ "_id" : ObjectId("525c95aa380ed22f63542584"), "gender" : "f", "name" : "Aurora", "vaccinated" : true, "weight" : 450 }
+{ "_id" : ObjectId("525c8c1f43d49aac563c16c8"), "gender" : "f", "loves" : [ "sugar" ], "name" : "Aurora", "vaccinated" : true, "weight" : 450 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16cf"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d7"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f008"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c9635380ed22f63542589"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c8da643d49aac563c16cc"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "energon", "redbull" ], "name" : "Horny", "vaccinated" : true, "vampires" : 182, "weight" : 984 }
+{ "_id" : ObjectId("525c8d3a43d49aac563c16ca"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d4"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f005"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c9635380ed22f63542586"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "m", "loves" : [ "carrot", "papaya" ], "name" : "Horny", "vaccinated" : true, "vampires" : 63, "weight" : 600 }
+{ "_id" : ObjectId("525c8d5943d49aac563c16cb"), "dob" : ISODate("1992-03-13T12:47:00Z"), "gender" : "f", "loves" : [ "carrot", "grape" ], "name" : "Horny", "vaccinated" : true, "vampires" : 43, "weight" : 600 }
+{ "_id" : ObjectId("525c93fe43d49aac563c16d0"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d8"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c94f94fabf2ef0678f009"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c9635380ed22f6354258a"), "dob" : ISODate("1997-07-01T14:42:00Z"), "gender" : "m", "loves" : [ "grape", "lemon" ], "name" : "Kenny", "vaccinated" : true, "vampires" : 39, "weight" : 690 }
+{ "_id" : ObjectId("525c8cad43d49aac563c16c9"), "gender" : "m", "home" : "Arrakeen", "name" : "Leto", "vaccinated" : true, "worm" : false }
+has more
+> 
+> 
+> db.unicorns.find().sort({weight: -1}).limit(2).skip(1)
+{ "_id" : ObjectId("525c93fe43d49aac563c16cf"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+{ "_id" : ObjectId("525c94b243d49aac563c16d7"), "dob" : ISODate("1998-03-07T13:30:00Z"), "gender" : "f", "loves" : [ "strawberry", "lemon" ], "name" : "Ayna", "vaccinated" : true, "vampires" : 40, "weight" : 733 }
+> 
+> 
+> db.unicorns.count({vampires: {$gt: 50}})
+15
+> 
+> 
+> db.unicorns.find({vampires: {$gt: 50}}).count()
+15
+> 
+> 
+> 
+> 
+> 
+> 
+> b.employees.insert({_id: ObjectId("4d85c7039ab0fd70a117d730"), name: 'Leto'})
+> oyees.insert({_id: ObjectId("4d85c7039ab0fd70a117d731"), name: 'Duncan', manager: ObjectId
+... 
+... ("4d85c7039ab0fd70a117d730")});
+> 
+> oyees.insert({_id: ObjectId("4d85c7039ab0fd70a117d732"), name: 'Moneo', manager: ObjectId(
+... 
+... "4d85c7039ab0fd70a117d730")});
+> db.employees.find({manager: ObjectId("4d85c7039ab0fd70a117d730")})
+{ "_id" : ObjectId("4d85c7039ab0fd70a117d731"), "name" : "Duncan", "manager" : ObjectId("4d85c7039ab0fd70a117d730") }
+{ "_id" : ObjectId("4d85c7039ab0fd70a117d732"), "name" : "Moneo", "manager" : ObjectId("4d85c7039ab0fd70a117d730") }
+> 
+> 
+> oyees.insert({_id: ObjectId("4d85c7039ab0fd70a117d733"), name: 'Siona', manager: [ObjectId
+... 
+... ("4d85c7039ab0fd70a117d730"), ObjectId("4d85c7039ab0fd70a117d732")] })
+> db.employees.find({manager: ObjectId("4d85c7039ab0fd70a117d730")})
+{ "_id" : ObjectId("4d85c7039ab0fd70a117d731"), "name" : "Duncan", "manager" : ObjectId("4d85c7039ab0fd70a117d730") }
+{ "_id" : ObjectId("4d85c7039ab0fd70a117d732"), "name" : "Moneo", "manager" : ObjectId("4d85c7039ab0fd70a117d730") }
+{ "_id" : ObjectId("4d85c7039ab0fd70a117d733"), "name" : "Siona", "manager" : [ 	ObjectId("4d85c7039ab0fd70a117d730"), 	ObjectId("4d85c7039ab0fd70a117d732") ] }
+> oyees.insert({_id: ObjectId("4d85c7039ab0fd70a117d734"), name: 'Ghanima', family: {mother:
+... 
+... 'Chani', father: 'Paul', brother: ObjectId("4d85c7039ab0fd70a117d730")}})
+> 
+> 
+> 
+> db.employees.find({'family.mother': 'Chani'})
+{ "_id" : ObjectId("4d85c7039ab0fd70a117d734"), "name" : "Ghanima", "family" : { "mother" : "Chani", "father" : "Paul", "brother" : ObjectId("4d85c7039ab0fd70a117d730") } }
+> 
+> 
+> s.insert({name: 'leto', email: 'leto@dune.gov', account: {allowed_gholas: 5, spice_ration:
+... 
+... 10}})
+> 
+

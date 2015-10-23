@@ -1,0 +1,18 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ netstat -plten | grep java
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 0.0.0.0:50090           0.0.0.0:*               LISTEN      1001       18443       3621/java       
+tcp        0      0 0.0.0.0:50060           0.0.0.0:*               LISTEN      1001       19117       3939/java       
+tcp        0      0 127.0.0.1:39149         0.0.0.0:*               LISTEN      1001       18849       3939/java       
+tcp        0      0 0.0.0.0:39949           0.0.0.0:*               LISTEN      1001       18319       3621/java       
+tcp        0      0 0.0.0.0:50030           0.0.0.0:*               LISTEN      1001       18446       3695/java       
+tcp        0      0 0.0.0.0:42222           0.0.0.0:*               LISTEN      1001       17843       3371/java       
+tcp        0      0 0.0.0.0:50070           0.0.0.0:*               LISTEN      1001       17709       3134/java       
+tcp        0      0 0.0.0.0:50010           0.0.0.0:*               LISTEN      1001       18002       3371/java       
+tcp        0      0 0.0.0.0:50075           0.0.0.0:*               LISTEN      1001       18008       3371/java       
+tcp        0      0 0.0.0.0:32994           0.0.0.0:*               LISTEN      1001       17406       3134/java       
+tcp        0      0 0.0.0.0:50020           0.0.0.0:*               LISTEN      1001       18014       3371/java       
+tcp        0      0 127.0.0.1:54310         0.0.0.0:*               LISTEN      1001       17465       3134/java       
+tcp        0      0 127.0.0.1:54311         0.0.0.0:*               LISTEN      1001       18429       3695/java       
+tcp        0      0 0.0.0.0:59816           0.0.0.0:*               LISTEN      1001       18428       3695/java       
+

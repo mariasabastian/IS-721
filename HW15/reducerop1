@@ -1,0 +1,77 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop jar contrib/streaming/hadoop-*streaming*.jar -file /home/hduser/smplMapper.py -mapper /home/hduser/smplMapper.py -file /home/hduser/smplReducer.py -reducer /home/hduser/smplReducer.py -input /user/hduser/DataSet.txt -input /user/hduser/FIPS_CountyName.txt -output /user/hduser/gmohanreducer1
+Warning: $HADOOP_HOME is deprecated.
+packageJobJar: [/home/hduser/smplMapper.py, /home/hduser/smplReducer.py, /app/hadoop/tmp/hadoop-unjar4091691396795910052/] [] /tmp/streamjob3480474548743504350.jar tmpDir=null
+2013-12-08 22:15:17 INFO util.NativeCodeLoader: Loaded the native-hadoop library
+2013-12-08 22:15:17 WARN snappy.LoadSnappy: Snappy native library not loaded
+2013-12-08 22:15:17 INFO mapred.FileInputFormat: Total input paths to process : 2
+2013-12-08 22:15:18 INFO streaming.StreamJob: getLocalDirs(): [/app/hadoop/tmp/mapred/local]
+2013-12-08 22:15:18 INFO streaming.StreamJob: Running job: job_201212161841_0008
+2013-12-08 22:15:18 INFO streaming.StreamJob: To kill this job, run:
+2013-12-08 22:15:18 INFO streaming.StreamJob: /home/mariaps1/hadoop/libexec/../bin/hadoop job  -Dmapred.job.tracker=localhost:54311 -kill job_201212161841_0008
+2013-12-08 22:15:18 INFO streaming.StreamJob: Tracking URL: http://localhost:50030/jobdetails.jsp?jobid=job_201212161841_0008
+2013-12-08 22:15:19 INFO streaming.StreamJob:  map 0%  reduce 0%
+2013-12-08 22:15:56 INFO streaming.StreamJob:  map 67%  reduce 0%
+2013-12-08 22:16:18 INFO streaming.StreamJob:  map 100%  reduce 0%
+2013-12-08 22:16:27 INFO streaming.StreamJob:  map 100%  reduce 100%
+2013-12-08 22:16:39 INFO streaming.StreamJob: Job complete: job_201212161841_0008
+2013-12-08 22:16:39 INFO streaming.StreamJob: Output: /user/hduser/mariaps12reducer1
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -ls /user/hduser/mariaps12reducer1
+Warning: $HADOOP_HOME is deprecated.
+Found 3 items
+-rw-r--r--   1 hduser supergroup          0 2013-12-08 22:16 /user/hduser/mariaps12reducer1/_SUCCESS
+drwxr-xr-x   - hduser supergroup          0 2013-12-08 22:15 /user/hduser/mariaps12reducer1/_logs
+-rw-r--r--   1 hduser supergroup        303 2013-12-08 22:16 /user/hduser/mariaps12reducer1/part-00000
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -cat /user/hduser/mariaps12reducer1/part-00000
+Warning: $HADOOP_HOME is deprecated.
+AL	67
+AK	29
+AZ	15
+AR	75
+CA	58
+CO	64
+CT	8
+DE	3
+DC	1
+FL	67
+GA	159
+HI	5
+ID	44
+IL	102
+IN	92
+IA	99
+KS	105
+KY	120
+LA	64
+ME	16
+MD	24
+MA	14
+MI	83
+MN	87
+MS	82
+MO	115
+MT	56
+NE	93
+NV	17
+NH	10
+NJ	21
+NM	33
+NY	62
+NC	100
+ND	53
+OH	88
+OK	77
+OR	36
+PA	67
+RI	5
+SC	46
+SD	66
+TN	95
+TX	254
+UT	29
+VT	14
+VA	134
+WA	39
+WV	55
+WI	72
+WY	23
+

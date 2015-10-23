@@ -1,0 +1,32 @@
+Database got 10 documents.<br>
+Document 118-1-565-92580-9<BR>
+Document 218-1-565-92580-9<BR>
+Document 318-1-565-92580-9<BR>
+Document 478-1-565-92580-9<BR>
+Document 678-1-565-92580-9<BR>
+Document 878-1-565-92580-9<BR>
+Document 978-0-596-15589-6<BR>
+Document 978-0-596-52926-0<BR>
+Document 978-1-565-92580-9<BR>
+Document _design/default<BR>
+<br>Document retrieved:<br/>stdClass Object
+(
+    [_id] => 118-1-565-92580-9
+    [_rev] => 1-4c654b93625eeaf89756c6ef3282837f
+    [title] => Goa and Life
+    [authors] => Array
+        (
+            [0] => Andrea
+            [1] => Anthony
+        )
+
+    [publisher] => General Publications
+    [formats] => Array
+        (
+            [0] => Print
+        )
+
+    [released] => 2010-03-31
+    [pages] => 1148
+)
+1

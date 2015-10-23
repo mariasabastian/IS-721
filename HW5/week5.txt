@@ -1,0 +1,694 @@
+Step 1:
+maria@maria-VirtualBox:~$ echo '{ "_id":"978-0-596-15589-6", "title":"CouchDB: The Definitive Guide", "subtitle":"Time to Relax", "authors":[ "J. Chris Anderson", "Jan Lehnardt", "Noah Slater" ], "publisher":"OReilly Media", "released":"2010-01-19", "pages":272}' | prettify_json.rb
+{
+  "_id": "978-0-596-15589-6",
+  "title": "CouchDB: The Definitive Guide",
+  "subtitle": "Time to Relax",
+  "authors": [
+    "J. Chris Anderson",
+    "Jan Lehnardt",
+    "Noah Slater"
+  ],
+  "publisher": "OReilly Media",
+  "released": "2010-01-19",
+  "pages": 272
+}
+
+Step 2:
+
+maria@maria-VirtualBox:~$ curl -X PUT --user mariaps1:naveen8988 http://localhost:5984/books2
+{"ok":true}
+maria@maria-VirtualBox:~/Desktop$ curl -X POST http://127.0.0.1:5984/books2/ -d @books2.json -H "Content-Type: application/json" 
+{"ok":true,"id":"978-0-596-15589-6","rev":"4-382a89db5692a85e30ffefb539c83928"}
+
+Step 3:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books2/_all_docs
+{"total_rows":1,"offset":0,"rows":[
+{"id":"978-0-596-15589-6","key":"978-0-596-15589-6","value":{"rev":"4-382a89db5692a85e30ffefb539c83928"}}
+]}
+
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books2/_all_docs | prettify_json.rb  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   147    0   147    0     0   4701      0 --:--:-- --:--:-- --:--:--  6391
+{
+  "total_rows": 1,
+  "offset": 0,
+  "rows": [
+    {
+      "id": "978-0-596-15589-6",
+      "key": "978-0-596-15589-6",
+      "value": {
+        "rev": "4-382a89db5692a85e30ffefb539c83928"
+      }
+    }
+  ]
+}
+
+
+Step 4:
+
+maria@maria-VirtualBox:~$ echo '{"_id":"978-0-596-52926-0", "title":"RESTful Web Services", "subtitle":"Web services for the real world", "authors":[ "Leonard Richardson", "Sam Ruby"], "publisher":"OReilly Media", "released":"2007-05-08", "pages":448}' | prettify_json.rb
+{
+  "_id": "978-0-596-52926-0",
+  "title": "RESTful Web Services",
+  "subtitle": "Web services for the real world",
+  "authors": [
+    "Leonard Richardson",
+    "Sam Ruby"
+  ],
+  "publisher": "OReilly Media",
+  "released": "2007-05-08",
+  "pages": 448
+}
+
+
+Step 5:
+
+maria@maria-VirtualBox:~$ curl -X PUT --user mariaps1:naveen8988 http://localhost:5984/books2/978-0-596-52926-0 -d \
+> "{
+>    \"_id\":\"978-0-596-52926-0\",
+>    \"title\":\"RESTful Web Services\",
+>    \"subtitle\":\"Web services for the real world\",
+>    \"authors\":[
+>    \"Leonard Richardson\",
+>    \"Sam Ruby\"
+>    ],
+>    \"publisher\":\"OReilly Media\",
+>    \"released\":\"2007-05-08\",
+>    \"pages\":448
+>    }"
+{"ok":true,"id":"978-0-596-52926-0","rev":"1-8135ae28c34ce2130840ee2673664490"}
+
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/books2/_temp_view -H "Content-Type: application/json" -d '{"map": "function(doc) { if (doc.title) {emit(doc.title);}}"}' | prettify_json.rb
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   171    0   110  100    61   1299    720 --:--:-- --:--:-- --:--:--  1692
+{
+  "total_rows": 1,
+  "offset": 0,
+  "rows": [
+    {
+      "id": "978-0-596-52926-0",
+      "key": "RESTful Web Services",
+      "value": null
+    }
+  ]
+}
+
+
+Step 6:
+
+maria@maria-VirtualBox:~$ curl -X PUT http://127.0.0.1:5984/books2/978-0-596-15589-6 \
+>    -d "{ \
+>    \"_id\":\"978-0-596-15589-6\",
+>    \"_rev\":\"1-af25af2eadddfad1057ba303b426f4ee\",
+>    \"title\":\"CouchDB: The Definitive Guide\",
+>    \"subtitle\":\"Time to Relax\",
+>    \"authors\":[
+>    \"J. Chris Anderson\",
+>    \"Jan Lehnardt\",
+>    \"Noah Slater\"
+>    ],
+>    \"publisher\":\"OReilly Media\",
+>    \"released\":\"2010-01-19\",
+>    \"pages\":272,
+>    \"formats\":[
+>    \"Print\",
+>    \"Ebook\",
+>    \"Safari Books Online\"
+>    ]
+>    }"
+{"ok":true,"id":"978-0-596-15589-6","rev":"1-af25af2eadddfad1057ba303b426f4ee"}
+maria@maria-VirtualBox:~$ curl -X PUT http://localhost:5984/books2/978-1-565-92580-9 -d \
+>    "{
+>    \"_id\":\"978-1-565-92580-9\",
+>    \"title\":\"DocBook: The Definitive Guide\",
+>    \"authors\":[
+>    \"Norman Walsh\",
+>    \"Leonard Muellner\"
+>    ],
+>    \"publisher\":\"OReilly Media\",
+>    \"formats\":[
+>    \"Print\"
+>    ],
+>    \"released\":\"1999-10-28\",
+>    \"pages\":648
+>    }"
+{"ok":true,"id":"978-1-565-92580-9","rev":"1-903b99c0e7aeff95563c337d11dd5e7e"}
+maria@maria-VirtualBox:~$ curl -X PUT http://localhost:5984/books2/878-1-565-92580-9 -d \
+> "{
+>  \"_id\":\"978-1-565-92580-9\", 
+>  \"title\":\"Introduction to C\", 
+>  \"authors\":[
+>  \"Jones\", 
+>  \"Leonard\"
+>  ], 
+>  \"publisher\":\"McGraw\", 
+>  \"formats\":[
+>  \"Print\"
+>  ], 
+>  \"released\":\"1996-10-02\", 
+>  \"pages\":448
+>  }"
+{"ok":true,"id":"878-1-565-92580-9","rev":"1-b00fbe40a0eb5694a2a9cd4e6201c3fa"}
+maria@maria-VirtualBox:~$ curl -X PUT http://localhost:5984/books2/678-1-565-92580-9 -d \
+>  "{
+>  \"_id\":\"678-1-565-92580-9\", 
+>  \"title\":\"Java Programming\", 
+>  \"authors\":[
+>  \"Mohan\", 
+>  \"Manpreet\"
+>  ], 
+>  \"publisher\":\"Annayya Publications\", 
+>  \"formats\":[
+>  \"Print\"
+>  ], 
+>  \"released\":\"2011-01-18\", 
+>  \"pages\":680
+>  }"
+{"ok":true,"id":"678-1-565-92580-9","rev":"1-200f761902a9b80e483bec7ea20b2f09"}
+maria@maria-VirtualBox:~$ curl -X PUT http://localhost:5984/books2/478-1-565-92580-9 -d \
+>  "{
+>  \"_id\":\"478-1-565-92580-9\", 
+>  \"title\":\".Net Programming\", 
+>  \"authors\":[
+>  \"Shreyas\", 
+>  \"Guruprasad\"
+>  ], 
+>  \"publisher\":\"Appachan Publications\", 
+>  \"formats\":[
+>  \"Print\"
+>  ], 
+>  \"released\":\"2000-06-13\", 
+>  \"pages\":1680
+>  }"
+{"ok":true,"id":"478-1-565-92580-9","rev":"1-82803fa36d8adcad501ccd9232a2b3dd"}
+maria@maria-VirtualBox:~$ curl -X PUT http://localhost:5984/books2/318-1-565-92580-9 -d \
+>  "{
+>  \"_id\":\"318-1-565-92580-9\", 
+>  \"title\":\"Casino Royale\", 
+>  \"authors\":[
+>  \"Stephen King\", 
+>  \"Diane Jacob\"
+>  ], 
+>  \"publisher\":\"Warner Books\", 
+>  \"formats\":[
+>  \"Print\"
+>  ], 
+>  \"released\":\"2008-10-18\", 
+>  \"pages\":348
+>  }"
+{"ok":true,"id":"318-1-565-92580-9","rev":"1-77afe3837e0f4b97b3456bab8a889196"}
+maria@maria-VirtualBox:~$ curl -X PUT http://localhost:5984/books2/218-1-565-92580-9 -d \
+>  "{
+>  \"_id\":\"218-1-565-92580-9\", 
+>  \"title\":\"Days of Summer\", 
+>  \"authors\":[
+>  \"Richard\", 
+>  \"Clarx\"
+>  ], 
+>  \"publisher\":\"Comics and Artist Books\", 
+>  \"formats\":[
+>  \"Print\"
+>  ], 
+>  \"released\":\"1990-03-31\", 
+>  \"pages\":48
+>  }"
+{"ok":true,"id":"218-1-565-92580-9","rev":"1-698a5b9041986ab46f98801ebd8979af"}
+maria@maria-VirtualBox:~$ curl -X PUT http://localhost:5984/books2/118-1-565-92580-9 -d \
+>  "{
+>  \"_id\":\"118-1-565-92580-9\", 
+>  \"title\":\"Goa and Life\", 
+>  \"authors\":[
+>  \"Andrea\", 
+>  \"Anthony\"
+>  ], 
+>  \"publisher\":\"General Publications\", 
+>  \"formats\":[
+>  \"Print\"
+>  ], 
+>  \"released\":\"2010-03-31\", 
+>  \"pages\":1148
+>  }"
+{"ok":true,"id":"118-1-565-92580-9","rev":"1-4c654b93625eeaf89756c6ef3282837f"}
+
+
+Step 7:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books/_all_docs
+{"total_rows":10,"offset":0,"rows":[
+{"id":"978-0-596-15589-6","key":"978-0-596-15589-6","value":{"rev":"3-87514dac78f2efc3bedcf856e60967c3"}},
+{"id":"978-0-596-52926-0","key":"978-0-596-52926-0","value":{"rev":"2-90e2a99841388b1f606a74f6ac4794c7"}},
+{"id":"978-1-565-92580-9","key":"978-1-565-92580-9","value":{"rev":"1-903b99c0e7aeff95563c337d11dd5e7e"}},
+{"id":"978-1-568-92581-9","key":"978-1-568-92581-9","value":{"rev":"1-fad2d52aa2138390bc5cb58619f3114a"}},
+{"id":"978-1-569-92582-9","key":"978-1-569-92582-9","value":{"rev":"1-58aa1c0bf5617e31fd85ea852d39b97d"}},
+{"id":"978-1-570-92583-9","key":"978-1-570-92583-9","value":{"rev":"1-d339f842424b1bd030c53d744fc39055"}},
+{"id":"978-1-571-92584-9","key":"978-1-571-92584-9","value":{"rev":"1-d27adfabad5cb1bc916710912763edbf"}},
+{"id":"978-1-572-92585-9","key":"978-1-572-92585-9","value":{"rev":"1-8ac15888f7a3007f972e11d1c211cc16"}},
+{"id":"_design/default","key":"_design/default","value":{"rev":"1-e507b2685f098053b6b5cb1b193806e4"}},
+{"id":"_design/title","key":"_design/title","value":{"rev":"1-8d6f54e7bda64f4dc49a379134d2b76f"}}
+]}
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/books2/_temp_view -H "Content-Type: application/json" -d '{"map":"function(doc) { if (doc.formats) { for (var i in doc.formats) { emit(doc.formats[i]); }}}"}' | prettify_json.rb
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   713    0   614  100    99   8779   1415 --:--:-- --:--:-- --:--:-- 10065
+{
+  "total_rows": 10,
+  "offset": 0,
+  "rows": [
+    {
+      "id": "978-0-596-52926-0",
+      "key": "Ebook",
+      "value": null
+    },
+    {
+      "id": "118-1-565-92580-9",
+      "key": "Print",
+      "value": null
+    },
+    {
+      "id": "218-1-565-92580-9",
+      "key": "Print",
+      "value": null
+    },
+    {
+      "id": "318-1-565-92580-9",
+      "key": "Print",
+      "value": null
+    },
+    {
+      "id": "478-1-565-92580-9",
+      "key": "Print",
+      "value": null
+    },
+    {
+      "id": "678-1-565-92580-9",
+      "key": "Print",
+      "value": null
+    },
+    {
+      "id": "878-1-565-92580-9",
+      "key": "Print",
+      "value": null
+    },
+    {
+      "id": "978-0-596-52926-0",
+      "key": "Print",
+      "value": null
+    },
+    {
+      "id": "978-1-565-92580-9",
+      "key": "Print",
+      "value": null
+    },
+    {
+      "id": "978-0-596-52926-0",
+      "key": "Safari Books Online",
+      "value": null
+    }
+  ]
+}
+
+
+Step 8:
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/books2/_temp_view -H "Content-Type: application/json" -d '{"map":"function(doc) { if (doc.authors) { for (var i in doc.authors) { emit(doc.authors[i]); }}}"}' | prettify_json.rb
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  1099    0  1000  100    99  13009   1287 --:--:-- --:--:-- --:--:-- 15384
+{
+  "total_rows": 16,
+  "offset": 0,
+  "rows": [
+    {
+      "id": "118-1-565-92580-9",
+      "key": "Andrea",
+      "value": null
+    },
+    {
+      "id": "118-1-565-92580-9",
+      "key": "Anthony",
+      "value": null
+    },
+    {
+      "id": "218-1-565-92580-9",
+      "key": "Clarx",
+      "value": null
+    },
+    {
+      "id": "318-1-565-92580-9",
+      "key": "Diane Jacob",
+      "value": null
+    },
+    {
+      "id": "478-1-565-92580-9",
+      "key": "Guruprasad",
+      "value": null
+    },
+    {
+      "id": "878-1-565-92580-9",
+      "key": "Jones",
+      "value": null
+    },
+    {
+      "id": "878-1-565-92580-9",
+      "key": "Leonard",
+      "value": null
+    },
+    {
+      "id": "978-1-565-92580-9",
+      "key": "Leonard Muellner",
+      "value": null
+    },
+    {
+      "id": "978-0-596-52926-0",
+      "key": "Leonard Richardson",
+      "value": null
+    },
+    {
+      "id": "678-1-565-92580-9",
+      "key": "Manpreet",
+      "value": null
+    },
+    {
+      "id": "678-1-565-92580-9",
+      "key": "Mohan",
+      "value": null
+    },
+    {
+      "id": "978-1-565-92580-9",
+      "key": "Norman Walsh",
+      "value": null
+    },
+    {
+      "id": "218-1-565-92580-9",
+      "key": "Richard",
+      "value": null
+    },
+    {
+      "id": "978-0-596-52926-0",
+      "key": "Sam Ruby",
+      "value": null
+    },
+    {
+      "id": "478-1-565-92580-9",
+      "key": "Shreyas",
+      "value": null
+    },
+    {
+      "id": "318-1-565-92580-9",
+      "key": "Stephen King",
+      "value": null
+    }
+  ]
+}
+
+
+Step 9:
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/books2/_temp_view -H "Content-Type: application/json" -d '{                                                                                                                     "map": "function(doc) { 
+> if (doc.formats) {
+> for (var i in doc.formats) { 
+> emit(doc.formats[i]);
+> } 
+> } 
+> }",               
+> "reduce": "_count"
+> }' | prettify_json.rb
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   298    0    39  100   259    214   1427 --:--:-- --:--:-- --:--:--  1569
+{
+  "rows": [
+    {
+      "key": null,
+      "value": 59
+    }
+  ]
+}
+
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/books2/_temp_view?group=true -H "Content-Type: application/json" -d '{                                                                                                          "map": "function(doc) { 
+> if (doc.formats) {
+> for (var i in doc.formats) { 
+> emit(doc.formats[i]);
+> } 
+> } 
+> }",
+> "reduce": "_count"
+> }'
+{"rows":[
+{"key":" ","value":14},
+{"key":",","value":2},
+{"key":"\"","value":6},
+{"key":"a","value":2},
+{"key":"b","value":1},
+{"key":"B","value":1},
+{"key":"e","value":1},
+{"key":"E","value":1},
+{"key":"Ebook","value":1},
+{"key":"f","value":1},
+{"key":"i","value":3},
+{"key":"k","value":2},
+{"key":"l","value":1},
+{"key":"n","value":3},
+{"key":"o","value":4},
+{"key":"O","value":1},
+{"key":"P","value":1},
+{"key":"Print","value":8},
+{"key":"r","value":2},
+{"key":"s","value":1},
+{"key":"S","value":1},
+{"key":"Safari Books Online","value":1},
+{"key":"t","value":1}
+]}
+
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/books2/_temp_view?group=true -H "Content-Type: application/json" -d '{                       
+> "map": "function(doc) { 
+> if (doc.formats) {
+> for (var i in doc.formats) { 
+> emit(doc.formats[i], doc.pages);
+> } 
+> } 
+> }",
+> "reduce": "_sum"
+> }'
+{"rows":[
+{"key":" ","value":3178},
+{"key":",","value":454},
+{"key":"\"","value":1362},
+{"key":"a","value":454},
+{"key":"b","value":227},
+{"key":"B","value":227},
+{"key":"e","value":227},
+{"key":"E","value":227},
+{"key":"Ebook","value":448},
+{"key":"f","value":227},
+{"key":"i","value":681},
+{"key":"k","value":454},
+{"key":"l","value":227},
+{"key":"n","value":681},
+{"key":"o","value":908},
+{"key":"O","value":227},
+{"key":"P","value":227},
+{"key":"Print","value":5448},
+{"key":"r","value":454},
+{"key":"s","value":227},
+{"key":"S","value":227},
+{"key":"Safari Books Online","value":448},
+{"key":"t","value":227}
+]}
+
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/books2/_temp_view?group=true -H "Content-Type: application/json" -d '{
+> "map": "function(doc) { 
+> if (doc.formats) {
+7> for (var i in doc.formats) { 
+> emit(doc.formats[i], doc.pages);
+> } 
+> } 
+> }",
+> "reduce": "_stats"
+> }'
+{"rows":[
+{"key":" ","value":{"sum":3178,"count":14,"min":227,"max":227,"sumsqr":721406}},
+{"key":",","value":{"sum":454,"count":2,"min":227,"max":227,"sumsqr":103058}},
+{"key":"\"","value":{"sum":1362,"count":6,"min":227,"max":227,"sumsqr":309174}},
+{"key":"a","value":{"sum":454,"count":2,"min":227,"max":227,"sumsqr":103058}},
+{"key":"b","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"B","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"e","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"E","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"Ebook","value":{"sum":448,"count":1,"min":448,"max":448,"sumsqr":200704}},
+{"key":"f","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"i","value":{"sum":681,"count":3,"min":227,"max":227,"sumsqr":154587}},
+{"key":"k","value":{"sum":454,"count":2,"min":227,"max":227,"sumsqr":103058}},
+{"key":"l","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"n","value":{"sum":681,"count":3,"min":227,"max":227,"sumsqr":154587}},
+{"key":"o","value":{"sum":908,"count":4,"min":227,"max":227,"sumsqr":206116}},
+{"key":"O","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"P","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"Print","value":{"sum":5448,"count":8,"min":48,"max":1680,"sumsqr":5547424}},
+{"key":"r","value":{"sum":454,"count":2,"min":227,"max":227,"sumsqr":103058}},
+{"key":"s","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"S","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}},
+{"key":"Safari Books Online","value":{"sum":448,"count":1,"min":448,"max":448,"sumsqr":200704}},
+{"key":"t","value":{"sum":227,"count":1,"min":227,"max":227,"sumsqr":51529}}
+]}
+
+
+maria@maria-VirtualBox:~$ curl -X POST --user mariaps1:naveen8988 http://localhost:5984/books2/_temp_view?group=true -H "Content-Type: application/json" -d '{
+> "map": "function(doc) { 
+> if (doc.formats) {
+> for (var i in doc.formats) { 
+> emit(doc.formats[i], doc.pages);
+> } 
+> } 
+> }",
+> "reduce": "function(keys, values, rereduce) {
+> return sum(values);
+> }"
+> }'
+{"rows":[
+{"key":" ","value":3178},
+{"key":",","value":454},
+{"key":"\"","value":1362},
+{"key":"a","value":454},
+{"key":"b","value":227},
+{"key":"B","value":227},
+{"key":"e","value":227},
+{"key":"E","value":227},
+{"key":"Ebook","value":448},
+{"key":"f","value":227},
+{"key":"i","value":681},
+{"key":"k","value":454},
+{"key":"l","value":227},
+{"key":"n","value":681},
+{"key":"o","value":908},
+{"key":"O","value":227},
+{"key":"P","value":227},
+{"key":"Print","value":5448},
+{"key":"r","value":454},
+{"key":"s","value":227},
+{"key":"S","value":227},
+{"key":"Safari Books Online","value":448},
+{"key":"t","value":227}
+]}
+
+
+Step 10:
+
+maria@maria-VirtualBox:~$ curl -X PUT --user mariaps1:naveen8988 http://localhost:5984/books2/_design/default -d '{
+> "_id": "_design/default", 
+> "language": "javascript", 
+> "views": {
+> "titles": { 
+> "map":
+> "function(doc) { 
+> if (doc.title) {
+> emit(doc.title, doc.pages);
+> }
+> }",
+> "reduce": "_stats"
+> }
+> }
+> }'
+{"ok":true,"id":"_design/default","rev":"1-f576571d60ae2e417d88f6ec336d3aa9"}
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books2/_design/default/_view/titles
+{"rows":[
+{"key":null,"value":{"sum":5675,"count":9,"min":48,"max":1680,"sumsqr":5598953}}
+]}
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books2/_design/default/_view/formats
+{"total_rows":59,"offset":0,"rows":[
+{"id":"978-0-596-15589-6","key":"E","value":227},
+{"id":"978-0-596-52926-0","key":"Ebook","value":448},
+{"id":"118-1-565-92580-9","key":"Print","value":1148},
+{"id":"218-1-565-92580-9","key":"Print","value":48},
+{"id":"318-1-565-92580-9","key":"Print","value":348},
+{"id":"478-1-565-92580-9","key":"Print","value":1680},
+{"id":"678-1-565-92580-9","key":"Print","value":680},
+{"id":"878-1-565-92580-9","key":"Print","value":227},
+{"id":"978-0-596-52926-0","key":"Print","value":448},
+{"id":"978-1-565-92580-9","key":"Print","value":648},
+{"id":"978-0-596-52926-0","key":"Safari Books Online","value":448},
+{"id":"978-0-596-15589-6","key":"t","value":227}
+]}
+
+
+Step 11:
+
+maria@maria-VirtualBox:~$ 
+{"total_rows":9,"offset":5,"rows":[]}
+
+maria@maria-VirtualBox:~$curl -X GET http://localhost:5984/books/_design/default/_view/formats
+{"total_rows":8,"offset":0,"rows":[]}
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books2/_design/default/_view/formats -G --data-urlencode key='"Print"' 
+{"total_rows":59,"offset":45,"rows":[
+{"id":"118-1-565-92580-9","key":"Print","value":1148},
+{"id":"218-1-565-92580-9","key":"Print","value":48},
+{"id":"318-1-565-92580-9","key":"Print","value":348},
+{"id":"478-1-565-92580-9","key":"Print","value":1680},
+{"id":"678-1-565-92580-9","key":"Print","value":680},
+{"id":"878-1-565-92580-9","key":"Print","value":448},
+{"id":"978-0-596-52926-0","key":"Print","value":448},
+{"id":"978-1-565-92580-9","key":"Print","value":648}
+]}
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books2/_design/default/_view/formats -G -d reduce=false -d limit=5
+{"total_rows":59,"offset":0,"rows":[
+{"id":"978-0-596-15589-6","key":" ","value":227},
+{"id":"978-0-596-15589-6","key":" ","value":227},
+{"id":"978-0-596-15589-6","key":" ","value":227},
+{"id":"978-0-596-15589-6","key":" ","value":227},
+{"id":"978-0-596-15589-6","key":" ","value":227}
+]}
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books2/_design/default/_view/formats -G -d reduce=false -d descending=true
+{"total_rows":59,"offset":0,"rows":[
+{"id":"978-0-596-15589-6","key":"t","value":227},
+{"id":"978-0-596-52926-0","key":"Safari Books Online","value":448},
+{"id":"978-0-596-15589-6","key":"S","value":227},
+{"id":"978-0-596-15589-6","key":"r","value":227},
+{"id":"978-1-565-92580-9","key":"Print","value":648},
+{"id":"978-0-596-52926-0","key":"Print","value":448},
+{"id":"878-1-565-92580-9","key":"Print","value":448},
+{"id":"678-1-565-92580-9","key":"Print","value":680},
+{"id":"478-1-565-92580-9","key":"Print","value":1680},
+{"id":"318-1-565-92580-9","key":"Print","value":348},
+{"id":"218-1-565-92580-9","key":"Print","value":48},
+{"id":"118-1-565-92580-9","key":"Print","value":1148},
+{"id":"978-0-596-15589-6","key":"P","value":227},
+{"id":"978-0-596-52926-0","key":"Ebook","value":448},
+{"id":"978-0-596-15589-6","key":"E","value":227},
+{"id":"978-0-596-15589-6","key":"e","value":227},
+{"id":"978-0-596-15589-6","key":"B","value":227},
+{"id":"978-0-596-15589-6","key":"b","value":227},
+{"id":"978-0-596-15589-6","key":"a","value":227},
+
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/books2/_design/default/_view/titles -G -d reduce=false -d include_docs=true
+{"total_rows":9,"offset":0,"rows":[
+{"id":"478-1-565-92580-9","key":".Net Programming","value":1680,"doc":{"_id":"478-1-565-92580-9","_rev":"1-82803fa36d8adcad501ccd9232a2b3dd","title":".Net Programming","authors":["Shreyas","Guruprasad"],"publisher":"Appachan Publications","formats":["Print"],"released":"2000-06-13","pages":1680}},
+{"id":"318-1-565-92580-9","key":"Casino Royale","value":348,"doc":{"_id":"318-1-565-92580-9","_rev":"1-77afe3837e0f4b97b3456bab8a889196","title":"Casino Royale","authors":["Stephen King","Diane Jacob"],"publisher":"Warner Books","formats":["Print"],"released":"2008-10-18","pages":348}},
+{"id":"978-0-596-15589-6","key":"CouchDB: The Definitive Guide","value":227,"doc":{"_id":"978-0-596-15589-6","_rev":"7-5c20d80d85e14adb4d4af2e27211cb26","author":"\"J. Chris Anderson\",     \"Jan Lehnardt\",     \"Noah Slater\"","formats":"\"Print\",         \"Ebook\",   \"Safari Books Online\"","publisher":"OReilly Media","released":null,"pages":227,"title":"CouchDB: The Definitive Guide","subtitle":"Time to Relax"}},
+{"id":"218-1-565-92580-9","key":"Days of Summer","value":48,"doc":{"_id":"218-1-565-92580-9","_rev":"1-698a5b9041986ab46f98801ebd8979af","title":"Days of Summer","authors":["Richard","Clarx"],"publisher":"Comics and Artist Books","formats":["Print"],"released":"1990-03-31","pages":48}},
+{"id":"978-1-565-92580-9","key":"DocBook: The Definitive Guide","value":648,"doc":{"_id":"978-1-565-92580-9","_rev":"1-903b99c0e7aeff95563c337d11dd5e7e","title":"DocBook: The Definitive Guide","authors":["Norman Walsh","Leonard Muellner"],"publisher":"OReilly Media","formats":["Print"],"released":"1999-10-28","pages":648}},
+{"id":"118-1-565-92580-9","key":"Goa and Life","value":1148,"doc":{"_id":"118-1-565-92580-9","_rev":"1-4c654b93625eeaf89756c6ef3282837f","title":"Goa and Life","authors":["Andrea","Anthony"],"publisher":"General Publications","formats":["Print"],"released":"2010-03-31","pages":1148}},
+{"id":"878-1-565-92580-9","key":"Introduction to C","value":448,"doc":{"_id":"878-1-565-92580-9","_rev":"1-b00fbe40a0eb5694a2a9cd4e6201c3fa","title":"Introduction to C","authors":["Jones","Leonard"],"publisher":"McGraw","formats":["Print"],"released":"1996-10-02","pages":448}},
+{"id":"678-1-565-92580-9","key":"Java Programming","value":680,"doc":{"_id":"678-1-565-92580-9","_rev":"1-200f761902a9b80e483bec7ea20b2f09","title":"Java Programming","authors":["Mohan","Manpreet"],"publisher":"Annayya Publications","formats":["Print"],"released":"2011-01-18","pages":680}},
+{"id":"978-0-596-52926-0","key":"RESTful Web Services","value":448,"doc":{"_id":"978-0-596-52926-0","_rev":"2-03bd6838bcc154b7e33f65ea368e9b5c","title":"RESTful Web Services","subtitle":"Web services for the real world","authors":["Leonard Richardson","Sam Ruby"],"formats":["Print","Ebook","Safari Books Online"],"publisher":"OReilly Media","released":"2007-05-08","pages":448}}
+]}
+
+
+Step 12:
+
+curl -X GET http://localhost:5984/books2/_design/default/_show/book/978-0-596-15589-6
+<h1>CouchDB: The Definitive Guide</h1>
+

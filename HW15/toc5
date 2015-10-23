@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+import sys
+import re
+# input comes from STDIN (standard input)
+for line in sys.stdin:
+        try: #sometimes bad data can cause errors use this how you like to deal with lint and bad data
+
+                FiveDigitCode = "Z" #default sorted as first
+                countyname = "Z" #default sorted as first
+                State2digit = "Z" #default sorted as first
+                Population = "Z" #default sorted as first
+                # remove leading and trailing whitespace
+                line = line.strip()
+                splits = line.split(",")
+# finds lines from DataSet.txt, outputs first 2 items as array
+                if line.count(",")>5:
+                        splits = line.split(",", 2)[0:2]
+                        FiveDigitCode = splits[0]
+                        Population = splits[1]
+        # removes the country and the state lines from DataSet
+                        if re.match('..000',splits[0]): splits= ""
+                else:
+        #do Fips
+# finds lines from Fips_CountyName.txt, cleans them, outputs  3 items as array
+
+        # replaces a comma followed by space (state) w/comma
+                        splits = line.replace(', ',',')
+        # replaces all remaining spaces w/comma
+                        splits = splits.replace(" ",",",1)
+                        splits = splits.split(",")
+                        FiveDigitCode = splits[0]
+                        countyname = splits[1]
+                        State2digit = splits[2]
+                print '%s^%s^%s^%s' % (FiveDigitCode,countyname,State2digit,Population)
+        except: #errors are going to make your job fail which you may or may not want
+                pass
+

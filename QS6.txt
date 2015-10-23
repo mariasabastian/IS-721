@@ -1,0 +1,219 @@
+1. How does dynamo handle consistency and availability? What are the issues that must be resolved?
+
+For achieving scalability and availability, Dynamo used thechniques such that data is partitioned and replicated 
+using consistent hashing mechanism. In order to make a system reliable, best approach that can be followed is to 
+make many replicas which will prevent failures. When many replicas are made, consistency between the replicas has 
+to be maintained by updating all the replicas when a write is performed. When this process of consistency is taking 
+place, there should not be any other writes that is initiated, which means that the system's availability is disturbed. 
+Thus in distributed computing, only two can be achieved of availability,reliability and consistency. For web-sites like 
+Amazon, compensating availability factor is a risk as latency had a significant impact on the success of their 
+business applications. Webpage of Amazon has many different services that are clubbed together. Each of the services 
+are committed to a SLA which has to be metwhile a particular page is loaded. If any particular service doesnt meet the 
+SLA, the web server goes ahead by displaying the webpage without that particular serviceas latency to any user is not 
+compromised. Reliability cannot be compromised, as it might end up in a situation where the whole system does not work. 
+So Dynamo teamrelaxed the consistency requirement. Dynamo chose to follow eventual consistency, which has a major problem 
+where one has to ensure that all the replicas apply updatein a consistent order. To update in a strongly consistent system, 
+it is ensured that no replica accepts any other write operation until all replicas have committed theprevious value. As 
+this process is followed, all the replicas contain the same value. For systems with very high availability, there occurs 
+a problem when two consecutivewrite takes place. In such cases, it is tough for the system to understand which is latest 
+due to the lack of global clock. To overcome such scenario Dynamo follows a method where both the values are taken in and 
+stored side by side. When a read operation is processed, the client is forced to reconcil them and thus the value is 
+updated back to the system. Thus, in Dynamo availability is assured maximum that strong guaratees about latency can be made. 
+Thus, the main issue that has to be handled is that there is a least chance of the system to face inconsistent value at some 
+point as reconcilation might go wrong. Other alternative is asynchronous writes, which actually fakes availability to the 
+client which might lead to an expensive clean up process if a write operation is rejected
+
+
+
+2. Why and how does dynamo modify regular consistent hashing? How does this affect replication?
+
+Dynamo, whose basic requirement is to scale incrementally as the data grows is acheived by partitioning the data using 
+consistent hashing. This is done by distributingthe load accross multiple storage hosts. When a hash is applied the 
+output function is treated as a ring in which all the nodes in the system are assigned with a value which represents its position. 
+All the nodes are reponsible for its region between itself and the predecessor node. Thus, when a new node is added only the 
+neighbouring nodes are affected leaving behind the other nodes unaffected. There are certain problems that are caused by the 
+consistent hashing algorithm. When a node is randomly placed in a position in the node, it leads to imbalanced data and load 
+distribution. It also causes heterogenity in the performance of nodes. To overcome this problem, Dynamo follows variant of consistent 
+hashing which maps nodes to multiple points in the ring instead of mapping it to one position. This is done by using the concept of 
+virtual nodes which actually looks like a single node but actually takes responsibility for more than one virtual node. Thus, when 
+a new node is added, it is assigned more than one position in the ring. Virtual nodes provides certain advantages like on an unavailability 
+of a node, the load is distributed among the other nodes which are available. On addition of a new node, the new node shares an equilavent 
+amount of load from the existing nodes.Dynamo replicates its data on multiple hosts. All the data items are replicated on N hosts 
+where N is parameter that is configured per-instance. A key is assigned to all the coordinator nodes which takes responsibility of 
+replicating data items which falls under its range. While storing each key, all coordinator nodes sends a replica of
+the key to N-1 successor nodes. Thus all the nodes are responsible for the region between them and their Nth predecessor node. 
+The list of nodes that is responsible tostore a particular key is the preference list. The system is designed in such a manner 
+that all the nodes has the capability to decide which other nodes has to be in the preference list. To manage node failures, preference 
+list contains more than one node. The preference list contains only distinct physical node. 
+
+
+
+3. How does dynamo handle shoping cart inconsistency?
+
+Generally, in shopping cart application "Add to cart" operation cannot have a rejected functionality due to any reason. If the recent 
+state of shopping cart is unavailable,it should not end up in a situation where, items cannot be added to the cart. Instead, any older 
+versions of the cart can be taken and the current operation should be performed. This doesnt mean that the current unavailable cart state 
+is ignored. It is very important to retreive the unavailable cart state as it might contain any valid operations that doesnt exist in the 
+older version. Thus, when the recent cart state is unavailable, the older version can be taken for performing the current operation and the 
+current unavailable cart and older version carts are reconciled later. To acheive this, Dynamo treats each update as a new version of data. 
+Most of the time, the new version will include the previous state of the cart from which the system itself can decide the latest version of 
+data. However, version branching may happen when a failure occurs and an updation is done which results in conflicting versions of data which 
+has to be handled by the client. In case of very bad network capability, failures may happen on and on between updations thus many multiple 
+versions of the data might occur which has to be reconciled later by the system. Dynamo uses vector clocks to establish relationship between 
+two versions of the same object. Vector clocks which contain list Node,Counter pair can be used to relate by using the values of counter 
+variable in the different versions of the object. If the counter variables on the first object's clock are lesser than or equal to the counter 
+variables of the second clock, it means that the first version is an ancestor and can be ignored. If the counter variables on the first object's 
+clock is greater than thecounter variables of the second clock, it means that the two versions are branches of the same level and needs reconcilation. 
+If a client wishes to update an object, the version to be updated must be specified.  This is done by passing the vector clock information that 
+is obtained from a read operation which was done earlier. when a read operation is performed, if Dynamo has access to multiple branches which 
+cannot be reconciled by the system, it returs the leaf objects with all its version information. Thus the different version informations which 
+are seperated by branches are made into a single entity.
+
+
+
+4. Describe the BigTable data model. How does it handle persistence and availability?
+
+Bigtable, a distributed storage system which is used for managing structured data which is designed to accept data that can be scaled 
+to a very large size. A Bigtable is a sparse, distributed, persistent multi-dimensional sorted map. The map is indexed by a row key, 
+column key, and a timestamp; each value in the map is an uninterpreted array of bytes.
+(row:string, column:string, time:int64) -> string 
+Row- The row key in a table are arbitrary strings which can hold upto 64KB data but currently has user data from 10 to 100 Bytes. 
+When a read or write operation is performedon a single row which might update more than one column is still atomic in nature. Bigtable 
+holds data in alphabetical order by row key. Each row range is called a tablet which is the unit of load balancing. 
+Column- Column keys are grouped together into sets called column families. Data stored in a column family will be of the same type. 
+To store data in a column key, first the column family must be created. After creation, any column key within the column family can 
+be used. It is made sure that the number of different column families are less in a table. Once the table has been created, the column 
+families rarely changes. The number of column families are intended to be less while the number of columns in a table can be large.
+Timestamps- Each cell in a Bigtable can contain multiple versions of the same data. These versions are indexed by timestamp. 
+Bigtable timestamps are 64-bit integers which can be assigned by Bigtable, in which case they represent real time in microseconds, 
+or be explicitly assigned by client applications. Applications that need to avoid collisions must generate unique timestamps themselves. 
+Different versions of a cell are stored in decreasing timestamp order, so that the most recent versions can be read first.
+Persistance and availability- Personalized search stores every user data in bigtable. Each user is assigned with a unique userid a row 
+in th Bigtable which can be uniquely identified using the userid. one seperate Column family is used to store all types of action performed 
+by the user. All web queries will be stored in a seperate Column family. All the elements in the bigtable has timestamps which stores the 
+corresponding time at which theparticular action was performed. Personalized Search can also generate user profiles using the Maoreduce 
+function. The Personalized search Data is replicated in several Bigtable clusters to increase availability and to reduce latency.The 
+Personalized Search team originally built a client-side replication mechanism on top of Bigtable that ensured eventual consistency of
+all replicas. The current system now uses a replication subsystem that is built into the servers.
+
+
+
+5. Why did Facebook develop cassandra? What features of older systems did it combine?
+
+Facebook was trying to solve the problem of Inbox Search which had the challenge to store reverse indices of Facebook messages that Facebook
+users send and receive while communicating with their friends on the Facebook network. The amount of data to be stored, the rate of growth 
+and the requirement to serve SLA made Facebook very apparent to change to a new storage solution. They had to find a storage solution 
+that not only solved the Inbox Search problem, but also to be a solution for many problems of the same nature. It also includes certain 
+existing features like Consistent Hashing which is used for distributing data across the nodes, an Order Preserving Hash function to perform 
+range scans over the data for analysis. Thus, Facebook developed Cassandra which is a distributed storage system for managing structured data 
+that is designed to scale accross many servers without any point of failure. It is a very big challenge to acheive reliability at a massive scale. 
+It would be a problem if there is any major issue with the storage system thus giving a negative impact. To ensure all these problems not to occur, 
+Cassandra aims  to run on top of an infrastructure of large number of nodes spread accross different datacenters. At this big scale, there are many 
+component failures that occurs continuously which are managed by Cassandra makes it reliable and scalable. Cassandra has also acheived high 
+performance, high availability. Cassandra does not support a full relational data model; instead, it provides clients with a simple data model 
+that supports dynamic control over data layout and format. The rest of the material talks about the data model and the distributed properties, 
+provided by the system also includes certain existing features like Consistent Hashing which is used for distributing data across the nodes, 
+an Order Preserving Hash function to perform range scans over the data for analysis. Cluster membership is maintained using Gossip style 
+membership algorithm. Failures of nodes within the cluster are monitored using an Accrual Style Failure Detector.  
+
+
+
+6. What is a good approach to data modeling for cassandra? Why is this different from relational methods?
+
+Cassandra, highly scalable and highly available system with no single point of failure supports Bigtable data model using the architectural aspects
+introduced by Dynamo.Cassandra stores data according to the Column Family data model. It consists of columns, rows, column families and keyspace. 
+Column- the basic unit of the Cassandra data model, is a single entity which can have a name, a value and a timestamp associated to it. There can 
+be N number of columns in a data model. Row- It is a collection of columns and can be identified with a name. Each row will be stored in a storage 
+node, where Cassandra consists of a large number of storage nodes. Column Family- A collection of rows labeled with a unique name can be called as 
+a Column Family and is often compared to tables in a relational model. Keyspace- Keyspace can be defined as a logical grouping of column families. 
+It also provides isolated scope for names. In relational model, columns in a row are same throughout the table. This is not the case in Cassandra 
+which stores column name with every data item. In Relational mode, a data item can hold a value Null but the columns are same accross the rows, 
+but in Cassandra, there might be rows with very less data items or with a very large number of data items. Schema is predefined in Relational model 
+and cannot be changed during runtime while  for Cassandra, users can define the Schema at runtime. In Relational model,the column names generally 
+specifies the metadata while in Cassandra, names of columns can include data. As Relational model, is Schema oriented, it supports JOINs, and 
+crucial SQL queries while Cassandra is Schemaless thus JOINs or specialised SQL operations cannot be performed on Cassandra data models.
+
+
+
+7. Discuss the evolution of query slices in cassandra. How exactly do they relate to the underlying database and the query language? Include discussion of 'with compact storage.'
+
+When Cassandra was initially released, the data model was similar to the data model outlined in the Google's Big table paper. ColumnFamilies grouping related columns were required to be defined first, but the column names were just byte arrays as interpreted by the application. This early model could be schemaless. But as more systems were deployed on Cassandra, schemaless model became difficult to use. When more than one team is using the same data, it is better if they could see what data is present in table without having to go through the source code which uses the that data. As more codebases share a database, it also becomes more useful to have the database validate that the a particular column in a table should always be of a particular data type or like that. Hence from the 0.7 release, Cassandra has first allowed, then encouraged telling Cassandra about the data types. So it was actually schema-optional but it was always a good idea to have it in the intial stages itself. But it was also possible to ignore and add at a later stage. In the storage engine of Cassandra, each row is sparse. For a given row, we store only the columns present in that row. This means that we store the column names redundantly in each row, using disk space to gain flexibility. Hence adding columns in Cassandra is extremely fast rather than growing from minutes to hours or even weeks as data is added to the table with a storage engine that needs to re-allocate space row by row to accommodate the new data. Cassandra can easily support thousands of columns per table, without wasting space if each row only needs a few of them. This gives you the flexibility normally associated with schemaless systems, while also delivering the benefits of having a defined schema.
+This relates to query language like, from Cassandra 1.1 release, CQL will support defining columnfamilies with compound primary keys. The first column in a compound key definition continues to be used as the partition key, and remaining columns are automatically clustered. All the rows sharing a given partition key will be sorted by the remaining components of the primary key. Consider this query, 
+create table enterprise(entpr_id uuid,comapny_id uuid,desc blob,primary key(entpr_id, company_id));
+In this, entpr_id is the partition key. Hence all subblocks of a given block will be routed to the same replicas. Compound keys can also be useful when denormalizing data for faster queries.
+To explain this, take an example of of twitter data model in cassandra. The tweets are in,
+create table tweets (tweet_id uuid primary key,author varchar,body varchar);
+The above table is normalized. But the most common query which will be used in twitter model is to view the latest 20 tweets of a particular author we follow. To execute this query in a normalized table will be more expensive. Hence we will use denormalized tables,
+create table timeline (user_id varchar,tweet_id uuid,author varchar,body varchar,primary key (user_id, tweet_id));
+From the above table, when a author tweets, we can check who follows that author and insert a copy of that tweet in the timeline of the follower. Cassandra orders version 1 UUIDs by their time component, so requires no sort at query time.
+select * from timeline where user_id = xxx order by tweet_id desc limit 20;
+Cassandra’s storage engine uses composite columns under the hood to store clustered rows. This means that all the logical rows with the same partition key get stored as a single physical “wide row.” This is why Cassandra supports up to 2 billion columns per row, and why Cassandra’s old Thrift api has methods to take “slices” of such rows. 
+The  'with compact storage' is a directive which is provided for backwards compatibility with older Cassandra applications.But the new applications should avoid using it. The reason is when you use compact storage, it will prevent you from adding new columns that are not part of the primary key. With compact storage, each logical row corresponds to exactly one physical column. Supercolumns was an early attempt to provide the various kinds of denormalization tools. But they have some important limitations like reading any subcolumn from a Supercolumn pulls the entire Supercolumn into memory and will eventually be replaced by a composite column implementation with the same API. So if you have an application using Supercolumns, you don’t have to rewrite anything.
+
+
+
+8. Why did Netfix change its architecture? Describe each the change rationale.
+
+Prior to 2009 Netflix was mainly a shipping business. They shipped DVD's to customers. On fri, sat and sun, the users watch movies at home. Then on sunday and monday the users returned DVD's and updated their Q's.So the traffic was high mainly during sun to tues where people updated their Q's and when their algorithms picked up new movies. Rest other days, there was no traffic. So on wed and thurs they had schedule downtimes when they did some oracle updates, plsql changes and pushes. After 2009, users watched movies online. Netflix had to stream all the movies so the traffic was high during fri,sat and sun. The off peak days also had more traffic than it had prior to 2009. Customers saw Netflix more as television which was available 24hrs and now they also did not have any schedule downtimes. Fault tolerance was their first concern. 
+Netflix DC architecture-:The initial architecture of Netflix had a Netscaler loadbalancer which was hitting around 20 Apache Tomcat servers. Apache was used as reverse proxy and tomcat as servlet container. The backend systems were mainly Oracle for transactions and MySQL for recommendations which would happen offline. They had their own cache servers. This architecture was running in the data center. 
+The issues with this systems was, since they used Java, they had garbage collections issues, which slowed down the performance and created bad experience for customers. They also had a multi threaded Java systems which happened to run into deadlocks causing the webpage to timeout. The load balancer tends to route traffic in a sticky fashion. So certain set of customers are always going to that server and if that server enters a deadlock, then they always have page timeouts. But they build a system which detects deadlocks and kills the server.. 
+Oracle also results in transactional locking which leads to similar kind of problem. They also had to constantly keep tuning their SQL to keep it running faster. 
+Architecture issues were, it was not horizontally scalable. They were also not able to develop and deploy at a high velocity because everybody worked on the same code base. If anyone had a bug, then the whole system had to be rollbacked and was difficult. 
+Though the problem sounded serious, they were mostly single system failures. These single system failures were relatively easy to resolve.
+Netflix Cloud architecture-:Cloud architecture was mainly built around fault tolerance and was less simpler. This system did not have just one server but had multiple components. They had more than 100 applications which was organized in clusters and the clusters can be at different level in call stack. Everyone worked on their own applications and they did their own branching and pushed from that. Clusters can also call each other. There were various levels like NES, NMTS, NBES etc. 
+NES is any service that takes traffic from a browser or a device and they sit behind a elastic load balancer. They cant call other Edge services but they can services below them. Some of the edge services are personalized movie browsing and control the playback.
+For the playback control, the system authenticates the Wii or PS3. It downloads DRM and CDN links which are a combination of different bandwidths and codecs DRM pairs. The device will then perform the bandwidth check and decide which is the best one to use. Then will initiate the playback from the CDN which is best serving it.
+Then Netflix has the mid-tier services like NMTS. Mid-tier services are services which do not have to be exposed to the customers. They can call each other and can call layers below them but not layers above them. Most of the servers are mid-tier servers which would perform some specific functions.
+Some example of mid tier servers are Viewing History servers which constantly track everything being watched and where you are in each of those movies. Netflix Queue servers is used to modify the items or movies in the queue. SIMS servers performs a user to user and movie to movie similarity and is a kind of recommendation system. All these systems on their own do not perform their final functionality. They are used by the edge servers to actually deliver.
+NBES is Netflix backend services which are actually third party services. Some examples are Cassandra Clusters which is stores all sorts of data to store the application needs. Memcached clusters typically caches things that is stored in S3 but needs to access quickly or often.
+Some Amazon service are also used. AWS S3 is one which is used to store some large sized data like video encodes, application logs etc as there was issues when Netflix tried to use Cassandra to store. 
+Production issues-:User isued call passes through multiple levels during normal operations. This means there are more hops and so there is more network latency. It has multiple hops so latency can be a concern. Netflix also now depend on other systems which handles its connections. Exposed to multi system coincident failures also called as co-ordinated failures which was new. There was also lots of moving parts and capacity planning was also an issue.
+Architecture pros-:Horizontally scalable at every level from NES to all way down to Cassandra. This will give the system maximum availability due to the design. They also have practices which enable high velocity development and deployment because now each of the application is owned by 2 or 3 people and they can push whenever they wish and they are sitting behind an load balancer. They also no need to co-ordinate with other teams while developing because the system is loose. 
+
+
+
+9. How does Netfix handle rapidly changing demand for services? Give a scenario.
+
+Netflix switched to Cloud architecture which was mainly built around fault tolerance and was less simpler. This system did not have just one server. They had more than 100 applications which was organized in clusters. Everyone worked on their own applications. Clusters can also call eachother. There were various levels of services like NES, NMTS, NBES etc. By moving to this architecture, they had many advantages like their systems were horizontally scalable at every level. It gave system maximum availability due to the design. High velocity development and deployment possible now because now each of the application is owned by 2 or 3 people and they can push whenever they wish and they are sitting behind an load balancer. No need to co-ordinate with other teams while developing because the system is loose. They still had some serious production issues like user isued call passes through multiple levels during normal operations causing more network latency. They were also exposed to multi system coincident failures also called as co-ordinated failures which was new to them.
+Consider an scenario where there are 2 services X and Y. Both X and Y and sending requests to service A. Service Y suddenly decides to triple its traffic to A. At this stage, the no of requests from Y might overwhelm A and cause timeouts. So to prevent this, if Y could inform A that its going to increase its traffic, then A could be ready with more servers to handle requets from Y without crashing. To implement this, Netflix had some issues like there was too much of human coordination required because an application might need to contact 20 other application owners each time he expects to increase the traffic. So to handle this problem some of the options they used were- to vastly over provision for their applications all the time irrespective of the traffic. But this was not cost-effective. Another way to do this was through auto-scaling. They did this in their NCCP server.  They used and Elastic Load Balancer which was a fuzzy cloud. It routes all your traffic to EC2 instances. Netflix then gives a CNAME to this ELB which they could actually use. They they register a bunch of EC2 instances behind the ELB so that it can start balancing the traffic behind the instances. It checks if those instances are healthy or not and then decides to route traffic. Taking this t the next step, the NCCP wanted it to check if the instances was overwhelmed or not by measuring some metrics. They took the 
+CPU usage limit at first. They set up an alarm in Cloud Watch. They associated this auto scale policy to that alarm such that it CPU>60% then it should add 3 more instances. Hence when the alarm triggers, the auto scaling system add more instances/grows. Hence their systems was like if the average CPU is greater than 60% for more than 5 mins then the system should scale out. After scaling out, there is also this cool down period which was ten mins. After scaling out, if the average CPU again reduces to less than 30% for five mins then the system should scale down as this helps in cost reduction. They are working with Amazon to enable this auto scaling in all levels. 
+To also maker sure that Netflix doesnt exceed their instance limits on cloud, it uses something called as Limits Monkey which checks once a day whether Netflix is approaching its limits and triggers proactively so that they can reach out to AWS and ask them to increase or scale out their limits. ANother way is they also find and clean up orphaned or unused resources to increase the head room. This way it gives Netflix more time before they run out of resources and also saves money. 
+
+
+
+10. What is the 'thundering herd'? How is it handled?
+
+To explain thundering herd, consider 2 services X and Y. Both X and Y and sending requests to service A which has two instances. The no of requests sent by Y overwhelms service A. Due to this both X and Y experience read and write timeouts. So to meet the demands or the requests that are piling up, service A comes up with two more instances. New requests from X and Y keeps coming in and also the requests from X and Y which were not met before will return back as retries causing Thundering herd. Along with new requests, the old requests keep coming in as retries and will keep causing timeouts in vicious cycles until there is enough servers of A to meet all the requests. This is called a Thundering herd. This can also occur when service A slows down due to some unexpected reason like there may be more garbage collection that it usually does. This might again lead to the requests getting piled up, causing timeouts. Then A has to be grown to meet or exceed the retry storm in order to get out of the vicious cycle. Other potential causes of thundering herds are, the actual time set for the timeouts to occur have been set too low. This causes unnecessary retries. Another reason may be the logic for retries of a service may be too aggressive causing too many retries in very short intervals which might overwhelm the server.
+To handle this problem, Netflix uses a platform solution. Every service on Netflix sits on a platform.jar. This platform.jar has a series of libraries which are useful to use.
+Netflix Inter Web Service (NIWS) library - All calls between two services goes between this library. It solves problems like marshalling and unmarshalling, security, compression of the calls. It also handles load-balancing, failover, retries and thundering herd prevention.
+BaseServer library - It is a set of Tomcat servlet filters that protect the underlying application servlet stack. It provides throttling functionality.
+With these two in place, we can avoid thundering herd. The NIWS has something called as Exponential bounded backoff which is a fair retry logic. This is provided as an option only. Hence if its not being used, then it may be an aggressive retry logic. Another way to prevent is by providing two configuration parameters for clients. Max_no_of_requests(MNR) and sample_interval_in_seconds(SI). By giving these two parameters, it ensures that the client does not send more than MNR/SI requests else exceptions are thrown to client libraries.
+On server side, the server also has max_no_of_concurrent_requests(MNCR) which are not client specific. If traffic exceeds the limits then the calls are rejected at the server in an unbiased manner. Whenever an exception occurs, there has to be some sort of graceful degradation.
+
+
+
+11. Describe the strategy, operation, and issues with replication and partitioning in Cassandra.
+
+Partitioning:  Cassandra distributed database management system, takes a single logical database and distributes data to one or more physical machines in a cluster. 
+When a data is inserted into db, it assigns a particular row key and den assigns it to the corresponding node which takes care of it. 
+Data partitioning strategies: The two data partioning strategies are Random and Ordered. In Random Partitioning, when data is inserted, MD5 hash is applied and the key is stored in its corresponding node which will be responsible for it. This is the most recommended strategy as it ensures even distribution between various nodes in the cluster. 
+Ordered partitioning strategy on the other hand stores data is a sorted order across the nodes in a cluster. This is not much recommended as it makes the nodes uneven because some nodes 
+might have more data and some might not. Some issues are the random position assignment of each node on the ring leads to non-uniform data and load distribution. The basic algorithm is oblivious to the heterogeneity in the performance of nodes. Default algorithm will tend to lead to good load balancing when random partioning is used, but not necessarily when ordered partioning is used. The reason is that although the algorithm succeeds in assigning key ranges such that as your cluster scales nodes receive roughly similar numbers of keys, with ordered partioning on any given node those keys are unlikely to be drawn equally from the different column families present within your database. For setting Data Partitioning mechanism all we have to do is to set up the configuration in the Cassandra Configuration File which will then take care of all the process. When we change the Partitioning strategy, all the data should be reloaded. 
+Replication should be used to ensure Fault tolerance. If in case one of the nodes fail, to ensure that no data is lost, we follow replication. This is controlled by replication factor which will be more than 1 if there is copy of data. 
+The different replication strategies are Simple, Network Topology. 
+Simple Replication is the one in which replicas are placed in the next node. 
+In Network Topology Replication, Replicas are placed in a node whose rack is different from the original node’s rack. If no node is found 
+with different rack, then it is placed in the next corresponding node. Reading/ Writing will be taken care by Cassandra itself which updates all the replicated nodes 
+on a write. When a write is performed, Consistency level will be specified based on which writes will be made if all nodes are not up when write is being performed. 
+Write will be made to minimum number of nodes mentioned in the consistency level. If all the nodes are not updated during the write, updation will be performed while 
+read repair.
+Replication Operation- Cassandra uses a snitch to define how nodes are grouped together within the overall network topology(such as rack and data centre groupings).The 
+snitch is defined in the Cassandra. Yaml file. 
+There are four basic snitches are:
+Simple snitch: This snitch is used for simple strategy
+Rack inferring snitch: This snitch assumes that the second octet identifies the data centre where a node is located, and the third octet identifies the rack.
+Property file snitch: This snitch determines the location of nodes by referring to a user-defined description of the network details located in the propertyfile 
+Cassandra-topology.properties.
+EC2 snitch:This snitch uses the AWS API to request region and availability zone.
+
+ 

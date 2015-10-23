@@ -1,0 +1,47 @@
+
+mariaps1@mariaps1:~/Downloads/dsc-cassandra-2.0.2$ ./bin/cqlsh
+Connected to Test Cluster at localhost:9160.
+[cqlsh 4.1.0 | Cassandra 2.0.2 | CQL spec 3.1.1 | Thrift protocol 19.38.0]
+Use HELP for help.
+cqlsh> DESCRIBE keyspaces;
+
+system  system_traces
+
+cqlsh> CREATE KEYSPACE mykeyspace WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 2 };
+cqlsh> USE mykeyspace;
+cqlsh:mykeyspace> CREATE TABLE users (
+              ...   user_id int PRIMARY KEY, 
+              ...   fname text, 
+              ...   lname text
+              ... );
+cqlsh:mykeyspace> DESCRIBE TABLES;
+
+users
+
+cqlsh:mykeyspace> INSERT INTO users (user_id,  fname, lname) 
+              ...   VALUES (1745, 'john', 'smith');
+cqlsh:mykeyspace> INSERT INTO users (user_id,  fname, lname) 
+              ...   VALUES (1744, 'john', 'doe');
+cqlsh:mykeyspace> INSERT INTO users (user_id,  fname, lname) 
+              ...   VALUES (1746, 'john', 'smith');
+cqlsh:mykeyspace> SELECT * FROM users;
+
+ user_id | fname | lname
+---------+-------+-------
+    1745 |  john | smith
+    1744 |  john |   doe
+    1746 |  john | smith
+
+(3 rows)
+
+cqlsh:mykeyspace> CREATE INDEX ON users (lname);
+cqlsh:mykeyspace> SELECT * FROM users WHERE lname = 'smith';
+
+ user_id | fname | lname
+---------+-------+-------
+    1745 |  john | smith
+    1746 |  john | smith
+
+(2 rows)
+
+cqlsh:mykeyspace> DROP TABLE users;

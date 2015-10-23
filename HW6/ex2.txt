@@ -1,0 +1,83 @@
+ALL DOCS:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/students/_all_docs{"total_rows":17,"offset":0,"rows":[
+{"id":"131ae187d2b4c4f254c3a5f40b002850","key":"131ae187d2b4c4f254c3a5f40b002850","value":{"rev":"1-0a54f429acd825f6a06dd797f05befeb"}},
+{"id":"131ae187d2b4c4f254c3a5f40b0034e1","key":"131ae187d2b4c4f254c3a5f40b0034e1","value":{"rev":"1-38ab822489184717754a944de3fb7ba7"}},
+{"id":"131ae187d2b4c4f254c3a5f40b003b3c","key":"131ae187d2b4c4f254c3a5f40b003b3c","value":{"rev":"1-b096140db689ffadf5022f9a29461bfa"}},
+{"id":"188e512c5d0f52941c47e6741b002187","key":"188e512c5d0f52941c47e6741b002187","value":{"rev":"15-ca15a5f0409ae6d6741d6bf7270eed6e"}},
+{"id":"188e512c5d0f52941c47e6741b003705","key":"188e512c5d0f52941c47e6741b003705","value":{"rev":"2-7eb5f81faf823b243f6cde40413d6889"}},
+{"id":"188e512c5d0f52941c47e6741b004c81","key":"188e512c5d0f52941c47e6741b004c81","value":{"rev":"1-25d7c11b9f993756a5e69e4401fc6b3a"}},
+{"id":"188e512c5d0f52941c47e6741b005a30","key":"188e512c5d0f52941c47e6741b005a30","value":{"rev":"3-d2b79ced9564f17c4e073f68bcf513a1"}},
+{"id":"188e512c5d0f52941c47e6741b00700f","key":"188e512c5d0f52941c47e6741b00700f","value":{"rev":"5-4b55d74d8eb5ba96df0d591e57dcda1f"}},
+{"id":"188e512c5d0f52941c47e6741b007f14","key":"188e512c5d0f52941c47e6741b007f14","value":{"rev":"14-ef7dbf11ef5120695e7f12fa835f8f13"}},
+{"id":"188e512c5d0f52941c47e6741b00837e","key":"188e512c5d0f52941c47e6741b00837e","value":{"rev":"4-1c54fec697fede5dcb1b33eb82ee5553"}},
+{"id":"188e512c5d0f52941c47e6741b009214","key":"188e512c5d0f52941c47e6741b009214","value":{"rev":"6-17cddfbb4e01e21a0f2416cf4ad4f617"}},
+{"id":"188e512c5d0f52941c47e6741b00a772","key":"188e512c5d0f52941c47e6741b00a772","value":{"rev":"3-079670f5786fe98658cd4caf4102f0b1"}},
+{"id":"188e512c5d0f52941c47e6741b00b863","key":"188e512c5d0f52941c47e6741b00b863","value":{"rev":"4-47576f8b68e66d3e3bf694b518e4a169"}},
+{"id":"188e512c5d0f52941c47e6741b00bcda","key":"188e512c5d0f52941c47e6741b00bcda","value":{"rev":"5-33404c6f95cc0e9acc6e41f3d7cb8256"}},
+{"id":"188e512c5d0f52941c47e6741b00c25a","key":"188e512c5d0f52941c47e6741b00c25a","value":{"rev":"5-d81b22f3db16515d959ddd94163abcca"}},
+{"id":"188e512c5d0f52941c47e6741b00c37e","key":"188e512c5d0f52941c47e6741b00c37e","value":{"rev":"5-1c2e3f0a590c2857960513f86e7a6c02"}},
+
+View 1:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/students/_design/default/_view/coursetranscript
+{"total_rows":9,"offset":0,"rows":[
+{"id":"188e512c5d0f52941c47e6741b00837e","key":"Carmel","value":"4.00 GPA"},
+{"id":"188e512c5d0f52941c47e6741b005a30","key":"Jolisa","value":"3.0 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00700f","key":"Louis","value":"3.74 GPA"},
+{"id":"188e512c5d0f52941c47e6741b009214","key":"Mathew","value":"3.95 GPA"},
+{"id":"188e512c5d0f52941c47e6741b007f14","key":"victor","value":"3.45 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00c37e","key":"Vinay","value":"3.30 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00bcda","key":"Vineet","value":"3.20 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00c25a","key":"Vrithika","value":"3. 64 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00b863","key":"wilson","value":"2.99 GPA"}
+]}
+
+View 2:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/students/_design/default/_view/samestate
+{"total_rows":11,"offset":0,"rows":[
+{"id":"188e512c5d0f52941c47e6741b00a772","key":"Carlos","value":"Maryland"},
+{"id":"188e512c5d0f52941c47e6741b00837e","key":"Carmel","value":"Maryland"},
+{"id":"188e512c5d0f52941c47e6741b00700f","key":"Louis","value":"Maryland"},
+{"id":"188e512c5d0f52941c47e6741b009214","key":"Mathew","value":"Maryland"},
+{"id":"131ae187d2b4c4f254c3a5f40b0034e1","key":"victor","value":"Maryland"},
+{"id":"188e512c5d0f52941c47e6741b007f14","key":"victor","value":"Maryland"},
+{"id":"131ae187d2b4c4f254c3a5f40b003b3c","key":"Victor","value":"Maryland"},
+{"id":"188e512c5d0f52941c47e6741b00c37e","key":"Vinay","value":"Maryland"},
+{"id":"188e512c5d0f52941c47e6741b00bcda","key":"Vineet","value":"Maryland"},
+{"id":"188e512c5d0f52941c47e6741b00c25a","key":"Vrithika","value":"Maryland"},
+{"id":"188e512c5d0f52941c47e6741b00b863","key":"wilson","value":"Maryland"}
+]}
+
+View 3:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/students/_design/default/_view/lessthan3.5
+{"total_rows":6,"offset":0,"rows":[
+{"id":"188e512c5d0f52941c47e6741b005a30","key":"Jolisa","value":"3.0 GPA"},
+{"id":"188e512c5d0f52941c47e6741b007f14","key":"victor","value":"3.45 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00c37e","key":"Vinay","value":"3.30 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00bcda","key":"Vineet","value":"3.20 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00c25a","key":"Vrithika","value":"3. 64 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00b863","key":"wilson","value":"2.99 GPA"}
+]}
+
+
+View 4:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/students/_design/default/_view/gpamorethan3.5
+{"total_rows":3,"offset":0,"rows":[
+{"id":"188e512c5d0f52941c47e6741b00837e","key":"Carmel","value":"4.00 GPA"},
+{"id":"188e512c5d0f52941c47e6741b00700f","key":"Louis","value":"3.74 GPA"},
+{"id":"188e512c5d0f52941c47e6741b009214","key":"Mathew","value":"3.95 GPA"}
+]}
+
+
+View 5:
+
+maria@maria-VirtualBox:~$ curl -X GET http://localhost:5984/students/_design/default/_view/particularname
+{"total_rows":1,"offset":0,"rows":[
+{"id":"188e512c5d0f52941c47e6741b00700f","key":"Louis","value":"Maryland"}
+]}
+maria@maria-VirtualBox:~$ 
+

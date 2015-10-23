@@ -1,0 +1,81 @@
+hive> CREATE TABLE mariaps1_fad(country string, amount real) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\;' STORED AS TEXTFILE;
+OK
+Time taken: 0.812 seconds
+hive> load data inpath "fad.csv" into table mariaps1_fad;
+Loading data to table default.mariaps1_fad
+OK
+Time taken: 5.672 seconds
+hive>
+hive> select country, sum(amount) from mariaps1_fad GROUP BY country limit 30;                                              
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_211212161824_0027, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_211212161824_0027
+Kill Command = /home/mariaps1/hadoop/libexec/../bin/hadoop job  -Dmapred.job.tracker=localhost:54311 -kill job_211212161824_0027
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2013-12-07 21:29:23,984 Stage-1 map = 0%,  reduce = 0%
+2013-12-07 21:29:33,251 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:34,259 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:35,262 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:36,265 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:37,271 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:38,278 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:39,283 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:40,292 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:41,299 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:42,303 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:43,308 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:44,317 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:45,324 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:46,333 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:47,342 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.72 sec
+2013-12-07 21:29:48,346 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.68 sec
+2013-12-07 21:29:49,351 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.68 sec
+2013-12-07 21:29:50,359 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.68 sec
+2013-12-07 21:29:51,369 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.68 sec
+2013-12-07 21:29:52,381 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.68 sec
+2013-12-07 21:29:53,391 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.68 sec
+2013-12-07 21:29:54,403 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.68 sec
+MapReduce Total cumulative CPU time: 1 seconds 680 msec
+Ended Job = job_211212161824_0027
+MapReduce Jobs Launched:
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 1.68 sec   HDFS Read: 151720 HDFS Write: 1008 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 680 msec
+OK
+AFRICOM (DoD)    1.5328E7
+Afghanistan    1.0530738526E10
+Africa Regional (USAID)    2.8920551470654297E8
+Albania    5.657172018310547E7
+Algeria    1057574.92578125
+Angola    1.1633391090408325E8
+Argentina    399500.0
+Armenia    2.839185526954346E8
+Asia Middle East Regional (USAID)    4.6200522052734375E7
+Australia    8631.0
+Austria    7365.0
+Azerbaijan    9.754831602270508E7
+Bangladesh    1.89752921669281E8
+Barbadas    135754.0
+Belarus    2.9029660279296875E7
+Belgium    10926.0
+Belize    1.3169927E7
+Benin    3.7967655781591797E8
+Bhutan    12500.0
+Bolivia    1.5618160102612305E8
+Bosnia and Herzegovina    6.75140303515625E7
+Botswana    3.0531990365768433E7
+Brazil    5.1422368464121096E7
+Brunei Darussalam    43000.0
+Bulgaria    3880398.640625
+Bureau for Democracy, Conflict, and Humanitarian Assistance (USAID)    7.1617539520078125E9
+Bureau for Economic Growth, Agriculture, and Trade (USAID)    8.224130602851562E8
+Bureau for Global Health (USAID)    5.715567467375E9
+Bureau for Management (USAID)    1.0258471392460938E9
+Bureau for Policy, Planning and Learning (USAID)    525503.4296875
+Time taken: 40.200 seconds

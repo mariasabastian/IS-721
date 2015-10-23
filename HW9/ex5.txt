@@ -1,0 +1,67 @@
+maria@maria-VirtualBox:/var/www$ cat catalog1.xq
+for $prod in doc("catalog.xml")/catalog/product
+where $prod/@dept = "ACC"
+order by $prod/name
+return $prod/name
+maria@maria-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:catalog1.xq
+<?xml version="1.0" encoding="UTF-8"?><name language="en">Deluxe Travel Bag</name><name language="en">Floppy Sun Hat</name>maria@maria-VirtualBox:/var/www$ 
+maria@maria-VirtualBox:/var/www$ cat catalog2.xq
+for $product in doc("catalog.xml")/catalog/product
+let $name := $product/name
+where $product/@dept = "ACC"
+order by $name
+return $name
+
+maria@maria-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:catalog2.xq
+<?xml version="1.0" encoding="UTF-8"?><name language="en">Deluxe Travel Bag</nammaria@maria-VirtualBox:/var/www$ cat catalog3.xq
+<ul>{
+  for $product in doc("catalog.xml")/catalog/product
+  where $product/@dept='ACC'
+  order by $product/name
+  return $product/name
+}</ul>
+
+maria@maria-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:catalog3.xq
+<?xml version="1.0" encoding="UTF-8"?><ul><name language="en">Deluxe Travel Bag<maria@maria-VirtualBox:/var/www$ cat catalog4.xq
+<ul>{
+  for $product in doc("catalog.xml")/catalog/product
+  where $product/@dept='ACC'
+  order by $product/name
+  return <li>{$product/name}</li>
+}</ul>
+maria@maria-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:catalog4.xq
+<?xml version="1.0" encoding="UTF-8"?><ul><li><name language="en">Deluxe Travel maria@maria-VirtualBox:/var/www$ cat catalog5.xq
+<ul>{
+  for $product in doc("catalog.xml")/catalog/product
+  where $product/@dept='ACC'
+  order by $product/name
+  return <li>{data($product/name)}</li>
+}</ul>
+
+maria@maria-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:catalog5.xq
+<?xml version="1.0" encoding="UTF-8"?><ul><li>Deluxe Travel Bag</li><li>Floppy Smaria@maria-VirtualBox:/var/www$ cat catalog6.xq
+<ul type="square">{
+  for $product in doc("catalog.xml")/catalog/product
+  where $product/@dept='ACC'
+  order by $product/name
+  return <li class="{$product/@dept}">{data($product/name)}</li>
+}</ul>
+maria@maria-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:catalog6.xq
+<?xml version="1.0" encoding="UTF-8"?><ul type="square"><li class="ACC">Deluxe Tmaria@maria-VirtualBox:/var/www$ cat catalog7.xq
+cat: catalog7.xq: No such file or directory
+maria@maria-VirtualBox:/var/www$ cat order1.xq
+for $item in doc("order.xml")//item
+let $name := doc("catalog.xml")//product[number = $item/@num]/name
+return <item num="{$item/@num}"
+             name="{$name}"
+             quan="{$item/@quantity}"/>
+
+maria@maria-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:order1.xq
+<?xml version="1.0" encoding="UTF-8"?><item num="557" quan="1" name="Fleece Pullover"/><item num="563" quan="1" name="Floppy Sun Hat"/><item num="443" quan="2" name="Deluxe Travel Bag"/><item num="784" quan="1" name="Cotton Dress Shirt"/><item num="784" quan="1" name="Cotton Dress Shirt"/><item num="557" quan="1" name=maria@maria-VirtualBox:/var/www$ cat order2.xq
+for $d in distinct-values(doc("order.xml")//item/@dept)
+let $items := doc("order.xml")//item[@dept = $d]
+order by $d
+return <department name="{$d}" totQuantity="{sum($items/@quantity)}"/>
+maria@maria-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:order2.xq
+<?xml version="1.0" encoding="UTF-8"?><department totQuantity="3" name="ACC"/><dmaria@maria-VirtualBox:/var/www$ ^C
+

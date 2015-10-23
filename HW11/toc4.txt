@@ -1,0 +1,296 @@
+XQ 1
+---------
+declare namespace r = "http://www.w3.org/2005/sparql-results#";
+declare option exist:serialize "method=xhtml media-type=text/html";
+
+declare variable  $query := "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl11:<http://www.w3.org/2006/12/owl11#>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX dbpprop:<http://dbpedia.org/property/>
+PREFIX mon:<http://www.semwebtech.org/mondial/10/meta#>
+
+SELECT ?name ?populationgrowth
+ from <file://mondial-europe.rdf>
+ from <file://mondial-meta.rdf>
+WHERE {?country rdf:type mon:Country ;
+ mon:name ?name ;
+
+ mon:populationGrowth ?populationgrowth .
+} ORDER BY ?populationgrowth";
+
+declare function local:execute-sparql($query as xs:string) {
+  let $sparql := concat("http://localhost:8080/openrdf-workbench/repositories/dmgowtham-mondial/query?queryLn=SPARQL&amp;query=",encode-for-uri($query),"&amp;infer=true")
+  return doc($sparql)
+};
+
+<HTML>
+<head>
+<title>Countries and population growth</title>
+</head>
+<body>
+<h1>Countries - Their area and population</h1>
+<table border="1">
+ <tr>
+           <td><b>Country</b></td>
+           
+	   <td><b>Population Growth</b></td>
+ </tr>
+   { for $tuple in local:execute-sparql($query)//r:result
+     let $name := $tuple/r:binding[@name="name"]/r:literal
+     
+     let $populationgrowth := $tuple/r:binding[@name="populationgrowth"]/r:literal
+     return   
+    <tr>
+           <td><name>{$name}</name></td>
+	   
+           <td><populationgrowth>{$populationgrowth}</populationgrowth></td>         
+    </tr>      
+}
+</table>
+</body>
+</HTML>
+
+
+XQ 2
+---------
+xquery version "1.0";
+declare namespace r = "http://www.w3.org/2005/sparql-results#";
+declare option exist:serialize "method=xhtml media-type=text/html";
+
+(: sparql query to get the capital for each country :)
+declare variable  $query := "
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX mon:<http://www.semwebtech.org/mondial/10/meta#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl11:<http://www.w3.org/2006/12/owl11#>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX dbpprop:<http://dbpedia.org/property/>
+
+SELECT ?name ?gdpPpp 
+WHERE { 
+ ?country rdf:type mon:Country ;
+ mon:name ?name .
+ ?x dbpprop:commonName ?countrym ;
+ dbpprop:gdpPpp ?gdpPpp .
+ FILTER (?name=?countrym)
+
+}";
+
+(:  set up target for query  - note the xml entity in the querystring  :)
+declare function local:execute-sparql($query as xs:string) {
+  let $sparql := concat("http://localhost:8080/openrdf-workbench/repositories/dmgowtham-mondial/query?format=xml&amp;query=",escape-uri($query, true()))
+  return doc($sparql)
+};
+
+(: return html :)
+<html>
+<head>
+<title>Countries and GDP</title>
+</head>
+<body>
+<h1>Countries and GDP</h1>
+<table border="1">
+ <tr>
+           <td><b>COUNTRIES</b></td>
+           <td><b>GDP</b></td>
+           
+
+ </tr>
+   { 
+     for $tuple in local:execute-sparql($query)//r:result
+     let $name := $tuple/r:binding[@name="name"]/r:literal    
+     
+     let $gdpPpp := $tuple/r:binding[@name="gdpPpp"]/r:literal
+     return    
+    <tr>
+           <td><name>{$name}</name></td> 
+           
+           <td><gdpPpp>{$gdpPpp}</gdpPpp></td>           
+    </tr>       
+    }
+</table>
+</body>
+</html>
+
+
+XQ 3
+---------
+declare namespace r = "http://www.w3.org/2005/sparql-results#";
+declare option exist:serialize "method=xhtml media-type=text/html";
+
+declare variable  $query := "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl11:<http://www.w3.org/2006/12/owl11#>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX dbpprop:<http://dbpedia.org/property/>
+PREFIX mon:<http://www.semwebtech.org/mondial/10/meta#>
+
+SELECT ?name ?timeZone
+ from <file://cname.rdf>
+ from <file://timezone.rdf>
+WHERE { ?x dbpprop:commonName ?name ;
+ dbpprop:timeZone ?timeZone .
+}";
+
+declare function local:execute-sparql($query as xs:string) {
+  let $sparql := concat("http://localhost:8080/openrdf-workbench/repositories/dmgowtham-mondial/query?queryLn=SPARQL&amp;query=",encode-for-uri($query),"&amp;infer=true")
+  return doc($sparql)
+};
+
+<HTML>
+<head>
+<title>Countries and Timezone</title>
+</head>
+<body>
+<h1>Europe countries and TIME ZONES</h1>
+<table border="1">
+    <tr>
+           <td><b>COUNTRY</b></td>
+           <td><b>TIMEZONE</b></td>          
+    </tr>  
+ 
+   { for $tuple in local:execute-sparql($query)//r:result
+     let $name := $tuple/r:binding[@name="name"]/r:literal
+     let $timeZone := $tuple/r:binding[@name="timeZone"]/r:literal
+     return   
+    <tr>
+           <td><name>{$name}</name></td>
+           <td><timeZone>{$timeZone}</timeZone></td>
+    </tr>      
+}
+</table>
+</body>
+</HTML> 
+
+
+XQ 4
+--------
+xquery version "1.0";
+declare namespace r = "http://www.w3.org/2005/sparql-results#";
+declare option exist:serialize "method=xhtml media-type=text/html";
+
+(: sparql query to get the capital for each country :)
+declare variable  $query := "
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX mon:<http://www.semwebtech.org/mondial/10/meta#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl11:<http://www.w3.org/2006/12/owl11#>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX dbpprop:<http://dbpedia.org/property/>
+
+SELECT ?name ?cname ?pwater 
+WHERE { 
+ ?country rdf:type mon:Country ;
+ mon:name ?name ;
+ mon:capital ?capital.
+ ?capital mon:name ?cname.
+ ?x dbpprop:commonName ?countrym ;
+ dbpprop:percentWater ?pwater .
+ FILTER (?name=?countrym)
+
+}";
+
+(:  set up target for query  - note the xml entity in the querystring  :)
+declare function local:execute-sparql($query as xs:string) {
+  let $sparql := concat("http://localhost:8080/openrdf-workbench/repositories/dmgowtham-mondial/query?format=xml&amp;query=",escape-uri($query, true()))
+  return doc($sparql)
+};
+
+(: return html :)
+<html>
+<head>
+<title>Countries and Percentage of Water</title>
+</head>
+<body>
+<h1>Countries and Percentage of Water</h1>
+<table border="1">
+ <tr>
+           <td><b>NAME</b></td>
+           <td><b>CAPITALS</b></td>
+           <td><b>WATER PERCENTAGE</b></td>
+
+ </tr>
+   { 
+     for $tuple in local:execute-sparql($query)//r:result
+     let $name := $tuple/r:binding[@name="name"]/r:literal    
+     let $capital := $tuple/r:binding[@name="cname"]/r:literal
+     let $pwater := $tuple/r:binding[@name="pwater"]/r:literal
+     return    
+    <tr>
+           <td><name>{$name}</name></td> 
+           <td><capital>{$capital}</capital></td> 
+           <td><pwater>{$pwater}</pwater></td>           
+    </tr>       
+    }
+</table>
+</body>
+</html>
+
+
+XQ 5
+-------
+xquery version "1.0";
+declare namespace r = "http://www.w3.org/2005/sparql-results#";
+declare option exist:serialize "method=xhtml media-type=text/html";
+
+(: sparql query to get the capital for each country :)
+declare variable  $query := "
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX mon:<http://www.semwebtech.org/mondial/10/meta#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl11:<http://www.w3.org/2006/12/owl11#>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX dbpprop:<http://dbpedia.org/property/>
+
+SELECT ?name ?areaKm ?currency
+WHERE { 
+ ?country rdf:type mon:Country ;
+ mon:name ?name .
+ ?x dbpprop:commonName ?countrym ;
+ dbpprop:currency ?currency ;
+ dbpprop:areaKm ?areaKm .
+ FILTER (?name=?countrym)
+
+}";
+
+(:  set up target for query  - note the xml entity in the querystring  :)
+declare function local:execute-sparql($query as xs:string) {
+  let $sparql := concat("http://localhost:8080/openrdf-workbench/repositories/dmgowtham-mondial/query?format=xml&amp;query=",escape-uri($query, true()))
+  return doc($sparql)
+};
+
+(: return html :)
+<html>
+<head>
+<title>Area and Currncy </title>
+</head>
+<body>
+<h1>AREAM KM and CURRENCY FORMAT</h1>
+<table border="1">
+ <tr>
+           <td><b>PLACES</b></td>
+           <td><b>AREA KM</b></td>
+           <td><b>CURRENCY</b></td>
+
+ </tr>
+   { 
+     for $tuple in local:execute-sparql($query)//r:result
+     let $name := $tuple/r:binding[@name="name"]/r:literal    
+     let $areaKm := $tuple/r:binding[@name="areaKm"]/r:literal 
+     let $currency := $tuple/r:binding[@name="currency"]/r:literal
+     return    
+    <tr>
+           <td><name>{$name}</name></td> 
+           <td><areaKm>{$areaKm}</areaKm></td> 
+           <td><currency>{$currency}</currency></td>           
+    </tr>       
+    }
+</table>
+</body>
+</html>

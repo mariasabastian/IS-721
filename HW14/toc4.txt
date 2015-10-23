@@ -1,0 +1,10 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -copyFromLocal /tmp/mariaps12-gutenberg /user/hduser/mariaps12-gutenberg
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -ls /user/hduser
+Found 1 items
+drwxr-xr-x   - hduser supergroup          0 2012-12-02 20:42 /user/hduser/mariaps12-gutenberg
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -ls /user/hduser/mariaps12-gutenberg
+Found 3 items
+-rw-r--r--   1 hduser supergroup     674566 2012-12-02 20:42 /user/hduser/mariaps12-gutenberg/gmohan1-pg20417.txt
+-rw-r--r--   1 hduser supergroup    1573150 2012-12-02 20:42 /user/hduser/mariaps12-gutenberg/gmohan1-pg4300.txt
+-rw-r--r--   1 hduser supergroup    1423801 2012-12-02 20:42 /user/hduser/mariaps12-gutenberg/gmohan1-pg5000.txt
+

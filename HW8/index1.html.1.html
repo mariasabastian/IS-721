@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    h3 {
+      background-color: orange;
+      width: 500px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h3>Student Records</h3>
+  <h4>Student Records Queries</h4>
+  <ul>
+    <!-- this is the entry page for our applciation -->
+    <!-- this calls the php that loads our list from the json according to different queries about movie stars -->
+    <li><a href="index1.html/721mongodb_q.php%3Fq=all.html">All Student Records</a></li>
+    <li><a href="index1.html/721mongodb_q.php%3Fq=male.html">Male Students</a>  </li>
+    <li><a href="index1.html/721mongodb_q.php%3Fq=sophomore.html">All Sophomore Students</a>  </li>
+    <li><a href="index1.html/721mongodb_q.php%3Fq=california.html">Students in California</a>  </li>
+    <li><a href="index1.html/721mongodb_q.php%3Fq=IS603.html">Students taking IS603 as one of the course</a>  </li>
+           <hr width="450px" align="left"/>
+    <!-- this calls the php that creates (posts) a new movie star -->
+    </ul>
+
+  <!-- this calls the php that loads our occupations list with details from the json from a *different* collection -->
+  <h4>Courses</h4>
+  <ul>
+     <li><a href="index1.html/721mongodb_qo.php%3Fq=oall.html">Show Course Info</a></li>
+     <hr width="450px" align="left"/>
+     <!-- this calls the php that creates (posts) a new occupation (not done here but would require 2 files - say onew.html/onew.php, just like for movie stars) -->
+    <li><a href="index1.html/onew.html">Create New Course</a></li>
+  </ul>
+</body>
+</html>

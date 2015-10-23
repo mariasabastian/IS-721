@@ -1,0 +1,193 @@
+QUERY1
+
+xquery version "1.0";
+declare option exist:serialize "method=html media-type=text/html indent=yes";
+ let $collection := '/db/patientdetails/data'
+return
+<html>
+   <head>
+      <title>All male patients</title>
+      <style language="text/css">
+          <![CDATA[
+            body {font-family: Arial, Helvetica; sans-serif;}
+           ]]>
+      </style>
+   </head>
+   <body>
+   <a href="../index.xhtml">Patients Home</a> &gt;
+    <a href="../edit/edit.xq?new=true">New Patient</a>
+   <h1>List of all Male Patients</h1>
+   <table>
+       <thead>
+       <tr>
+          <th>PatientName:</th>
+	  <th>PatientAge:</th>
+          <th>Gender:</th>
+                 </tr>
+    </thead>
+    <tbody>{
+      for $item in collection($collection)/item[pgender = "m"]
+         let $id := $item/id/text()
+      return
+  <tr>
+             <td>{$item/pname/text()}</td>
+             <td>{$item/page/text()}</td>
+             <td>{$item/pgender/text()}</td>
+     </tr> 
+}</tbody></table>
+   </body>
+</html>
+
+QUERY2
+
+xquery version "1.0";
+declare option exist:serialize "method=html media-type=text/html indent=yes";
+ let $collection := '/db/patientdetails/data'
+return
+<html>
+   <head>
+      <title>Patients from Chennai</title>
+      <style language="text/css">
+          <![CDATA[
+            body {font-family: Arial, Helvetica; sans-serif;}
+           ]]>
+      </style>
+   </head>
+   <body>
+   <a href="../index.xhtml">Patients Home</a> &gt;
+    <a href="../edit/edit.xq?new=true">New Patient</a>
+   <h1>List of all Patients from Chennai</h1>
+   <table>
+       <thead>
+       <tr>
+         <th>PatientName:</th>
+	  <th>City:</th>
+           </tr>
+    </thead>
+    <tbody>{
+      for $item in collection($collection)/item[pcity = "chennai"]
+         let $id := $item/id/text()
+      return
+<tr>
+              <td>{$item/pname/text()}</td>
+             <td>{$item/pcity/text()}</td>
+              </tr> 
+   }</tbody></table>
+  </body>
+</html>
+
+QUERY3
+
+xquery version "1.0";
+declare option exist:serialize "method=html media-type=text/html indent=yes";
+ let $collection := '/db/patientdetails/data'
+return
+<html>
+   <head>
+      <title>All female patients</title>
+      <style language="text/css">
+          <![CDATA[
+            body {font-family: Arial, Helvetica; sans-serif;}
+           ]]>
+      </style>
+   </head>
+   <body>
+   <a href="../index.xhtml">Patients Home</a> &gt;
+    <a href="../edit/edit.xq?new=true">New Patient</a>
+   <h1>List of all Female Patients</h1>
+   <table>
+       <thead>
+       <tr>
+     <th>PatientName:</th>
+	  <th>PatientAge:</th>
+          <th>Gender:</th>
+                 </tr>
+    </thead>
+    <tbody>{
+      for $item in collection($collection)/item[pgender = "f"]
+         let $id := $item/id/text()
+      return
+ <td>{$item/pname/text()}</td>
+             <td>{$item/page/text()}</td>
+             <td>{$item/pgender/text()}</td>
+           </tr> 
+ }</tbody></table>
+  </body>
+</html>
+
+QUERY4
+
+xquery version "1.0";
+declare option exist:serialize "method=html media-type=text/html indent=yes";
+ let $collection := '/db/patientdetails/data'
+return
+<html>
+   <head>
+      <title>Myopic patients</title>
+      <style language="text/css">
+          <![CDATA[
+            body {font-family: Arial, Helvetica; sans-serif;}
+           ]]>
+      </style>
+   </head>
+   <body>
+   <a href="../index.xhtml">Patients Home</a> &gt;
+    <a href="../edit/edit.xq?new=true">New Patient</a>
+   <h1>Patients assessed with myopia</h1>
+   <table>
+       <thead>
+       <tr>
+                    <th>PatientName:</th>
+	  <th>Assessment:</th>
+                 </tr>
+    </thead>
+    <tbody>{
+      for $item in collection($collection)/item[a = "myopia"]
+         let $id := $item/id/text()
+      return
+<tr>
+             <td>{$item/pname/text()}</td>
+              <td>{$item/a/text()}</td>
+               </tr> 
+}</tbody></table>
+  
+   </body>
+</html>
+
+QUERY5
+
+xquery version "1.0";
+declare option exist:serialize "method=html media-type=text/html indent=yes";
+ let $collection := '/db/patientdetails/data'
+return
+<html>
+   <head>
+      <title>All male patients</title>
+      <style language="text/css">
+          <![CDATA[
+            body {font-family: Arial, Helvetica; sans-serif;}
+           ]]>
+      </style>
+   </head>
+   <body>
+   <a href="../index.xhtml">Patients Home</a> &gt;
+    <a href="../edit/edit.xq?new=true">New Patient</a>
+   <h1>List of all Patients having Fever</h1>
+   <table>
+       <thead>
+       <tr>
+          <th>PatientName:</th>
+	  <th>Subject:</th>
+                 </tr>
+    </thead>
+    <tbody>{
+      for $item in collection($collection)/item[s = "fever"]
+         let $id := $item/id/text()
+      return
+  <tr>
+             <td>{$item/pname/text()}</td>
+             <td>{$item/s/text()}</td>
+         </tr> 
+  }</tbody></table>
+  </body>
+</html>

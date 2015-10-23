@@ -1,0 +1,129 @@
+hduser@mariaps1-VirtualBox:/home$ cd mariaps1/hadoop
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -put ~/fad.csv /user/hduser/
+Warning: $HADOOP_HOME is deprecated.
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop fs -ls
+Warning: $HADOOP_HOME is deprecated.
+Found 7 items
+-rw-r--r--   1 hduser supergroup      151499 2012-12-06 20:57 /user/hduser/fad.csv
+-rw-r--r--   1 hduser supergroup         54 2012-12-08 19:44 /user/hduser/countries.dat
+-rw-r--r--   1 hduser supergroup        198 2012-12-08 19:43 /user/hduser/customers.dat
+drwxr-xr-x   - hduser supergroup          0 2012-12-02 20:42 /user/hduser/mariaps12-gutenberg
+drwxr-xr-x   - hduser supergroup          0 2012-12-02 20:54 /user/hduser/gmariaps12-gutenberg-output
+drwxr-xr-x   - hduser supergroup          0 2012-12-07 21:15 /user/hduser/mariaps12-gutenberg
+drwxr-xr-x   - hduser supergroup          0 2012-12-07 21:20 /user/hduser/mariaps12-gutenberg-output
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ sh pig2.sh
+Warning: $HADOOP_HOME is deprecated.
+2012-12-17 01:23:08,768 [main] INFO  org.apache.pig.Main - Apache Pig version 0.10.0 (r1328203) compiled Apr 19 2012, 22:54:12
+2012-12-17 01:23:08,768 [main] INFO  org.apache.pig.Main - Logging error messages to: /home/mariaps1/hadoop/pig_1355703788764.log
+2012-12-17 01:23:08,958 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to hadoop file system at: hdfs://localhost:54310
+2012-12-17 01:23:09,171 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to map-reduce job tracker at: localhost:54311
+grunt> 
+grunt> records = LOAD '/user/hduser/fad.csv' USING PigStorage (';') AS (country:chararray, sum:long);
+grunt> grouped = GROUP records BY country;  
+grunt> thesum = FOREACH grouped GENERATE group, SUM(records.sum);  
+grunt> STORE thesum INTO '/user/hduser/fad-gmohan1output';  
+2013-12-08 01:25:55,167 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig features used in the script: GROUP_BY
+2013-12-08 01:25:55,355 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MRCompiler - File concatenation threshold: 100 optimistic? false
+2013-12-08 01:25:55,368 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.CombinerOptimizer - Choosing to move algebraic foreach to combiner
+2013-12-08 01:25:55,402 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size before optimization: 1
+2013-12-08 01:25:55,402 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size after optimization: 1
+2013-12-08 01:25:55,482 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig script settings are added to the job
+2013-12-08 01:25:55,497 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+2013-12-08 01:25:55,500 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - creating jar file Job5458972589890658758.jar
+2013-12-08 01:25:59,284 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - jar file Job5458972589890658758.jar created
+2013-12-08 01:25:59,299 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+2013-12-08 01:25:59,359 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - BytesPerReducer=1000000000 maxReducers=999 totalInputFileSize=51049
+2013-12-08 01:25:59,359 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Neither PARALLEL nor default parallelism is set for this job. Setting number of reducers to 1
+2013-12-08 01:25:59,416 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+2013-12-08 01:25:59,797 [Thread-9] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input paths to process : 1
+2013-12-08 01:25:59,797 [Thread-9] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2013-12-08 01:25:59,807 [Thread-9] INFO  org.apache.hadoop.util.NativeCodeLoader - Loaded the native-hadoop library
+2013-12-08 01:25:59,809 [Thread-9] WARN  org.apache.hadoop.io.compress.snappy.LoadSnappy - Snappy native library not loaded
+2013-12-08 01:25:59,812 [Thread-9] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2013-12-08 01:25:59,918 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 0% complete
+2013-12-08 01:26:00,704 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_201312170050_0001
+2013-12-08 01:26:00,705 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - More information at: http://localhost:50030/jobdetails.jsp?jobid=job_201312170050_0001 
+2013-12-08 01:26:15,515 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 50% complete
+2013-12-08 01:26:35,703 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 100% complete
+2013-12-08 01:26:35,705 [main] INFO  org.apache.pig.tools.pigstats.SimplePigStats - Script Statistics: 
+
+HadoopVersion    PigVersion    UserId    StartedAt    FinishedAt    Features
+1.0.4    0.10.0    hduser    2013-12-08 01:25:55    2013-12-08 01:26:35    GROUP_BY
+Success!
+Job Stats (time in seconds):
+JobId    Maps    Reduces    MaxMapTime    MinMapTIme    AvgMapTime    MaxReduceTime    MinReduceTime    AvgReduceTime    Alias    Feature    Outputs
+job_201312170050_0001    1    1    9    9    9    18    18    18    grouped,records,thesum    GROUP_BY,COMBINER    /user/hduser/fad-gmohan1output,
+
+Input(s):
+Successfully read 5977 records (151867 bytes) from: "/user/hduser/fad.csv"
+Output(s):
+Successfully stored 220 records (6451 bytes) in: "/user/hduser/fad-mariaps12output"
+Counters:
+Total records written : 220
+Total bytes written : 6451
+Spillable Memory Manager spill count : 0
+Total bags proactively spilled: 0
+Total records proactively spilled: 0
+Job DAG:
+job_201312170050_0001
+2013-12-08 01:26:35,719 [main] WARN  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Encountered Warning FIELD_DISCARDED_TYPE_CONVERSION_FAILED 3571 time(s).
+2013-12-08 01:26:35,720 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Success!
+grunt> quit
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$  bin/hadoop fs -ls
+Warning: $HADOOP_HOME is deprecated.
+
+Found 8 items
+
+-rw-r--r--   1 hduser supergroup         54 2013-12-08 19:44 /user/hduser/countries.dat
+-rw-r--r--   1 hduser supergroup        198 2013-12-08 19:43 /user/hduser/customers.dat
+drwxr-xr-x   - hduser supergroup          0 2013-12-02 20:42 /user/hduser/mariaps12-gutenberg
+drwxr-xr-x   - hduser supergroup          0 2013-12-02 20:54 /user/hduser/mariaps12-gutenberg-output
+drwxr-xr-x   - hduser supergroup          0 2013-12-08 01:26 /user/hduser/fad-mariaps12output
+-rw-r--r--   1 hduser supergroup      151499 2013-12-16 20:57 /user/hduser/fad.csv
+drwxr-xr-x   - hduser supergroup          0 2013-12-07 21:15 /user/hduser/gowtham-gutenberg
+drwxr-xr-x   - hduser supergroup          0 2013-12-07 21:20 /user/hduser/gowtham-gutenberg-output
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop fs -ls fad-mariaps12output
+Warning: $HADOOP_HOME is deprecated.
+Found 2 items
+-rw-r--r--   1 hduser supergroup          0 2013-12-08 01:26 /user/hduser/fad-mariaps12output/_SUCCESS
+-rw-r--r--   1 hduser supergroup        6451 2013-12-08 01:26 /user/hduser/fad-mariaps12output/part-r-00000
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop fs -copyToLocal fad-mariaps12output/part* ~/mariaps12fadout.txt
+Warning: $HADOOP_HOME is deprecated.
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ cat ~/mariaps12fadout.txt | wc -l
+220
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ head -30 ~/mariaps12fadout.txt
+Chad    9158509
+Cuba    30869341
+Fiji    92008
+Iran    -6182
+Iraq    1742582973
+Laos    4562800
+Mali    624614087
+Oman    1079967
+Peru    208846721
+Togo    371378
+Benin    379676533
+Burma    53164935
+Chile    752850
+China    63450105
+Egypt    855004805
+Gabon    257438
+Ghana    738318060
+Haiti    520936010
+India    211420368
+Italy    952773
+Japan    53696000
+Kenya    754070205
+Libya    101000
+Malta    4675000
+Nepal    108007981
+Niger    812618
+Spain    32496
+Yemen    58025205
+Angola    116333891
+Belize    13169927
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$
+
+
+
+

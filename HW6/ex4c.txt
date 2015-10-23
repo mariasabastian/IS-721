@@ -1,0 +1,40 @@
+<?PHP
+/**
+
+ This script demonstrates the basics of storing and retrieving documents using PHP On Couch
+
+ For this to work, you have to tell the database DSN (example : http://couch.server.com:5984/) and the name of a database that does not exist
+
+*/
+
+$couch_dsn = "http://localhost:5984/";
+$couch_db = "books2";
+
+/**
+* include the library
+*/
+
+require_once "../lib/couch.php";
+require_once "../lib/couchClient.php";
+require_once "../lib/couchDocument.php";
+
+$client = new couchClient($couch_dsn,$couch_db);
+
+/**
+* To retrieve a document, just use getDoc($doc_id)
+*
+*
+*
+*
+*/
+$all_docs = $client->getAllDocs();
+echo "Database got ".$all_docs->total_rows." documents.<br>\n";
+foreach ( $all_docs->rows as $row ) {
+    echo "Document ".$row->id."<BR>\n";
+}
+
+echo "<br>Document retrieved:<br/>";
+$doc = $client->getDoc($all_docs->rows[0]->id);
+echo print_r($doc);
+
+?>

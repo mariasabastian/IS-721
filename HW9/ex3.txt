@@ -1,0 +1,75 @@
+QUERY A
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq1.xq
+doc("books.xml")/bookstore/book/title
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq1.xq<?xml version="1.0" encoding="UTF-8"?><title lang="en">Everyday Italian</title><title lang="en">Harry Potter</title><title lang="en">XQuery Kick Start</title><title lang="en">Learning XML</title><title lang="en">Doom Machine</title><title lang="en">Attack of Volcano Monkeys</title><title lang="en">Eye Tracking Web Usability</title><title lang="en">Web Wisdom</title><title lang="en">Simple Cooking</title>
+
+QUERY B
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq2.xq
+doc("books.xml")/bookstore/book[price<30]
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq2.xq
+<?xml version="1.0" encoding="UTF-8"?><book category="CHILDREN">
+  <title lang="en">Harry Potter</title>
+  <author>J K. Rowling</author>
+  <year>2005</year>
+  <price>29.99</price>
+</book><book category="CHILDREN">
+  <title lang="en">Doom Machine</title>
+  <author>Mark Teague</author>
+  <year>2012</year>
+  <price>19.99</price>
+</book><book category="CHILDREN">
+  <title lang="en">Attack of Volcano Monkeys</title>
+  <author>Willey Miller</author>
+  <year>2011</year>
+  <price>15.99</price>
+</book><book category="COOKING">
+  <title lang="en">Simple Cooking</title>
+  <author>Lisa Feeney</author>
+  <year>2007</year>
+  <price>22.99</price>
+</book>
+
+QUERY C
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq3.xq
+doc("books.xml")/bookstore/book[price>30]/title
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq3.xq
+<?xml version="1.0" encoding="UTF-8"?><title lang="en">XQuery Kick Start</title><title lang="en">Learning XML</title><title lang="en">Eye Tracking Web Usability</title><title lang="en">Web Wisdom</title>
+
+QUERY D
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq4.xq
+for $x in doc("books.xml")/bookstore/book where $x/price>30 return $x/title
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq4.xq
+<?xml version="1.0" encoding="UTF-8"?><title lang="en">XQuery Kick Start</title><title lang="en">Learning XML</title><title lang="en">Eye Tracking Web Usability</title><title lang="en">Web Wisdom</title>
+
+QUERY E
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq5.xq
+for $x in doc("books.xml")/bookstore/book where $x/price>30 order by $x/title return $x/title
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq5.xq
+<?xml version="1.0" encoding="UTF-8"?><title lang="en">Eye Tracking Web Usability</title><title lang="en">Learning XML</title><title lang="en">Web Wisdom</title><title lang="en">XQuery Kick Start</title>
+
+QUERY F
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq6.xq
+<ul> { for $x in doc("books.xml")/bookstore/book/title order by $x return <li>{$x}</li> } </ul>
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq6.xq
+<?xml version="1.0" encoding="UTF-8"?><ul><li><title lang="en">Attack of Volcano Monkeys</title></li><li><title lang="en">Doom Machine</title></li><li><title lang="en">Everyday Italian</title></li><li><title lang="en">Eye Tracking Web Usability</title></li><li><title lang="en">Harry Potter</title></li><li><title lang="en">Learning XML</title></li><li><title lang="en">Simple Cooking</title></li><li><title lang="en">Web Wisdom</title></li><li><title lang="en">XQuery Kick Start</title></li></ul>
+
+QUERY G
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq7.xq
+<ul> { for $x in doc("books.xml")/bookstore/book/title order by $x return <li>{data($x)}</li> } </ul>
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq7.xq
+<?xml version="1.0" encoding="UTF-8"?><ul><li>Attack of Volcano Monkeys</li><li>Doom Machine</li><li>Everyday Italian</li><li>Eye Tracking Web Usability</li><li>Harry Potter</li><li>Learning XML</li><li>Simple Cooking</li><li>Web Wisdom</li><li>XQuery Kick Start</li></ul>
+
+QUERY H
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq8.xq
+for $x in doc("books.xml")/bookstore/book return if ($x/@category="CHILDREN")
+then <child>{data($x/title)}</child> else <adult>{data($x/title)}</adult>
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq8.xq
+<?xml version="1.0" encoding="UTF-8"?><adult>Everyday Italian</adult><child>Harry Potter</child><adult>XQuery Kick Start</adult><adult>Learning XML</adult><child>Doom Machine</child><child>Attack of Volcano Monkeys</child><adult>Eye Tracking Web Usability</adult><adult>Web Wisdom</adult><adult>Simple Cooking</adult>

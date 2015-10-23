@@ -1,0 +1,48 @@
+maria@maria-VirtualBox:~$ redis-cli
+redis 127.0.0.1:6379> select 15
+OK
+redis 127.0.0.1:6379[15]> keys *
+ 1) "global:nextPostId"
+ 2) "global:users"
+ 3) "username:mariaps1:id"
+ 4) "uid:1:posts"
+ 5) "global:timeline"
+ 6) "uid:1:username"
+ 7) "post:1"
+ 8) "auth:b84d723950a322f950e05d68f5d01783"
+ 9) "post:2"
+10) "post:3"
+11) "post:4"
+12) "post:5"
+13) "global:nextUserId"
+14) "post:6"
+15) "post:7"
+16) "post:8"
+17) "uid:1:auth"
+18) "uid:1:password"
+
+redis 127.0.0.1:6379[15]> lrange uid:1:posts 0 -1
+1) "8"
+2) "7"
+3) "6"
+4) "5"
+5) "4"
+6) "3"
+7) "2"
+8) "1"
+redis 127.0.0.1:6379[15]> get post:5
+"1|1380242352|what plans for the weekend ?"
+redis 127.0.0.1:6379[15]> get username:mariaps1:id
+"1"
+redis 127.0.0.1:6379[15]> smembers uid:1:followers
+1) "2"
+2) "4"
+redis 127.0.0.1:6379[15]> get uid:2:password
+"apple"
+redis 127.0.0.1:6379[15]> get username:tom:id
+"2"
+redis 127.0.0.1:6379[15]> get uid:1:username
+"mariaps1"
+redis 127.0.0.1:6379[15]> 
+maria@maria-VirtualBox:~$ 
+

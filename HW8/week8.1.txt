@@ -1,0 +1,56 @@
+> db.nettuts.update({"_id" : ObjectId("50809baba6f156b3a800485d")}, {"$set" : {"age" : 18 }});
+> db.nettuts.update({"_id" : ObjectId("50809baba6f156b3a800485e")}, {"$set" : {"age" : 45 }});
+> db.nettuts.update({"_id" : ObjectId("50809baba6f156b3a800485f")}, {"$set" : {"age" : 65 }});
+> db.nettuts.update({"_id" : ObjectId("50809baca6f156b3a8004860")}, {"$set" : {"age" : 43 }});
+> db.nettuts.update({"_id" : ObjectId("50809baca6f156b3a8004861")}, {"$set" : {"age" : 22 }});
+> db.nettuts.update({"_id" : ObjectId("50809baca6f156b3a8004862")}, {"$set" : {"age" : 45 }});
+> db.nettuts.update({"_id" : ObjectId("50809baca6f156b3a8004863")}, {"$set" : {"age" : 33 }});
+> db.nettuts.find();
+{ "_id" : ObjectId("50809baea6f156b3a8004863"), "first" : "judi", "last" : "dench", "dob" : "09/12/1934", "gender" : "f", "hair_colour" : "white", "occupation" : "actress", "nationality" : "english" }
+{ "_id" : ObjectId("50809baba6f156b3a800485d"), "age" : 18, "dob" : "21/04/1978", "first" : "matthew", "gender" : "m", "hair_colour" : "brown", "last" : "setter", "nationality" : "australian", "occupation" : "developer" }
+{ "_id" : ObjectId("50809baba6f156b3a800485e"), "age" : 45, "dob" : "26/03/1940", "first" : "james", "gender" : "m", "hair_colour" : "brown", "last" : "caan", "nationality" : "american", "occupation" : "actor" }
+{ "_id" : ObjectId("50809baba6f156b3a800485f"), "age" : 65, "dob" : "03/06/1925", "first" : "arnold", "gender" : "m", "hair_colour" : "brown", "last" : "schwarzenegger", "nationality" : "american", "occupation" : "actor" }
+{ "_id" : ObjectId("50809baca6f156b3a8004860"), "age" : 43, "dob" : "21/04/1978", "first" : "tony", "gender" : "m", "hair_colour" : "brown", "last" : "curtis", "nationality" : "american", "occupation" : "developer" }
+{ "_id" : ObjectId("50809baca6f156b3a8004861"), "age" : 22, "dob" : "22/11/1958", "first" : "jamie lee", "gender" : "f", "hair_colour" : "brown", "last" : "curtis", "nationality" : "american", "occupation" : "actor" }
+{ "_id" : ObjectId("50809baca6f156b3a8004862"), "age" : 45, "dob" : "14/03/1933", "first" : "michael", "gender" : "m", "hair_colour" : "brown", "last" : "caine", "nationality" : "english", "occupation" : "actor" }
+> db.nettuts.find( { 'occupation' : { '$in' : [ "actor", "developer" ] } }, { "first" : 1, "last" : 1 } );
+{ "_id" : ObjectId("50809baba6f156b3a800485d"), "first" : "matthew", "last" : "setter" }
+{ "_id" : ObjectId("50809baba6f156b3a800485e"), "first" : "james", "last" : "caan" }
+{ "_id" : ObjectId("50809baba6f156b3a800485f"), "first" : "arnold", "last" : "schwarzenegger" }
+{ "_id" : ObjectId("50809baca6f156b3a8004860"), "first" : "tony", "last" : "curtis" }
+{ "_id" : ObjectId("50809baca6f156b3a8004861"), "first" : "jamie lee", "last" : "curtis" }
+{ "_id" : ObjectId("50809baca6f156b3a8004862"), "first" : "michael", "last" : "caine" }
+> ender" : "m", "occupation" : "developer" } ], "age" : { "$gt" : 40 } }, { "first" : 1, "last" : 1, "occupation" : 1, "dob" : 1 } );
+{ "_id" : ObjectId("50809baca6f156b3a8004860"), "dob" : "21/04/1978", "first" : "tony", "last" : "curtis", "occupation" : "developer" }
+> db.nettuts.find( { "first" : /(ma|to)*/i, "last" : /(se|de)/i  } );
+{ "_id" : ObjectId("50809baea6f156b3a8004863"), "first" : "judi", "last" : "dench", "dob" : "09/12/1934", "gender" : "f", "hair_colour" : "white", "occupation" : "actress", "nationality" : "english" }
+{ "_id" : ObjectId("50809baba6f156b3a800485d"), "age" : 18, "dob" : "21/04/1978", "first" : "matthew", "gender" : "m", "hair_colour" : "brown", "last" : "setter", "nationality" : "australian", "occupation" : "developer" }
+> db.nettuts.find( { "first" : /(jam?e*)*/i, "gender" : "f", "occupation" : "actor", "nationality" : "american"  } );
+{ "_id" : ObjectId("50809baca6f156b3a8004861"), "age" : 22, "dob" : "22/11/1958", "first" : "jamie lee", "gender" : "f", "hair_colour" : "brown", "last" : "curtis", "nationality" : "american", "occupation" : "actor" }
+> var map = function() {emit( { gender= this.gender }, { count: 1 } );}
+Thu Oct 18 20:52:27 SyntaxError: missing : after property id (shell):1
+> var map = function() {
+...     emit( { gender: this.gender }, { count: 1 } );
+... }
+> var reduce = function(key, values) {
+...     var result = { count : 0 };
+...     values.forEach(function(value){
+...         result.count += value.count;
+...     })
+...     return result;
+... }
+> var res = db.nettuts.mapReduce( map, reduce, { out : 'gender' } );
+> db.gender.find();
+{ "_id" : { "gender" : "f" }, "value" : { "count" : 2 } }
+{ "_id" : { "gender" : "m" }, "value" : { "count" : 5 } }
+> var res = db.nettuts.mapReduce( map, reduce, { out : 'gender', query : { "gender" : "f" } } );
+> db.gender.find();
+{ "_id" : { "gender" : "f" }, "value" : { "count" : 2 } }
+
+
+
+
+
+
+
+

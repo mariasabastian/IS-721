@@ -1,0 +1,57 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop jar hadoop*examples*.jar wordcount /user/hduser/mariaps12-gutenberg /user/hduser/mariaps12-gutenberg-output
+12/12/02 20:53:56 INFO input.FileInputFormat: Total input paths to process : 3
+12/12/02 20:53:56 INFO util.NativeCodeLoader: Loaded the native-hadoop library
+12/12/02 20:53:56 WARN snappy.LoadSnappy: Snappy native library not loaded
+12/12/02 20:53:57 INFO mapred.JobClient: Running job: job_201212022039_0001
+12/12/02 20:53:58 INFO mapred.JobClient:  map 0% reduce 0%
+12/12/02 20:54:29 INFO mapred.JobClient:  map 66% reduce 0%
+12/12/02 20:54:44 INFO mapred.JobClient:  map 100% reduce 0%
+12/12/02 20:54:50 INFO mapred.JobClient:  map 100% reduce 22%
+12/12/02 20:54:56 INFO mapred.JobClient:  map 100% reduce 100%
+12/12/02 20:55:04 INFO mapred.JobClient: Job complete: job_201212022039_0001
+12/12/02 20:55:04 INFO mapred.JobClient: Counters: 29
+12/12/02 20:55:04 INFO mapred.JobClient:   Job Counters 
+12/12/02 20:55:04 INFO mapred.JobClient:     Launched reduce tasks=1
+12/12/02 20:55:04 INFO mapred.JobClient:     SLOTS_MILLIS_MAPS=58547
+12/12/02 20:55:04 INFO mapred.JobClient:     Total time spent by all reduces waiting after reserving slots (ms)=0
+12/12/02 20:55:04 INFO mapred.JobClient:     Total time spent by all maps waiting after reserving slots (ms)=0
+12/12/02 20:55:04 INFO mapred.JobClient:     Launched map tasks=3
+12/12/02 20:55:04 INFO mapred.JobClient:     Data-local map tasks=3
+12/12/02 20:55:04 INFO mapred.JobClient:     SLOTS_MILLIS_REDUCES=27260
+12/12/02 20:55:04 INFO mapred.JobClient:   File Output Format Counters 
+12/12/02 20:55:04 INFO mapred.JobClient:     Bytes Written=880838
+12/12/02 20:55:04 INFO mapred.JobClient:   FileSystemCounters
+12/12/02 20:55:04 INFO mapred.JobClient:     FILE_BYTES_READ=2214849
+12/12/02 20:55:04 INFO mapred.JobClient:     HDFS_BYTES_READ=3671926
+12/12/02 20:55:04 INFO mapred.JobClient:     FILE_BYTES_WRITTEN=3775659
+12/12/02 20:55:04 INFO mapred.JobClient:     HDFS_BYTES_WRITTEN=880838
+12/12/02 20:55:04 INFO mapred.JobClient:   File Input Format Counters 
+12/12/02 20:55:04 INFO mapred.JobClient:     Bytes Read=3671517
+12/12/02 20:55:04 INFO mapred.JobClient:   Map-Reduce Framework
+12/12/02 20:55:04 INFO mapred.JobClient:     Map output materialized bytes=1474341
+12/12/02 20:55:04 INFO mapred.JobClient:     Map input records=77932
+12/12/02 20:55:04 INFO mapred.JobClient:     Reduce shuffle bytes=1474341
+12/12/02 20:55:04 INFO mapred.JobClient:     Spilled Records=255962
+12/12/02 20:55:04 INFO mapred.JobClient:     Map output bytes=6076095
+12/12/02 20:55:04 INFO mapred.JobClient:     CPU time spent (ms)=10820
+12/12/02 20:55:05 INFO mapred.JobClient:     Total committed heap usage (bytes)=408891392
+12/12/02 20:55:05 INFO mapred.JobClient:     Combine input records=629172
+12/12/02 20:55:05 INFO mapred.JobClient:     SPLIT_RAW_BYTES=409
+12/12/02 20:55:05 INFO mapred.JobClient:     Reduce input records=102322
+12/12/02 20:55:05 INFO mapred.JobClient:     Reduce input groups=82335
+12/12/02 20:55:05 INFO mapred.JobClient:     Combine output records=102322
+12/12/02 20:55:05 INFO mapred.JobClient:     Physical memory (bytes) snapshot=496988160
+12/12/02 20:55:05 INFO mapred.JobClient:     Reduce output records=82335
+12/12/02 20:55:05 INFO mapred.JobClient:     Virtual memory (bytes) snapshot=1499938816
+12/12/02 20:55:05 INFO mapred.JobClient:     Map output records=629172
+
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -ls /user/hduser
+Found 2 items
+drwxr-xr-x   - hduser supergroup          0 2012-12-02 20:42 /user/hduser/mariaps12-gutenberg
+drwxr-xr-x   - hduser supergroup          0 2012-12-02 20:54 /user/hduser/mariaps12-gutenberg-output
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -ls /user/hduser/mariaps12-gutenberg-output
+Found 3 items
+-rw-r--r--   1 hduser supergroup          0 2012-12-02 20:54 /user/hduser/mariaps12-gutenberg-output/_SUCCESS
+drwxr-xr-x   - hduser supergroup          0 2012-12-02 20:53 /user/hduser/mariaps12-gutenberg-output/_logs
+-rw-r--r--   1 hduser supergroup     880838 2012-12-02 20:54 /user/hduser/mariaps12-gutenberg-output/part-r-00000
+

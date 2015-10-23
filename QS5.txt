@@ -1,0 +1,249 @@
+1. What are the issues with data vs. document style xml documents for persistence in a database? How does middleware fit in?
+
+Data centric documents are documents which uses XML for data transportation. These kind of documents are generally structured 
+regularly and are finely grainedand no mixed content. Document centric documents are used for human consumption which is generally 
+irregular, largely grained and has mixed content. Data centricdocuments originate in the database while document centric does not. 
+Middleware is used here as a software by data centric documents that helps in transfering data between XML documents and database. 
+Middlewares access the relational databases with the use of ODBC, JDBC or OLE DB most of the time.Document centric: document centric 
+use of xml data is data that you always use in its complete form. If you want to use the data, then you always will retrieve it as
+one entity or you save it as one entity. You are not interested in the xml data / information inside this "package" / document, you
+are only interested  in its total form. Lets say, you have an invoice which can be printed on one sheet of paper. This paper that 
+contains you data, will always be treated in a document driven way, that is, in its total representation: information containted 
+on a sheet of paper (document). Data centric. data centric use of xml, is usage of data were the main interest point is focused 
+on only pieces of the total set of xml data within a document.So instead of being interested in the whole invoice, you only are 
+interested in information like "amount of money to be payed" or "invoicenumber". Handling of XML data comes with (hidden) costs. 
+Knowing how your data will be used, has to be used, is one of the first steps in designing you environment  (and will have an big 
+impact if you choose poorly). For instance, if you know that your data will always be handled (and must be stored) in a document 
+driven way, then it will make sense to store it based on CLOB based XMLType storage. This will garantee best performance retrieval 
+for your xml document. If you now that your xml data has to be stored so that it can be handled in a data centric way, then Object 
+Relational XMLType storage. If conditions are setup properly data  retrieval, inserts and updates will be more cost efficient then 
+when based on CLOB XMLType storage. There are more differences and "cost markers" when or when not to use CLOB, OR or for instance 
+Binary XML. The first two chapters of the XMLDB Developers Guide for Oracle 11g will give you a good head start making some of 
+those decisions. Be also aware that you probably will have to make compromises. The current state  of XML, for example, doesn't 
+have the final solution yet for a uniform storage method.A data-centric XML document contains regular repeating elements.  
+Child elements of a given element might all have the same tag name, or they might not.Typically, child element order doesn’t matter.  
+There are lots of examples of this – many types of transforms of a relational database to XML results in  data-centric XML.  
+RSS feeds are another.Document-centric XML documents have the characteristic that the child elements of a given element are much 
+less bounded – you might have many child elements  of a given name, or you might have none.  You might have ‘recursion’ in the 
+hierarchy – element A is a child of element B, which is itself a child of a  different element A.  
+A number of examples: Open XML word processing markup, XHTML, and XPS.
+I further divide document-centric XML documents into two camps – those that contained mixed content, and those that don’t. 
+Mixed content is a variety of XML where significant text nodes and elements are interspersed.Insignificant text nodes are the 
+white space that provides indenting when formatting XML.Open XML word processing markup doesn’t contain mixed content, whereas 
+XHTML does:Document-centric XML documents have the characteristic that the child elements of a given element are much less bounded 
+– you might have many child elements of a given name, or you might have none.  You might have ‘recursion’ in the hierarchy – 
+element A is a child of element B, which is itself a child of a different element A.  A number of examples: Open XML word processing 
+markup, XHTML, and XPS.I further divide document-centric XML documents into two camps – those that contained mixed content, and 
+those that don’t.  Mixed content is a variety of XML where significant text nodes and elements are interspersed.  Insignificant 
+text nodes are the white space that provides indenting when formatting XML.  Open XML word processing markup doesn’t contain mixed 
+content, whereas XHTML does.
+
+2. How is locking variously implemented in xml native databases? What are the issues for performance?
+
+In XML databases, as data is stored in a tree format, when you want to lock a particular data which is in a node you need to lock 
+the parent which will atlast lead us to lock the whole document. To overcome this in XML native dataases two types of locking is 
+followed- Path Lock Propagation and Path Lock Satisfiability. In Path Lock Satisfiability, Read Locks are provided in a such a way 
+that, when a particular node is to be accessed, the node and its corresponding parent node is alone locked. In Path Lock Propagation,
+Read Locks are provided in such a way that, when a particular node is to be accessed, that node and the nodes just below it will be 
+lock thus locking the nodes traversed to execute a query. Write Locks is performed in the same manner for both type of locking. 
+If a parent node has a write lock, it means that the list of children nodes corresponding to that node has been changed. On the 
+other hand, if a leaf node has a write lock it means that the text of that particular node has been changed. In both type of locking, 
+the conflicting locks are same. Two read locks doesnt conflict each other. A read lock and a write will conflict each other and two 
+write locks will also conflict each other. As setting up of the locks will happen just before the query execution, the performance 
+decreases as the execution time will increase.Virtually all native XML databases support transactions (and presumably support rollbacks). 
+However, locking is often at the level of entire documents, rather than at the level of document fragments, so multi-user concurrency can 
+be relatively low. Whether this is an issue depends on the application and what constitutes a "document".For example, if a user's guide 
+has been partitioned into individual chapters, each of which is a document, then concurrency problems are likely to be low, as two writers 
+updating the same chapter at the same time is an unlikely occurrence. On the other hand, if all of the customer data for an entire 
+company is stored in a single document(a bad design), document-level locking is likely to prove disastrous.In the future, most native 
+XML databases will probably offer fragment-level locking.Locking scheme prevents two concurrent transactions from creating uncommitted 
+versions of the same page. When transaction commits, all its versions become last committed ones. If it is rolled back, all its versions 
+are simply discarded. When reading, transaction fetches last committed versions (or reads its own versions if it has created them).
+
+3. How are the nosql and xml database toolchains at odds? How compatible?
+
+Certain NoSQL databases like Mongodb supports JSON files and also by XML Databases. It seems like Mongodb will be replacing XML in data 
+centric applications which use mor of JSON interfaces The situation today is that Hadoop, a NoSQL database is processing text content 
+and converting it into a baseline XML which can be stored in MarkLogic and queried using XQuery. MarkLogic and exist-db has a minimum 
+impedance for XML databases which makes them ideal for document centric applications. Mongodb wont be able to replcae XML database as 
+MarkLogic as the JSON which is useful for handling common tasks doesnot support infrastructure for standard schemas and search tools. 
+Unlike NoSQL, XML has a devoted language which is used for querying its database. But with the XRX, XQuery is started to be accepted 
+as a part of NoSQL.atabase Master provides powerful and intuitive JSON query editor for MongoDB database queries. It supports most used 
+MongoDB query operations and commands. JSON Query Editor is multi-threaded and allows long running queries and return multiple result sets. 
+The query editor supports JSON IntelliSense (Code Completion, Query Operators and Methods), code highlighting, text find/replace and 
+other user friendly features.XML vs. JSON isn’t a “non-debate” and people are choosing to drop support for XML in their Web Services 
+for very good, very important reasons. Few find themselves being more productive while working with XML Web Services vs. JSON Web Services. 
+Certainly, Norm points out many of the benefits of JSON in his blog post:If all you want to pass around are atomic values or lists or hashes 
+of atomic values, JSON has many of the advantages of XML: it’s straightforwardly usable over the Internet, supports a wide variety of 
+applications, it’s easy to write programs to process JSON, it has few optional features, it’s human-legible and reasonably clear, its 
+design is formal and concise, JSON documents are easy to create, and it uses Unicode.If you’re writing JavaScript in a web browser, 
+JSON is a natural fit. The XML APIs in the browser are comparitively clumsy and the natural mapping from JavaScript objects to JSON 
+eliminates the serialization issues that arise if you’re careless with XML.One line of argument for JSON over XML is simplicity. If you 
+mean it’s simpler to have a single data interchange format instead of two, that’s incontrovertibly the case. If you mean JSON is intrinsically 
+simpler than XML, well, I’m not sure that’s so obvious. For bundles of atomic values, it’s a little simpler. And the JavaScript APIs are 
+definitely simpler.XML is more complex than necessary for Web Services. By default, XML requires you to use complex features that many 
+Web Services do not need to be successful.JSON not only fits in well with the Web’s JavaScript programming model, but it provides a simpler, 
+easier to understand data model for Web programmers. XML is more complex than JSON – many people don’t need namespaces and they don’t need 
+mixed content documents. They need simple data structures and a simple, compact, data exchange format.That’s not to say that XML doesn’t 
+have its place on the Web – it certainly does, but its value for implementing Web Services is being actively challenged. In some ways, claims
+that XML vs. JSON is a “non-debate” these days are true. Many are outright rejecting XML in favor of JSON as their data serialization 
+format for Web Services
+
+
+4. Why is XRX claimed to have simpler application development? Give a particular example not from the reading.
+
+XRX is a combination of XForms on the client, REST interfaces and XQuery on the server. Data model used by XRX is XML thus there is no 
+need for translationof data in the communication process between the client and the server. XPath is used on both the client and the Server side. 
+The complexity is reduced somuch as usually there will be different technologies used for the front end and the back end. XRX makes it simple 
+by using just XML for XForms which servers as front end and XQuery which serves as the backend. The REST interface's work is also reduced as 
+there is no need to change the data format. As we start using XML the need for coding also reduces. Thus making it a very simpler application 
+development compared to the existing application development approaches.For example, Retail applications will have a huge amount of data which 
+are of different types which needs to access different tables. In that case, if we useany other database, we will have to write those many 
+insert statements, instead in XML we can use one statement which will perform the insertion. This will increase the performance and also 
+removes complexity.These three standards allow developers to use a single data format (XML) on the client, middle tier and the databases 
+server. This means there is no translation of the data formats between layers. In contrast to this, many other modern systems communicate 
+using XML, process business logic in an object-oriented layer, store data in a relational database, and render a GUI as HTML.Consider all 
+the "glue" code in a typical modern system, which serves no purpose other than to translate from one representation to another: object-relational 
+mappings, HTML rendering code, XML import/export code. These web application architectures take HTML forms (which use flat key-value pairs), 
+convert these data structures to middle tier objects such as Java or .Net and then transform the objects into tabular data streams so they can 
+be stored in relational databases. Once in the relational database the data must then be re-serialized by doing SELECT statements, converted 
+into objects and the objects then converted back into HTML forms. This is a four-step translation architecture.In contrast, XRX uses a zero-
+translation architecture. Zero translation implies that XML is stored in the web client, transmitted to a middle tier validation rules engine 
+in XML and then stored in its entirety in an XML database. Typically, XML is also the format that data is delivered or streamed in from other 
+systems. The storage as XML is also known as a zero-shredding process since the data files are not separated into Third Normal Form (3NF) data 
+structures.This relational (3NF) storage is often not helpful. XML data has the relationships built into the data, whereas relational data is 
+stored in "dumb" tables and allows/requires the applications to specify the relationships. For applications where the relationships are well 
+known (e.g. a user has a collection of blog posts, and those posts have collections of comments and replies) XML is better. When a "data warehouse" 
+is needed and the relationships will vary widely based on the calling application, a relational store may be better because RDBs are optimized for 
+ad-hoc joins where XML DBs are generally not. (e.g. a group of users are in a social network and there are a variety of ad-hoc relationships that 
+*all* must be queried quickly - use an RDB). XML databases are optimized for the relationships built into the XML, relational databases are 
+optimized for easy programming and performance on one preferred set of relationships.
+
+
+
+5. Describe the IHE from the reading. Give special attention to XProc and transaction issues.
+
+IHE, Integrated Health Exchange is a consortium that develops interoperability standards for healthcare delivery systems. They form specifications
+on how wide range of devices and systems should communicate so that they will be always connected. All patienrts medical records and the documents
+ are stored in repository.IHE has formed a certain set of rules for the XDS repository. XProc is a high level programming language which is used 
+to wire the XML processing steps in sucha way that output of one step is provided as input for the next step. XProc could have been used in the 
+current implementation where the submission sets are executed step by step which would have been useful in reusing the code. XProc engines have 
+transaction boundaries which allows pipeline contruction that execute multiple XQueries and still have them succeed or fail as a single unit. 
+This capability is helpful in constructing RESTful services where compound resources arecommon.One might note that while in our current implementation 
+we have split our submission set into more fine-grained parts within the XQuery, that we could also have done so in the XProc pipeline. Doing the 
+split as a step in the XProc pipeline could result in greater reuse of portions of the implementation and code that is easier to produce and maintain.  
+But then what would come of our requirement for atomicity in the construction of the submission set, if pipeline were to execute several updating 
+XQuery steps?Fortunately, the Xproc engine that we are using in house provides transaction boundaries at the start and end of a pipeline.This allows 
+us to construct pipelines that execute multiple XQueries, yet have them succeed or fail as one single unit.  This powerful capability is quite welcome 
+in the construction of RESTful services where compound resources are common.
+
+
+
+
+6. How can json be used with XQuery? Why is this a good idea for json? Is it applicable to xml?
+
+JSONiq which is an edited format of XQuery can be used as a querying language for JSON. This can be done with a moderate input of rewriting
+XQuery in a formatwhich alows it to support JSON. This is a very good enhancement as the JSON doesn't have a proper querying mechanism and
+it is always better to move to JSON than trying to remain in XML as JSON provides simple solution compared to XML. This can be done by removing
+all the XML related code and add in constructs and navigations useful for JSON. On the other hand, we can also change it in such a way that it 
+supports both JSON and XMl. Thus, one profile is fully dedicated to JSON which makes it a simple language, easier to optimize with sophisticated 
+querying capabilities which are well suited for JSON environment. Another profile,which adds JSON support to existing XQuery thus making it useful 
+to produce and extract data from XML, HTML and JSON.The JSONiq extension to XQuery allows processing XML and JSON natively and with a single language. 
+This extension is based on the same data model as the core JSONiq and is based on the same logical concepts. Because of the complexity of the XQuery 
+grammar, the JSONiq extension to XQuery has a less pleasant syntax. For example, object lookup is done with a function invocation syntax, all keys must 
+be quoted, and escaping is done with ampersands instead of backslashes, builtin atomic types must be prefixed with xs:, true, false and null must be 
+created with functions, structured item types must be followed by parentheses.JSON (JavaScript Object Notation) is a data-interchange format which is 
+designed to pass data to and from JavaScript. It is very useful in a web application to pass data back and forth between XQuery and JavaScript, 
+and JSONis a popular mechanism for such data interchange. You could also use JSON to interchange data between XQuery and other programming 
+environments. JSON is designed so it is both machine- and human-readable. For more details about JSON, see json.org.To facilitate data-interchange,
+MarkLogic Server includes the JSON built-in XQuery functions. These functions allow you to easily take XQuery items and create JSON representations
+ of them, and to take a JSON string and create XQuery items from it.Most XQuery types are serialized to JSON in a way that they can be round-tripped 
+(serialized to JSON and parsed from JSON back into a series of items in the XQuery data model) without any loss, but some types will not round-trip 
+without loss. For example, an xs:dateTime value will serialize to a JSON string, but that same string would have to be cast back into an xs:dateTime 
+value in XQuery in order for it to be equivalent to its original.XML and JSON have become the dominant formats for exchanging data on the Internet, 
+and applications frequently need tosend and receive data in many different JSON-based or XML-based formats. For XML data, a query language like XQuery 
+can be used to query data, create or update data, transform it from one format to another, or route data. Adding JSON support to XQuery allows it to 
+perform these tasks for both XML and JSON, combining data from multiple sources as needed.JSONiq is a query language for JSON, based on XQuery. 
+It is designed to allow an existing XQuery processor to be rewritten to support JSON with moderate effort. One profile of JSONiq removes everything 
+directly related to XML, adding JSON constructors and navigation. Another profile of JSONiq includes the full XQuery language, with added JSON 
+support, allowing queries to consume or produce JSON, XML, or HTML.
+
+
+
+
+7. Why is xml technology good for specfic application areas but falling into less use in the general web application area?
+
+XML technology is good for certain applications but are not used in general web application areas. This is because XML has certain unique features
+ which are not particularly necessary for certain appliactions. XML is complex compared to some formats like JSON. XML defines namespaces for all 
+the attributes which is not necessary for all appliactions. It focuses on documentswhereas some appliaction needs focus on data. XML has document 
+schemas, DTD's and entities which are not used for all applications. Some appliactions need schema less, entity free technologies. XML and its 
+extensions have regularly been criticized for verbosity and complexity.Mapping the basic tree model of XML to type systems of programming languages 
+or databases can be difficult, especially when XML is used for exchanging highly structured data between applications, which was not its primary 
+design goal. Other criticisms attempt to refute the claim that XML is a self-describing language[37] (though the XML specification itself makes 
+no such claim). JSON, YAML, and S-Expressions are frequently proposed as alternatives which focus on representing highly structured data rather 
+than documents, which may contain both highly structured and relatively unstructured content.XML provides an elemental syntax for content structure 
+within documents, yet associates no semantics with the meaning of the content contained within. XML is not at present a necessary component of 
+Semantic Web technologies in most cases, as alternative syntaxes exists, such as Turtle. Turtle is a de facto standard, but has not been through a 
+formal standardization process. XML Schema is a language for providing and restricting the structure and content of elements contained within XML 
+documents.We intend to leverage XML technology for Web applications, looking for a methodology that lets domain experts be involved into the software 
+development process from start to finish, even empowers them to do their own software development. We envision XML technology as open, accessible, 
+well supported technology to be leveraged for Web applications: Information is represented and manipulated with XML technology. Data and programs 
+are deployed on a Web server, stored in an XML database, run by XML processors (XSLT, XQuery, XProc) and accessed from XML-aware Web clients (XForms) 
+via the HTTP protocol.The required XML technology, such as XML processors and systems to support the various XML languages, is in place and accessible
+to end users. The XRX architecture provides a point of reference, how to make use of standard Web servers, Web browsers and the HTTP protocol as the 
+plattform on which to run components of XML-based Web applications without system lock-in.
+
+
+8. Does Saxon use a DOM or a SAX parser? Which would be best for processing a long doc like in Existdb1ex6? Why? What about a transform of Existdb1ex7 that would
+   allow a transform to html that inserted links to resolve the actual border country names (not just codes)?
+
+Saxon made certain enhancement to SAX parser which can allow us to provide handler for each item type thus making document modular, ability to find 
+out the parentnode of the present working node, organizing the document by splitting them into chunks, extends SAXInputSource allowing you to specify 
+a file name as input. For documents like Existdb1ex6 using SAX parsers would be perfect as the document is very large and it does not need any changes 
+or addition, it only needs to besearched and data needs to be retreived. For documents like Existdb1ex7 DOM parsers should be used as modifications can 
+be made which is required in this documentwhere a tranformation to html is required to resolve the country border names from the existing country codes. 
+In such case SAX cannot be used as it doesnot providethe capability to create or modify the internal structure of the XML document.DOM (currently up to 
+level 3.0) has been widely criticized for being too complicated; it has tried to maintain the same programming interface for whatever language it is 
+implemented in, even if it violates some of the conventions of that language.This has led to some DOM-like implementations that are more in keeping 
+in line with the philosophy of the local language. Examples in Java include TinyTree(used only in Saxon),JDOM, DOM4J and XOM. SAXON provides a layer 
+of services on top of a SAX-compliant XML parser. It will work with any Java-based XML parser that implements the SAX1 or SAX2 interface. You can 
+define the parser to be used by supplying a parser within the SAXSource object supplied to the Builder.build() method. If you don't supply a parser,
+SAXON will use its own built-in XML parser, com.icl.saxon.aelfred.SAXDriver.
+
+
+9. Desribe the typical modern xml support in the database postgresql? When is it good to use these extensions and when is a BLOB just as good (give examples)?
+
+XML supports database postgresql by three means:
+XML Data types and support functions- XML data can contain two type of values, a document or a fragment. A document contains a header, end element 
+just like xmldocument. A fragment looks like a xml syntax but not necessarily a complete document. It makes reference to document or a content. 
+This also provides certain xmlfunctions to the xml data types.XML Export Formats- XML allows people to create their own formats. In order to 
+settle on one format, the SQL standard contains a specification. There are specifications for mapping SQL Schema to XML Schema, Mapping database 
+contents to an XML document.Mapping XML documents to SQL database- This involves heirarchicaly creating the equivalent SQL database from the document. 
+When Schema mapping needs to be done, we use these extensions. We use BLOB when more space is needed.he new PostgreSQL service is an excellent option 
+for our relational database needs. PostgreSQL was originally developed and optimized to run on physical machines. Now that we are running our databases 
+in the cloud it makes sense to optimize them for that environment. This is exactly what VMware has done for Postgres by creating a version that is 
+optimized for the virtualized cloud environment. To power the PostgreSQL service on cloudfoundry.com the Cloud Foundry team is using vFabric Postgres 9.0, 
+a vSphere-optimized version of Postgres. The vFabric Postgres product is part of the recently announced vFabric Data Director, which is a new database 
+provisioning and operations solution designed to deliver a Database-as-a-Service model for the enterprise. The first database supported on Data Director 
+is vFabric Postgres.PostgreSQL Studio allows users to perform essential PostgreSQL database development tasks from a web-based console. 
+PostgreSQL Studio allows users to work with cloud databases without the need to open firewalls.
+AJAX/JavaScript-driven web interface for PostgreSQL. Allows browsing, maintaining and creating data and database objects via a web browser. 
+The interface offers tabbed SQL editor with auto-completion, row-editing widgets, click-through foreign key navigation between rows and tables, 
+'favorites' management for commonly used scripts, among other features. Supports SSH for both the web interface and the database connections. 
+Installers are available for Windows, Mac and Linux, as well as a simple cross-platform archive that runs from a script
+
+
+10. What is the CCD health document standard? Give a brief example of the xml for 2 diagnostic lab results.
+
+Continuity of Care document, is an XML based standard which specifies the encoding, semantics and structure of the clinical document which contains 
+patient summaryand is used for exchange. It also specifies that the document should contain human readable text content followed by structure parts 
+used for processing. It containsmost relevant administrative, demographic, and clinical information facts about a patient's health issues, current 
+status and clinical reports. This is then exchanged between healthcare practitioners. The CCD was selected by the Healthcare Information Technology 
+Standards Panel (HITSP) as the harmonized format for the exchange of clinical information. It was recognized in 2008 in the US by the Secretary of 
+Health and Human Services for this use. The CCD is a joint effort of HL7 and ASTM to foster interoperability of clinical data to allow physicians 
+to send electronic medical information to other providers without loss of meaning, which will ultimately improve patient care.For example, if there 
+are two documents in which one is a report of Complete Blood Count and another is Glucose Tolerance, both are structured in a format that it follows 
+HITSP/C37 validation rules enforced by the Validation Tool at the NIST. The Complete Blood Count document will contain the different test names, 
+time taken, count required, actual count etc which will be written in an XML format which when executed will give an output of file in a formatted order.
+
+

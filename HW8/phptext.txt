@@ -1,0 +1,493 @@
+721mongodb2.php
+
+<?php
+
+// rest url with pattern and apikey from the mongohq docs
+// "https://api.mongohq.com/databases/student/collections/courses/documents?q={'gender':'f'}&sort={'dob':1}&_apikey=xjp0pdwc3kd1dihzrsrn"
+// all the query retrievals are put into the switch statement
+
+$qtype = $_GET['q'];
+
+switch ($qtype) {
+	case "all":
+		$request =  'https://api.mongohq.com/databases/student/collections/student/documents?_apikey=xjp0pdwc3kd1dihzrsrn';
+		break;
+	case "male":
+		$request =  "https://api.mongohq.com/databases/student/collections/student/documents?q={'gender':'m'}&_apikey=xjp0pdwc3kd1dihzrsrn";
+		break;
+	case "sophomore":
+		$request =  "https://api.mongohq.com/databases/student/collections/student/documents?q={'year':'sophomore'}&_apikey=xjp0pdwc3kd1dihzrsrn";
+		break;
+	case "california":
+		$request =  "https://api.mongohq.com/databases/student/collections/student/documents?q={'state':'california'}&_apikey=xjp0pdwc3kd1dihzrsrn";
+		break;
+	case "IS603":
+		$request =  "https://api.mongohq.com/databases/student/collections/student/documents?q={'courses':'IS603'}&_apikey=xjp0pdwc3kd1dihzrsrn";
+		break;
+	case "oall":
+		$request =  "https://api.mongohq.com/databases/student/collections/courses/documents?_apikey=xjp0pdwc3kd1dihzrsrn";
+		break;
+	}
+
+// send request to the service using curl - http://us2.php.net/curl
+$ch = curl_init();    // initialize curl handle
+curl_setopt($ch, CURLOPT_URL, $request); // set url to post to - must match above
+curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0); 
+curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);// allow redirects
+curl_setopt($ch, CURLOPT_RETURNTRANSFER,1); // return into a variable
+curl_setopt($ch, CURLOPT_TIMEOUT, 3); // times out after 3s
+//curl_setopt($ch, CURLOPT_POST, 1); // set POST method - GET is default
+curl_setopt($ch, CURLOPT_GET, 1);
+//curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string); // -d
+
+// run the whole process and put the response from the service into the $json variable
+if(($json = curl_exec($ch)) === false)  // error handling and creates the return link
+{
+    echo 'Curl error: ' . curl_error($ch) . '<br/>';
+}
+else
+{
+    //echo 'Operation completed without any errors.';
+}
+curl_close($ch);
+//send the response json
+echo($json);
+?>
+
+721mongodb2o.php
+
+<?php
+
+include("JSON.php");  // include library to get json encode/decode see ../JSON.txt
+//rest url with pattern and apikey from the mongohq docs
+//"https://api.mongohq.com/databases/student/collections/student/documents?q={'gender':'f'}&sort={'dob':1}&_apikey=xjp0pdwc3kd1dihzrsrn"
+
+$q = $_GET['q']; // get id for the request url - see rest api docs
+
+$request =  'https://api.mongohq.com/databases/student/collections/courses/documents?q={"course":"'.$q.'"}&_apikey=xjp0pdwc3kd1dihzrsrn';
+
+// send request to the service using curl - http://us2.php.net/curl
+$ch = curl_init();    // initialize curl handle
+curl_setopt($ch, CURLOPT_URL, $request); // set url to post to - must match above
+curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0); // prevents bad SSL cert from killing the request
+curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);// allow redirects
+curl_setopt($ch, CURLOPT_RETURNTRANSFER,1); // return into a variable
+curl_setopt($ch, CURLOPT_TIMEOUT, 3); // times out after 3s
+// run the whole process and put the response from the service into the $json variable with error handling and creates the return link
+if(($json = curl_exec($ch)) === false)  
+{
+    echo 'Curl error: ' . curl_error($ch) . '<br/>';
+}
+else
+{
+    //echo $json;
+}
+curl_close($ch);
+//process the response json
+$result=json_decode($json, true);  // note that php5 has this function natively but gl only has php4 so we have to include the JSON.php lib above.
+// note that this is the ONLY page where it is built server-side and it is trivially simple. all the other pages just take the json and build it client-side.
+// the dot is the php concatenation operator
+//print_r($result); //see here the structure off the return - a one member array of an object
+// see in action with 721mongodb2o_test.php?q=politician - this is a verion using print_r
+echo "<div style='background: green; width:450px'><h3>Course: " . strtoupper($result[0]->course) . " </h3> Description= " . $result[0]->desc."</div>";
+?>
+
+721mongodb_q.php
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<!-- this loads all the js libraries needed to maje this work -->
+  <script src="jquery-1.7.1.min.js" type="text/javascript"></script>
+  <script src="jquery.tmpl.min.js" type="text/javascript"></script>
+  <script src="jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+  <script src="jquery.tinysort.min.js" type="text/javascript"></script>
+
+  <style type="text/css">
+    .fname {
+      font-style:italic
+    }
+    .tag {
+      color: orange;
+    }
+    .view {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<!-- this creates a template that can be reused below - i only did a couple for edit, but you see the pattern -->
+<!-- note that a special template operator from the lib {{each}} is used to loop through the array of coursess -->
+<!-- note that there is a link to the description for each courses -->
+<script id="listTemplate" type="text/x-jquery-tmpl"> 
+  <li>
+    <div class="fn"><b>first_name</b>: <span class="fname">${first}</span><br /></div>
+    <form class="fn view" method="POST" action="supdate.php">
+      <b>FirstName</b>: <span class="fname"><input type="text" name="first" value='${first}' /></span>
+      <input type="submit" value="Go"/>
+      <input type="hidden" name="id" value="${_id.$oid}"/>
+    </form>
+
+    <b>LastName</b>: <span class="lname">${last}</span><br /> 
+
+    <b>Gender</b>: <span class="tag">${gender}</span><br />
+
+    <b>DOB</b>: <span class="d">${dob}</span><br />
+
+    <b>Year</b>: <span class="d">${year}</span><br />
+    <b>State</b>: <span class="d">${state}</span><br />
+
+
+    {{each courses}}
+      <b><a href="721mongodb2o.php?q=${$value}" target="_blank">courses</a></b>: <span class="tag">${$value}</span><br />
+    {{/each}}
+    
+    <form method="POST" action="sdelete.php">
+        <b style="color:red">DELETE This Entry</b>: <input type="submit" value="X"/>
+        <input type="hidden" name="id" value="${_id.$oid}"/>
+    </form><br />
+  </li>
+</script>
+
+<div id="list"> <!-- this contains the div with the id for update with the template list -->
+  <h3>Student Records</h3>
+  <button>EDIT The Entries</button> (update not required for hw, but delete is)
+  <ul id="starList"></ul>
+</div>
+
+<!-- this is the ajax request for the php that returns a json doc and then puts it into the template-->
+<script type="text/javascript"> 
+  var stars = [];
+  $.ajax({
+    type: "GET",
+    url: '721mongodb2.php?q=<?php  echo $_GET['q'] ?>',
+    async: false,
+    dataType: 'json',
+    success: function (json) {stars = json;}
+  });
+
+  $( "#listTemplate" ).tmpl( stars ).appendTo( "#starList" ); // puts the stars array into the tempalte and appends it to the DOM
+  $('ul#starList>li').tsort('span.lname');  // sorts the list of templates
+</script>
+
+<!-- this toggles the form field display when you click on the button -->
+<script> 
+  $("button").click(function () {
+    $(".fn").toggleClass("view");
+  });
+</script>
+
+<!--  this puts the home link in the right bottom corner for navigation -->
+<div style="position: fixed;
+  bottom: 0;
+  right: 0;
+  background: yellow;">
+  <a href="index.html"><center>Home</center></a>
+</div>
+</body>
+</html>
+
+721mongodb_qo.php
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<!-- this loads all the js libraries needed to maje this work -->
+  <script src="jquery-1.7.1.min.js" type="text/javascript"></script>
+  <script src="jquery.tmpl.min.js" type="text/javascript"></script>
+  <script src="jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+  <script src="jquery.tinysort.min.js" type="text/javascript"></script>
+
+  <style type="text/css">
+    .fname {
+      font-style:italic
+    }
+    .tag {
+      color: blue;
+    }
+    .view {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<!-- this creates a template that can be reused below - same code really as for the movie stars -->
+<script id="listTemplate" type="text/x-jquery-tmpl"> 
+  <li>
+    <div class="fn"><b>CourseName</b>: <span class="fname">${course}</span><br /></div>
+    <form class="fn view" method="POST" action="oupdate.php">
+      <b>CourseName</b>: <span class="fname"><input type="text" name="course" value='${course}' /></span>
+      <input type="submit" value="Go"/>
+      <input type="hidden" name="id" value="${_id.$oid}"/>
+    </form>
+
+    <div class="fn"><b>Description</b>: <span class="fname">${desc}</span><br /></div>
+    <form class="fn view" method="POST" action="oupdate.php">
+      <b>Description</b>: <span class="fname"><input type="text" name="desc" value='${desc}' /></span>
+      <input type="submit" value="Go"/>
+      <input type="hidden" name="id" value="${_id.$oid}"/>
+    </form>
+
+    <form method="POST" action="odelete.php">
+        <b style="color:red">DELETE</b>: <input type="submit" value="X"/>
+        <input type="hidden" name="id" value="${_id.$oid}"/>
+    </form><hr width="400" align="left"/>
+  </li>
+</script>
+
+<div id="list"> <!-- this contains the div with the id for update with the template list -->
+  <h3>Courses</h3>
+  <button>EDIT</button>
+  <ul id="starList"></ul>
+</div>
+
+<!-- this is the ajax request for the php that returns a json doc -->
+<script type="text/javascript"> 
+  var stars = [];
+  $.ajax({
+    type: "GET",
+    url: '721mongodb2.php?q=<?php  echo $_GET['q'] ?>',
+    async: false,
+    dataType: 'json',
+    success: function (json) {stars = json;}
+  });
+  $( "#listTemplate" ).tmpl( stars ).appendTo( "#starList" );
+  $('ul#starList>li').tsort('span.lname');
+</script>
+<!-- this toggles the form field display when you click on the button -->
+<script> 
+  $("button").click(function () {
+    $(".fn").toggleClass("view");
+  });
+</script>
+<div style="position: fixed;
+  bottom: 0;
+  right: 0;
+  background: yellow;">
+  <a href="index.html">Home</a>
+</div>
+</body>
+</html>
+
+odelete.php
+
+<?php
+
+$id = $_POST['id']; // get id for the request url - see rest api docs
+$request =  "https://api.mongohq.com/databases/student/collections/courses/documents/".$id."?_apikey=xjp0pdwc3kd1dihzrsrn";
+
+// send request to the service using curl - http://us2.php.net/curl
+$ch = curl_init();    // initialize curl handle
+curl_setopt($ch, CURLOPT_URL, $request); // set url to post to - must match above
+curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0); 
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");  // HTTP method                                                                                                                                
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                                  
+
+if(curl_exec($ch) === false)  // run the whole process with error handling and creates the return link
+{
+    echo 'Curl error: ' . curl_error($ch) . '<br/>';
+}
+else
+{
+    echo 'Operation completed without any errors.  Return to <a href="index.html">home</a>.';
+}
+curl_close($ch); // close connection
+?>
+
+onew.php
+
+<?php
+
+$request =  "https://api.mongohq.com/databases/student/collections/courses/documents?_apikey=xjp0pdwc3kd1dihzrsrn";
+
+foreach($_POST as $key=>$value) { $fieldstring .= '"' . $key .'"'.':'.'"'.$value.'"'.','; }
+$fieldstring=substr($fieldstring,0,-1);
+
+$postfields = '{"document" : { '. $fieldstring .'}, "safe" : true  }';
+//echo($postfields .'<br/>');
+
+// send request to the service using curl - http://us2.php.net/curl
+$ch = curl_init();    // initialize curl handle
+curl_setopt($ch, CURLOPT_URL, $request); // set url to post to - must match above
+curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0); 
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");  // HTTP method                                                               
+curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);  // HTTP entity body                                                                
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(       // set HTTP header fields                                                                   
+    'Content-Type: application/json',                                                                                
+    'Content-Length: ' . strlen($postfields))  // HTTP headers                                                                   
+);                   
+
+if(curl_exec($ch) === false)  // run the whole process with error handling
+{
+    echo 'Curl error: ' . curl_error($ch) . '<br/>';
+}
+else
+{
+    echo 'Operation completed without any errors.  Return to <a href="index.html">home</a>.';
+}
+curl_close($ch); // close connection
+
+?>
+
+oupdate.php
+
+<?php
+
+$id = $_POST['id']; // get id for the request url - see rest api docs
+$request =  "https://api.mongohq.com/databases/student/collections/courses/documents/".$id."?_apikey=xjp0pdwc3kd1dihzrsrn";
+
+// create the string according to the rest api docs - see example there
+foreach($_POST as $key=>$value) { if ($key== "id") continue; $fieldstring .= '"' . $key .'"'.':'.'"'.$value.'"'.','; }
+$fieldstring=substr($fieldstring,0,-1);
+$putfields = '{"document" : { "$set" : {'. $fieldstring .'} } }';
+
+// send request to the service using curl - http://us2.php.net/curl
+$ch = curl_init();    // initialize curl handle
+curl_setopt($ch, CURLOPT_URL, $request); // set url to post to - must match above
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");  // HTTP method  
+curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);                                                                 
+curl_setopt($ch, CURLOPT_POSTFIELDS, $putfields); // HTTP entity-body                                                                 
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(       // set HTTP header fields                                                                   
+    'Content-Type: application/json',                                                                                
+    'Content-Length: ' . strlen($putfields))  // HTTP headers                                                                     
+);                   
+
+if(curl_exec($ch) === false)  // un the whole process with error handling and creates the return link
+{
+    echo 'Curl error: ' . curl_error($ch) . '<br/>';
+}
+else
+{
+    echo 'Operation completed without any errors.  Return to <a href="index.html">home</a>.';
+}
+curl_close($ch); // close connection
+
+?>
+
+sdelete.php
+
+<?php
+
+$id = $_POST['id']; // get id for the request url - see rest api docs
+$request =  "https://api.mongohq.com/databases/student/collections/student/documents/".$id."?_apikey=xjp0pdwc3kd1dihzrsrn";
+
+// send request to the service using curl - http://us2.php.net/curl
+$ch = curl_init();    // initialize curl handle
+curl_setopt($ch, CURLOPT_URL, $request); // set url to post to - must match above
+curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0); 
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");  // HTTP method                                                                                                                                
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                                  
+
+if(curl_exec($ch) === false)  // run the whole process with error handling and creates the return link
+{
+    echo 'Curl error: ' . curl_error($ch) . '<br/>';
+}
+else
+{
+    echo 'Operation completed without any errors.  Return to <a href="index.html">home</a>.';
+}
+curl_close($ch); // close connection
+
+?>
+
+supdate.php
+
+<?php
+
+$id = $_POST['id']; // get id for the request url - see rest api docs
+$request =  "https://api.mongohq.com/databases/student/collections/student/documents/".$id."xjp0pdwc3kd1dihzrsrn";
+
+// creates the string according to the rest api docs - see example there
+foreach($_POST as $key=>$value) { 
+	if ($key== "id") continue; 
+	//if ($key=="courses") { $value = json_encode(explode(' ', rtrim($value))); } 
+	$fieldstring .= '"' . $key .'"'.':'.'"'.$value.'"'.',';
+
+}
+$fieldstring=substr($fieldstring,0,-1);
+$putfields = '{"document" : { "$set" : {'. $fieldstring .'} } }';
+
+
+// send request to the service using curl - http://us2.php.net/curl
+$ch = curl_init();    // initialize curl handle
+curl_setopt($ch, CURLOPT_URL, $request); // set url to post to - must match above
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");  // HTTP method
+curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);                                                                   
+curl_setopt($ch, CURLOPT_POSTFIELDS, $putfields); // HTTP entity-body                                                                 
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(       // set HTTP header fields                                                                   
+    'Content-Type: application/json',                                                                                
+    'Content-Length: ' . strlen($putfields))  // can change to $putfields                                                                     
+);                   
+
+if(curl_exec($ch) === false)  // run the whole process with error handling and creates the return link
+{
+    echo 'Curl error: ' . curl_error($ch) . '<br/>';
+}
+else
+{
+    echo 'Operation completed without any errors.  Return to <a href="index.html">home</a>.';
+}
+curl_close($ch); // close connection
+
+?>
+
+index.html
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    h3 {
+      background-color: orange;
+      width: 500px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h3>Student Records</h3>
+  <h4>Student Records Queries</h4>
+  <ul>
+    <!-- this is the entry page for our applciation -->
+    <!-- this calls the php that loads our list from the json according to different queries about movie stars -->
+    <li><a href="721mongodb_q.php?q=all">All Student Records</a></li>
+    <li><a href="721mongodb_q.php?q=male">Male Students</a>  </li>
+    <li><a href="721mongodb_q.php?q=sophomore">All Sophomore Students</a>  </li>
+    <li><a href="721mongodb_q.php?q=california">Students in California</a>  </li>
+    <li><a href="721mongodb_q.php?q=IS603">Students taking IS603 as one of course</a>  </li>
+       <hr width="450px" align="left"/>
+    <!-- this calls the php that creates (posts) a new movie star -->
+    </ul>
+
+  <!-- this calls the php that loads our occupations list with details from the json from a *different* collection -->
+  <h4>Courses</h4>
+  <ul>
+     <li><a href="721mongodb_qo.php?q=oall">Show Course Info</a></li>
+     <hr width="450px" align="left"/>
+     <!-- this calls the php that creates (posts) a new occupation (not done here but would require 2 files - say onew.html/onew.php, just like for movie stars) -->
+    <li><a href="onew.html">Create New Course</a></li>
+  </ul>
+</body>
+</html>

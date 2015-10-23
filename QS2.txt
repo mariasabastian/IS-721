@@ -1,0 +1,287 @@
+1. What are the major differences in function and history between memcached and redis?
+
+-Memcache was first developed for LiveJournal website in 2003 to serve its own purpose which later started to be used by many 
+other websites.Redis, an open-source key-value data store was developed which was sponsored by VMware in 2009.
+-Memcache provides no persistence as it doesnot actually store any data from the database for a long time. It only purges items 
+from memory to free space as and when needed. Redis on the other hand provides two modes of persistence. One, by taking snapshot 
+of data in the memory and other by appending file, when a change occurs or at regular intervals.
+-Memcache contains recently read data in the memory. When we want to retreive data, first memcahe is checked, if it doesnt contain 
+the necessary data, it is taken from the database and a copy is placed in memcache for later use. If memcache memory is full, the 
+least recently used data is deleted. So there is no replication of data. Redis actually stores the database in its memory, thus 
+when a data is to be retreived, it is taken from redis memory. There is very less connection with database. Redis provides 
+replication of data.
+-Memcache can be used only to read data. Write operation cannot be done. When a write operation is performed, if that data is present 
+in memcache it is deleted and data is written in the database. Redis can be used for both read and write operation.
+-Memcache, when it needs free space deletes the least recently used data in the memory. Redis, on the other hand selects three random 
+keys and delete the one that's the closest to expiring.
+-Memcache doesnt face any sort of failover as it doesnt store anything. It just pulls out data from database. Redis on the other hand 
+if fails, all the write operations that has happened will be failed.
+-Memcache is faster than redis as it doesnt have any much intervention with  the disc.
+-Redis has more functionalities then memcahced. For example persistence and replication are available only in Redis, so even if your 
+goal is to build a cache it helps that after an upgrade or a reboot your data are still there.
+-Redis is a lot easier to install. No dependencies required.
+memcached is a little bit faster than redis. It does not touch the disc it all
+-Redis has a single tier of data offload to disk (VM) based on a hybrid algorithm that considers both LRU and the size of the object
+Memcached supports the functionality of least-recently-used eviction of values from the cache.
+-With memcached, you can safely set as many values as you like, and when they overflow memory, the ones you haven't used recently 
+will be deleted. With Redis, you can only approximate this, by setting a timeout on everything; when it needs to free up memory, 
+it will look at three random keys and delete the one that's the closest to expiring.
+-For simple key-value pairs memcached is more memory efficient. If you use Redis hashes, Redis is more memory efficient.
+
+
+
+2. Why does facebook still use memcached and MySQL when more modern databases are available?
+
+-Memcache which is a free open-source distributed memory object caching system, was developed in the intension of speeding up web 
+applications by alleviating database load. 
+-Facebook, the second most visited website uses memcache as it has a large number of users daily. 
+Generally, when a web application is used, if there are large number of users at the same time, the performance will decrease 
+as all users are querying at the same time. Memcache is the best solution for this case. 
+-Memcache can handle large amount of data. As Facebook's main need is satisfied, 
+they are sticking with Memcache and not moving over to other database. 
+Facebook is currently using more than 800 servers now. 
+They are making Memcache perform even more better so that it can handle even more data.
+-Memcached increases the performance and scalability of dynamic MySQL-driven websites by caching data and objects in memory 
+in order to minimize database load.
+-Memcached and MySQL enables organizations to:
+	-Implement a scalable, high performance data caching solution for their online applications
+	-Reduce database Total Cost of Ownership (TCO)by eliminating licensing costs for proprietary data caching software
+	-Reduce system TCO by making better use of resources like idle or spare RAM on existing systems
+	-Incrementally add/remove data caching capacity, on-demand to quickly meet changing requirements.
+-High Performance Data Caching: Memcached combined with MySQL Replication, is an excellent solution for improving 
+application performance and leveraging scale out architectures at the same time.
+-On-Demand Scalability: Memcached can be incrementally scaled out in an on-demand fashion. 
+Because Memcached can scale to support dozens of nodes with minimal overhead, anywhere spare memory resources exist 
+is an opportunity to scale your application even further. 
+-Memcached is designed as a non-blocking event-based server with no special networking or interconnect requirements.
+
+
+3. How and why is replication used for key/value dbs?
+
+-Replication in Key/value databse is carried out to ensure that data is available at any point of time when a query is processed. 
+It also sees to it that data durability is achieved. 
+-When data replication is done, even if one server crashes, there will be replicas in 
+some other tabel, thus data wont be totally lost. 
+-The main problem when we use data replication is maintaining consistency between all 
+the replicas of data. Replication is done by duplicating each data N times. Storage node is responsible for storing key. It takes 
+responsibility also for updating the replicated versions of data, when a change is made to any data. 
+-It ensures to update all N-1 nodes with the new value using the key of the data. Even for all the replicated versions, the key is same.
+-In key value stores, the replication can be done by the store itself or by the client (writing to multiple servers). 
+-Replication also introduce the problem of divergent versions. In other words, 
+two servers in the same cluster think that the value of key ‘ABC’ are two different things. 
+-Resolving that is a complex issue, the common approaches are to decide that it can’t happen (Scalaris) and reject updates 
+where we can’t ensure non conflict or to accept all updates and ask the client to resolve them for us at a later date (Amazon Dynamo, Rhino DHT).
+Redis supports replication, which means that as you write to one Redis instance (the master), one or more other instances (the slaves) are kept 
+up-to-date by the master. To configure a slave you use either the slaveof configuration setting or the slaveof command (instances running without 
+this configuration are or can be masters).
+Replication helps protect your data by copying to different servers. Replication can also be used to improve performance since reads can be sent 
+to slaves. They might respond with slightly out of date data, but for most apps that's a worthwhile tradeoff.
+Unfortunately, Redis replication doesn't yet provide automated failover. If the master dies, a slave needs to be manually promoted. 
+Traditional high-availability tools that use heartbeat monitoring and scripts to automate the switch are currently a necessary headache 
+if you want to achieve some sort of high availability with Redis.
+
+
+
+4. When and why is denormalization good and bad?
+
+-Database normalization is a process in which redundant and duplicate data is reduced. 
+Normalization provides a more readable and organized database. 
+In fact, it is what most database professionals are taught to do and is normally considered a good practice. 
+Denormalization is the exact opposite. In the denormalization process, you take a normalized database of different tables 
+and “combine” them, essential going backwards in the normalization forms. There are certain instances in which this may be beneficial. 
+The pro of denormalization is that access to records are generally faster. SELECT queries perform better and are less complicated 
+because there are less JOIN statements. The cons of denormalization are that INSERT and UPDATE queries take longer. 
+In instances where there are drastically more SELECT queries than INSERT or UPDATE queries, denormalization makes sense and 
+the performance increases greatly outweigh the cons.
+-De-Normalization as the name suggests, is reversing the process of normalization by adding redundant data to the normalized table. This 
+process is done when the performance of query processing is low when a single query needs to rely on different tables. In this process, 
+when different tables are to be accessed for a single query, it will take lots of time to retreive data for one query. This will make the 
+performance very low. At these situations alone, when performance cannot be sacrifised, we can perform denormalization. Denormalization is 
+not same as No-Normalization. Denormalization can be done only after third normalization form. This can be done by adding minimum number 
+of redundancies to the tables. This increases query processing performance. On the other hand, denormalization can make the table 
+inconsistent. In this case, the database designer should take effort to form constraints to the database which will specify the 
+synchronisation of redundant copies of data. It should also be noted that when we use this process and also add complexity to the database 
+by adding constraints, the performance for retreiving data will be faster, but write operations may take time and make this a worse case 
+scenario compared to normalized database.
+-The only time you should consider de-normaliozation is when the time it takes the report to generate is not acceptable. 
+De-normalization will cause consistentcy issues that are sometimes impossible to determine especially in large datasets.
+-The two most common reasons to denormalize are:
+	Performance
+	Ignorance
+The former should be verified with profiling, while the latter should be corrected with a rolled-up newspaper.
+I would say a better way to put it across would be "normalize for correctness, denormalize for speed - and only when necessary"
+Thus,
+XML can represent a business record in a single (de)normalized document without
+incurring redundancy. As a result, business records can be inserted or retrieved in a
+single SQL statement, which reduces the number of database API calls, application
+complexity, CPU cost, and network traffic. These advantages have been observed
+and measured in multiple commercial database systems,
+
+
+
+5. What if you want to query the same value by different keys in redis?
+
+-A common situation you’ll run into is wanting to query the same value by different keys. For example, you might want
+to get a user by email (for when they first log in) and also by id (after they’ve logged in). One horrible solution is to
+duplicate your user object into two string values:
+set users:leto@dune.gov ”{id: 9001, email: ’leto@dune.gov’, ...}”
+set users:9001 ”{id: 9001, email: ’leto@dune.gov’, ...}”
+This is bad because it’s a nightmare to manage and it takes twice the amount of memory.
+It would be nice if Redis let you link one key to another, but it doesn’t (and it probably never will). A major driver in
+Redis’ development is to keep the code and API clean and simple. The internal implementation of linking keys (there’s
+a lot we can do with keys that we haven’t talked about yet) isn’t worth it when you consider that Redis already provides
+a solution: hashes.
+Using a hash, we can remove the need for duplication.
+
+
+
+6. What does the PHP md5 command do for memcached?
+
+Memcache is a temporary memory which can be used to store data which can be retreived at a later point without hitting the database.When a 
+query is processed, the data needs to be searched in the Memcache memory. This is not possible as we can only retreive data from Memcache.
+To retreive this data, we can have a key associated to it. This key can be computed each time with some function, thus the data can be 
+retreived from Memcache using this key. PHP MD5 command is used to compute a key for every data that is going to be stored in Memcache.
+First time when a query is processed, MD5 function is used to generate a key for that particular data. Then, the data is retreived 
+from the database and a copy of key-value pair is stored in Memcache. Next time when we search for the same data that was stored 
+in memcache, again MD5 function will be used which will generate the exact key that was already generated, thus this time data can be
+directly accessed from the Memcache memory without hitting the database. 
+Everytime we compute MD5 function for a particular data, we get the same key. 
+Create a wrapper or extend your memcache library, especially in PHP. This will allow you to create stastics during development and 
+troubleshoot key management.  Not to mention, create an “internal cache” that prevents duplicate over the wire requests.
+Although, many have been able to optimize database performance through the use of Memcached 
+it may not be the best solution for every situation.
+Some of the drawbacks of Memcached:
+Size Requirement
+Not much Documentation support
+Volatility (If a Memcached server instance crashes, any object data stored within the session is gone)
+Security (There is no authentication built into Memcached).
+But still Memcached is a good choice in many apps because of following reasons:
+Memcached can compensate for insufficient ACID properties and it never blocks.
+Memcached is cross-platform
+Cross-DBMS
+Its Cheap
+
+
+
+7. What is a common partitioning technique for key/value dbs? How does this work?
+
+Consistent hashing, is a common partitioning technique for key/value database. This scheme is used to distribute caching load across nodes in
+clever manner. Imagine the nodes are placed in a unit circle. The data to placed is hashed, and distributed around the circle which will 
+correspond to nodes. Generally, when  a node is added or removed, data from all nodes will redistributed due to the change. In consistent 
+hashing, when a node is added or removed, the nodes nearby only is affected. When a new node is added, data from the nodes near to the newly 
+added node is distributed with the new node. When a node is removed, data is distributed to the nodes nearby. The problems in Consistent hashing 
+is that some nodes have more record corresponding to it thus load balancing and uniformity is not acheived. Thus performance also becomes low.
+Redis supports client-side sharding via consistent hashing. Currently there is no support for fail tolerance nor to add or remove clusters at run time."
+From what I understand at the moment this kind of sharing is not fault tolerant, and all keys stored on a failed node will be lost. 
+Equally if you add a new node, some portion of the key space will now be lost (as the keys will be stored on the wrong node). 
+Normally in a consistent hashing system, when a new node joins it copies all the keys which now map to it from its neighbours. 
+There is no support in the Redis server to do this.
+So the consistent hashing works fine if you are using Redis as a cache, where the actually data is stored behind Redis, 
+but for the moment don't expect your data to not go missing.
+The need for consistent hashing arose from limitations experienced while running collections of caching machines - web caches, 
+for example. If you have a collection of n cache machines then a common way of load balancing across them is 
+to put object o in cache machine number hash(o) mod n. This works well until you add or remove cache machines (for whatever reason), 
+for then n changes and every object is hashed to a new location. This can be catastrophic since the originating content servers are swamped with 
+requests from the cache machines. It's as if the cache suddenly disappeared. Which it has, in a sense. (This is why you should care - consistent hashing 
+is needed to avoid swamping your servers!)
+It would be nice if, when a cache machine was added, it took its fair share of objects from all the other cache machines. 
+Equally, when a cache machine was removed, it would be nice if its objects were shared between the remaining machines. 
+This is exactly what consistent hashing does - consistently maps objects to the same cache machine, as far as is possible, at least.
+The basic idea behind the consistent hashing algorithm is to hash both objects and caches using the same hash function. 
+The reason to do this is to map the cache to an interval, which will contain a number of object hashes. 
+If the cache is removed then its interval is taken over by a cache with an adjacent interval. All the other caches remain unchanged.
+
+
+
+8. Create your own example of an application that uses redis that would require a decision of how to do data modeling. Explain the 2 choices and 
+why one is better. Do not use the same example from the lecture or any reading.
+
+-The command prefixed by H are for hashes, the ones without prefix are for regular strings. 
+Commands with an M are the ones that can set or get multiple values.
+
+-MGET -Returns the values of all specified keys. For every key that does not hold a string value or does not exist, the special value nil is returned. 
+Because of this, the operation never fails
+
+-HMGET -Returns the values associated with the specified fields in the hash stored at key.
+For every field that does not exist in the hash, a nil value is returned. Because a non-existing keys are treated as empty hashes, 
+running HMGET against a non-existing key will return a list of nil values.
+
+-There's no practical difference between the two. hmget and mget are both O(N) operations (where N is the number of values/fields being retrieved). 
+Also, from what I've observed, there isn't too much of a memory difference between them. The second version is just a bit cleaner.
+
+-Again, in terms of memory and processing time, there isn't much (if any) difference between these different approaches. 
+However, each one allows you to do unique things.
+
+Example :
+The movie titles will be stored in plain text. The keys are simple key-value pairs that are stored with the key structure movies:id, where id is incremented:
+
+$redis-cli MSET key1 "Bad Santa" key2 "Batman"
+OK
+$redis-cli MGET key1
+"Bad Santa"
+$redis-cli MGET key2
+"Batman"
+The movie Batman would be decomposed into the following sets (assuming that the indexing started at two characters):
+ba
+bat
+batm
+batma
+batman
+We’ll index the movie titles into sets based on partial match of their titles. 
+To prevent any key collisions in Redis we’ll create keys with the following structue index:abc:movies.
+
+View the indexed ids using Redis smembers command:
+
+$ redis-cli smembers index:ba:movies
+1) "1"
+2) "2"
+$ redis-cli smembers index:bat:movies
+1) "2"
+
+We could  use the sort command with the by: :nosort parameter to query the partial word match index and return the matched movie names.
+
+In the same way, using HMGET we could get the partial word complete and the way it can be done is shown below
+
+$ redis-cli HSET myhashfield1 "Bad Santa"
+(integer)1
+$ redis-cli HSET myhashfield1 "Batman"
+(integer)2
+$redis-cli HMGET myhash field1 field2 
+1) "Bad Santa"
+2) "Batman"
+3) (nil)
+
+
+
+9. What the important differences between Voldemort and Redis?
+
+-Voldemort basically designed for Linkedln is written in Java. Redis on the other hand is an open source data store is written in C.
+-Voldemort supports automatic sharding thus maintaining only a subset of total data in the server. Redis doesnot support sharding.
+-Voldemort doesnt support Atomicity. In Redis, commands are executed as a single atomic operation.
+-Voldemort does not provide the property of isolation where changes made during one operation is not visible to other operation. Redis supports
+ isolation property. 
+-Voldemort is nor persistent in nature. It does not store the data within database. Redis is persistent. It preserves data within database.
+-Voldemort uses Key-value type database model and Redis uses key-value, schema-less an publish/subscribe database model.
+-Voldemort has TSconfig, LevelDB, HDFS, GridGain types of datastorage and Redis has Volatile memory type datastorage.
+-Voldemort has APIcalls as its querying language and Redis has APIcalls and Lua as its querying language.
+-Voldemort has symmetric replication and Redis has Master-Slave replication.
+
+
+
+10. How exactly does Retwis implement followers in the code (using what redis feature)?
+
+Basically, Retwis uses Sets to implement followers in the code. They use the SADD command to follow a person. So when you click follow,
+with the help of user id, the person is added using SADD to ur set so that you can receive his/her tweets on ur timeline. 
+Adds all the specified members with the specified scores to the sorted set stored at key. It is possible to specify multiple score/member pairs. 
+If a specified member is already a member of the sorted set, the score is updated and the element reinserted at the right position to ensure the correct ordering. 
+If key does not exist, a new sorted set with the specified members as sole members is created, like if the sorted set was empty. 
+If the key exists but does not hold a sorted set, an error is returned.
+The score values should be the string representation of a numeric value, and accepts double precision floating point numbers.Retwis then uses
+the RSORT command which sorts the tweets inside the array in a chronological order and then display it one by one using the for loop.
+PHP It’s unlikely that you want to use asort on an array with numbers as a key. 
+There are several other sort statements that sort in other ways. Table 7-3 lists all the available sort statements.
+You Can Sort Arrays Sort Statement What It Does sort($arrayname) Sorts by value; assigns new numbers as the keys asort($arrayname) Sorts by value; 
+keeps the same key rsort($arrayname) Sorts by value in reverse order; assigns new numbers as the keys arsort($arrayname) Sorts by value in reverse order;
+keeps the same key ksort($arrayname) Sorts by key krsort($arrayname) Sorts by key in reverse order usort($arrayname,functionname) Sorts by a function 
+Getting values from arrays You can retrieve any individual value in an array by accessing it directly. 
+

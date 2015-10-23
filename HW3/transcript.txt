@@ -1,0 +1,467 @@
+STEP 0:
+
+Search not working with apt-get.
+
+mariaps1@mariaps1:~$ sudo apt-get install memcached
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+memcached is already the newest version.
+0 upgraded, 0 newly installed, 0 to remove and 336 not upgraded.
+
+mariaps1@mariaps1:~$ sudo apt-get install libmemcached-tools
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+libmemcached-tools is already the newest version.
+0 upgraded, 0 newly installed, 0 to remove and 336 not upgraded.
+
+STEP 1:
+
+mariaps1@mariaps1:~$ ps -ef | grep -i memc
+memcache  3996     1  0 Sep16 ?        00:00:00 /usr/bin/memcached -m 64 -p 11211 -u memcache -l 127.0.0.1
+mariaps1     4669     1  0 Sep16 ?        00:00:00 file-roller --default-dir=file:///memchache_unzip --extract file:///memchache_unzip/phpMemcachedAdmin-1.2.2-r262.tar.gz
+mariaps1    11703  2263  0 13:04 pts/0    00:00:00 grep --color=auto -i memc
+
+mariaps1@mariaps1:~$ netstat -ntlp | grep 11211
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 127.0.0.1:11211         0.0.0.0:*               LISTEN      -
+
+STEP 2:
+
+mariaps1@mariaps1:~$ telnet localhost 11211
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+stats
+STAT pid 3996
+STAT uptime 10337
+STAT time 1379386378
+STAT version 1.4.13
+STAT libevent 2.0.16-stable
+STAT pointer_size 64
+STAT rusage_user 0.268016
+STAT rusage_system 0.172010
+STAT curr_connections 5
+STAT total_connections 25
+STAT connection_structures 7
+STAT reserved_fds 20
+STAT cmd_get 2
+STAT cmd_set 1
+STAT cmd_flush 0
+STAT cmd_touch 0
+STAT get_hits 1
+STAT get_misses 1
+STAT delete_misses 0
+STAT delete_hits 0
+STAT incr_misses 0
+STAT incr_hits 0
+STAT decr_misses 0
+STAT decr_hits 0
+STAT cas_misses 0
+STAT cas_hits 0
+STAT cas_badval 0
+STAT touch_hits 0
+STAT touch_misses 0
+STAT auth_cmds 0
+STAT auth_errors 0
+STAT bytes_read 250
+STAT bytes_written 12477
+STAT limit_maxbytes 67108864
+STAT accepting_conns 1
+STAT listen_disabled_num 0
+STAT threads 4
+STAT conn_yields 0
+STAT hash_power_level 16
+STAT hash_bytes 524288
+STAT hash_is_expanding 0
+STAT expired_unfetched 0
+STAT evicted_unfetched 0
+STAT bytes 72
+STAT curr_items 1
+STAT total_items 1
+STAT evictions 0
+STAT reclaimed 0
+END
+quit
+Connection closed by foreign host.
+
+STEP 3:
+
+mariaps1@mariaps1:~$ ls /usr/bin/memc*
+/usr/bin/memcached    /usr/bin/memccat  /usr/bin/memcdump   /usr/bin/memcflush  /usr/bin/memcslap
+/usr/bin/memccapable  /usr/bin/memccp   /usr/bin/memcerror  /usr/bin/memcrm     /usr/bin/memcstat
+
+STEP 4:
+mariaps1@mariaps1:~$ mkdir temp
+mariaps1@mariaps1:~$ cd temp/
+mariaps1@mariaps1:~/temp$ ls
+mariaps1@mariaps1:~/temp$ for ((i=1;i<1000;i++)); do echo $i >> mariaps1$i; done
+mariaps1@mariaps1:~/temp$ ls mariaps1100
+mariaps13100
+mariaps1@mariaps1:~/temp$ cat mariaps1100
+100
+mariaps1@mariaps1:~/temp$ ls -i p* | wc -l
+999
+
+STEP 5:
+
+mariaps1@mariaps1:~/temp$ memccp mariaps1* --servers localhost
+mariaps1@mariaps1:~/temp$ memcstat --servers localhost
+Server: localhost (11211)
+	 pid: 3996
+	 uptime: 11304
+	 time: 1379387345
+	 version: 1.4.13
+	 libevent: 2.0.16-stable
+	 pointer_size: 64
+	 rusage_user: 0.324020
+	 rusage_system: 0.200012
+	 curr_connections: 5
+	 total_connections: 27
+	 connection_structures: 7
+	 reserved_fds: 20
+	 cmd_get: 2
+	 cmd_set: 1000
+	 cmd_flush: 0
+	 cmd_touch: 0
+	 get_hits: 1
+	 get_misses: 1
+	 delete_misses: 0
+	 delete_hits: 0
+	 incr_misses: 0
+	 incr_hits: 0
+	 decr_misses: 0
+	 decr_hits: 0
+	 cas_misses: 0
+	 cas_hits: 0
+	 cas_badval: 0
+	 touch_hits: 0
+	 touch_misses: 0
+	 auth_cmds: 0
+	 auth_errors: 0
+	 bytes_read: 27035
+	 bytes_written: 21516
+	 limit_maxbytes: 67108864
+	 accepting_conns: 1
+	 listen_disabled_num: 0
+	 threads: 4
+	 conn_yields: 0
+	 hash_power_level: 16
+	 hash_bytes: 524288
+	 hash_is_expanding: 0
+	 expired_unfetched: 0
+	 evicted_unfetched: 0
+	 bytes: 77706
+	 curr_items: 999
+	 total_items: 1000
+	 evictions: 0
+	 reclaimed: 1
+
+STEP 6:
+
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps1100
+100
+
+mariaps1@mariaps1:~/temp$ memcrm --servers localhost mariaps1100
+mariaps1@mariaps1:~/temp$ echo $?
+0
+mariaps1@mariaps1:~/temp$ memccat --servers loclahost mariaps1100
+memcat: mariaps1100: memcache error HOSTNAME LOOKUP FAILURE
+mariaps1@mariaps1:~/temp$ memcstat --servers localhost
+Server: localhost (11211)
+	 pid: 3996
+	 uptime: 11483
+	 time: 1379387524
+	 version: 1.4.13
+	 libevent: 2.0.16-stable
+	 pointer_size: 64
+	 rusage_user: 0.324020
+	 rusage_system: 0.208013
+	 curr_connections: 5
+	 total_connections: 30
+	 connection_structures: 7
+	 reserved_fds: 20
+	 cmd_get: 3
+	 cmd_set: 1000
+	 cmd_flush: 0
+	 cmd_touch: 0
+	 get_hits: 2
+	 get_misses: 1
+	 delete_misses: 0
+	 delete_hits: 1
+	 incr_misses: 0
+	 incr_hits: 0
+	 decr_misses: 0
+	 decr_hits: 0
+	 cas_misses: 0
+	 cas_hits: 0
+	 cas_badval: 0
+	 touch_hits: 0
+	 touch_misses: 0
+	 auth_cmds: 0
+	 auth_errors: 0
+	 bytes_read: 27103
+	 bytes_written: 22617
+	 limit_maxbytes: 67108864
+	 accepting_conns: 1
+	 listen_disabled_num: 0
+	 threads: 4
+	 conn_yields: 0
+	 hash_power_level: 16
+	 hash_bytes: 524288
+	 hash_is_expanding: 0
+	 expired_unfetched: 0
+	 evicted_unfetched: 0
+	 bytes: 77628
+	 curr_items: 998
+	 total_items: 1000
+	 evictions: 0
+	 reclaimed: 1
+mariaps1@mariaps1:~/temp$ memcflush --servers localhost
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps1200
+memcat: mariaps1200 not found
+mariaps1@mariaps1:~/temp$ memcdump --servers localhost
+...
+parth3560
+parth356
+mariaps1559
+mariaps1558
+mariaps1557
+mariaps1556
+mariaps1555
+mariaps1554
+mariaps1553
+mariaps1552
+mariaps1551
+mariaps1550
+mariaps155
+...
+mariaps111
+mariaps1109
+mariaps1108
+mariaps1107
+mariaps1106
+mariaps1105
+mariaps1104
+mariaps1103
+mariaps1102
+mariaps1101
+mariaps110
+mariaps11
+mariaps1@mariaps1:~/temp$ memccp --verbose --servers localhost mariaps1[1-9][0-9][0-9]
+...
+source file: mariaps1915
+length: 4
+key: mariaps1915
+flags: 0
+expires: 0
+op: set
+source file: mariaps1916
+length: 4
+key: mariaps1916
+flags: 0
+expires: 0
+op: set
+source file: mariaps1917
+length: 4
+key:mariaps1917
+flags: 0
+expires: 0
+op: set
+...
+source file: mariaps1997
+length: 4
+key: mariaps1997
+flags: 0
+expires: 0
+op: set
+source file: mariaps1998
+length: 4
+key: mariaps1998
+flags: 0
+expires: 0
+op: set
+source file: mariaps1999
+length: 4
+key: mariaps1999
+flags: 0
+expires: 0
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps1100
+100
+
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps11000
+memcat: mariaps11000 not found
+
+STEP 7:
+
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps1101
+101
+
+mariaps1@mariaps1:~/temp$ echo "101a" > mariaps1101
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps1101
+101
+mariaps1@mariaps1:~/temp$ cat mariaps1101
+101a
+mariaps1@mariaps1:~/temp$ echo "102a" > mariaps1102
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps1102
+102
+
+mariaps1@mariaps1:~/temp$ cat mariaps1102
+102a
+mariaps1@mariaps1:~/temp$ memccp --verbose --servers localhost mariaps110[12]
+op: set
+source file: mariaps1101
+length: 5
+key: mariaps1101
+flags: 0
+expires: 0
+op: set
+source file: mariaps1102
+length: 5
+key: mariaps1102
+flags: 0
+expires: 0
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps1102
+102a
+
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps1101
+101a
+
+STEP 8:
+
+mariaps1@mariaps1:~/temp$ telnet localhost 11211
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+add test30 0 30 4 \r\n
+test
+STORED
+quit
+Connection closed by foreign host.
+mariaps1@mariaps1:~/temp$ memccat --servers localhost test30
+test
+mariaps1@mariaps1:~/temp$ memccat --servers localhost test30
+memcat: test30 not found
+mariaps1@mariaps1:~/temp$ cat ../synchro.sh 
+#!/bin/sh
+server="--servers localhost" 
+key="mariaps130" 
+getkey="memccat $server $key" 
+$getkey 
+if [ $? -ne 0 ] 
+then 
+echo "ERROR - cache miss" 
+/usr/bin/memccp $server --expire=30 $key 
+$getkey 
+fi
+mariaps1@mariaps1:~/temp$ ../synchro.sh 
+memcat: mariaps130 not found
+ERROR - cache miss
+30
+
+mariaps1@mariaps1:~/temp$ ../synchro.sh 
+30
+
+mariaps1@mariaps1:~/temp$ ../synchro.sh 
+memcat: mariaps1parth330 not found
+ERROR - cache miss
+30
+
+STEP 9:
+
+memcat: mariaps130 not found
+ERROR - cache miss
+30
+
+
+sreal	0m0.012s
+user	0m0.004s
+sys	0m0.000s
+mariaps1@mariaps1:~/temp$ time ../synchro.sh 
+30
+
+
+real	0m0.006s
+user	0m0.000s
+sys	0m0.000s
+
+STEP 10:
+
+mariaps1@mariaps1:~$ telnet localhost 11211
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+add key1 0 30 5 \r\n
+data1
+STORED
+add key2 0 90 5 \r\n
+data2
+STORED
+add key3 0 60 5 \r\n
+data3
+STORED
+quit
+Connection closed by foreign host.
+mariaps1@mariaps1:~$ memccat --servers localhost key1
+memcat: key1 not found
+mariaps1@mariaps1:~$ memccat --servers localhost key2
+data2
+mariaps1@mariaps1:~$ memccat --servers localhost key3
+data3
+mariaps1@mariaps1:~$ memccat --servers localhost key3
+memcat: key3 not found
+mariaps1@mariaps1:~$ memccat --servers localhost key2
+data2
+mariaps1@mariaps1:~$ memccat --servers localhost key2
+memcat: key2 not found
+
+STEP 11:
+
+mariaps1@mariaps1:~/temp$ for ((i=2500; i<=2599; i++)); do echo $i >> mariaps1$i; done
+mariaps1@mariaps1:~/temp$ memccp --verbose --servers localhost mariaps125[0-9][0-9]
+...
+source file: mariaps12515
+length: 5
+key: mariaps12515
+flags: 0
+expires: 0
+op: set
+source file: mariaps12516
+length: 5
+key: mariaps12516
+flags: 0
+expires: 0
+op: set
+...
+source file: mariaps12598
+length: 5
+key: mariaps12598
+flags: 0
+expires: 0
+op: set
+source file: mariaps12599
+length: 5
+key: mariaps12599
+flags: 0
+expires: 0
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps12000
+memcat: mariaps12000 not found
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps12500
+2500
+
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps12533
+2533
+
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps12599
+2599
+
+mariaps1@mariaps1:~/temp$ memccat --servers localhost mariaps13000
+memcat: mariaps13000 not found
+
+STEP 12:
+
+To enable memcached we can run the command "memcached" as a non privileged user.
+The command used here to enable memcache is:
+mariaps1@mariaps1:~/temp$ memcached -d -m 1024 -p 11211 -l 192.168.0.110

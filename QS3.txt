@@ -1,0 +1,338 @@
+1. Why are dynamic user populations a driver for NoSQL databases today?
+
+Due to the growing usage of web applications such as Facebook and LinkedIn , today there is a need to handle large amount of data. 
+Here usage of RDBMS would be of no use as it cannot handle large and scaling data. As RDBMS cannot change the structure of the database, 
+it would be difficult to perform sharding. Users have started using Data warehouses, stream processing, text processing, scientific 
+oriented databases, semi-structured data. All these cannot be fulfilled by the RDBMS databases as they follow 'one size fits all'. 
+The change in users need to all these features makes RDBMS not fit for usage. Thus evolution of NoSQL databases happened.  
+The capture and use of the data creates the need for a very different type of database, however. Developers 
+want a very flexible database that easily accommodates any new type of data they want to work with and is not 
+disrupted by content structure changes from third-party data providers. Much of the new data is unstructured 
+and semi-structured, so developers also need a database that is capable of efficiently storing it. Unfortunately, 
+the rigidly defined, schema-based approach used by relational databases makes it impossible to quickly incorporate 
+new types of data, and is a poor fit for unstructured and semi-structured data. 
+Finally, with the rising importance of processing data, developers are increasingly frustrated with the “impedance 
+mismatch” between the object-oriented approach they use to write applications and the schema-based tables and 
+rows of a relational database. NoSQL provides a data model that maps better to the application’s organization of 
+data and simplifies the interaction between the application and the database, resulting in less code to write, 
+debug, and maintain.
+NoSQL databases have a very different model. For example, a document-oriented NoSQL database takes the data 
+you want to store and aggregates it into documents using the JSON format. Each JSON document can be thought 
+of as an object to be used by your application. A JSON document might, for example, take all the data stored in a 
+row that spans 20 tables of a relational database and aggregate it into a single document/object. Aggregating this 
+information may lead to duplication of information, but since storage is no longer cost prohibitive, the resulting 
+data model flexibility, ease of efficiently distributing the resulting documents and read and write performance 
+improvements make it an easy trade-off for web-based applications.
+
+
+
+2. Why is scaling of 3-tier architectures important for NoSQL databases today?
+
+Scaling of 3-tier architecture is very important for NoSQL databases because it enhances the security of the database. When you have 
+a physically separate middle tier application server, it greatly increases the security because it will provide an extra level of 
+indirection between the web server and the database. Hence there is no direct route from web server to the DB server. It also 
+increases the performance and scalability. The web tier and the middle tier could be scaled differently. It also increases the 
+reusability. When you have a single physical middle tier, it can be shared by a large number of clients.
+Security: A physically separate middle-tier application server can increase security because it adds an extra level of indirection
+between the web server and the database. This means no direct route from the web server to the database server and 
+(e.g.) SQL protocols/ports don't need to be allowed/opened on DMZ firewalls. If your web server gets hacked, your application 
+server is safe. Also, the attack surface on the web server is reduced because there is a reduced amount of code, etc running on 
+the web server. As a counter-argument, adding a level of physical indirection doesn't necessarily provide more security. 
+In reality, how good are we as developers at creating secure middle-tiers? Security context propagation is complex and I've seen 
+many middle-tiers that simply wrap up business logic/data access and expose them to the web-tier as a collection of unsecured web services.
+Performance and scalability: A 3-tier architecture is more scalable than a 2-tier architecture because the web-tier and middle-tier can 
+be scaled differently if necessary. An application server can be used to cache persistent data to increase performance and scalability. 
+Counter-arguments include that scaling just a web server is simpler and caching could be done either locally in the web server or by 
+duplicating the data in a different format (e.g. a NoSQL store alongside a SQL database).
+Reuse and maintenance: A single physical middle-tier can be shared by a number of clients, so reuse and maintenance is increased. 
+As highlighted in Mike's blog entry, a counter-argument is that this is possible by creating reusable components that are simply deployed multiple times.
+etc.
+3-tiers architecture is mainly used to support two non-functional requirements: reusability of business logic and distinct governance (or SLA). 
+Security for 2-tiers architecture can be as efficient as the one for n-tiers architecture. (as an example, most WCM in banking companies are 2-tier 
+and have strong security) I believe Security and Infrastructure must adapt themselves to application architecture, not the opposite. 
+Scalability is not a question of number of tier in your architecture. But, in a web architecture, typical web servers cannot scale vertically easily
+(e.g. number of connections limited by number of available system threads). This scalability issue can generally be solved 
+if you use a 3-tiers architecture: use messaging paradigm (execution queues) between your web server and your application server 
+to increase scalability: horizontal for web servers and both for application servers.
+
+
+
+3. How does sharding work for RDBMS? What are the issues with it?
+
+Sharding in RDBMS is also called as Database partitioning. Database partitioning is nothing but isolating some of the columns in 
+a row. Data Partitioning is done by first normalizing the database, and then splitting the data which are used very less frequently 
+from the once that are used frequently and putting them in a seperate table. By doing normalization data duplication is reduced as 
+duplicated data are split from the table and a new table is formed. But due to data partitioning the main issue is when a query is
+processed, many table might be needed to be accessed to retrieve a single row result. Thus this will cause the performance to be
+decreased in a large extent. 
+Most people that start down this path plan for horizontal scalability on the compute nodes but bypass the more complex and 
+potentially more critical state tiers, such as the relational database management system (RDBMS) and caches.  These services
+are often IO-intensive and bound by a single instance.  One technique to implement horizontal scalability in the state tier 
+is known as sharding.  Sharding is when you logically separate your RDBMS data into multiple databases, typically with the same 
+schema. For example, an employee table could be split across three distinct databases where each database stores a different 
+department’s employees.The benefits of sharding assists in far more than just capacity related scenarios.  
+For the purposes of this post we will focus on sharding an RDBMS that is implemented in Azure SQL Database platform, 
+and primarily serves OLTP scenarios.  Some example scenarios that could benefit from a sharded database structure include:
+
+Throttling thresholds or throughput limits are hit too often.
+Size of the database becomes unwieldy (index rebuilds, backups).
+A single unavailable database affects all users (as opposed to a single shard).
+A database that has difficulty scaling up and down gracefully in respond to demand.
+Certain business models, such as multi-tenant or Software as a Service offerings.
+When using a multi-tenant database as a service solution, such as Windows Azure SQL Database, 
+there are typically Quality of Service (QOS) controls put in place that throttle clients under various conditions. 
+Throttling typically occurs when resource pressure climbs.  Sharding is a key strategy to help reduce resource pressure by 
+taking the load that would typically affect a single server and spreading it across as multiple servers that each contain a shard. 
+
+For example, assuming an even distribution, creating five shards reduces the load to approximately twenty percent on each database. 
+As with anything that grants greater power, there are sacrifices that must be made.  
+Sharding increases the complexity of several key areas, requiring more planning. These include:
+Identity columns should be globally unique across all shards in case future business needs necessitate the reduction in shard count.  
+If the identity is not unique across all shards, merging two shards can result in conflicts.
+Referential integrity cannot reference or enforce relationships to rows in other shards as they are independent databases.
+Queries that cross shards should be avoided if possible, because they require querying each shard and merging the results.  
+The need to do “fan out” queries across the shards is not only costly from a performance point of view but increases the complexity 
+of the sharding framework that must support it.  If cross-shard queries are necessary, the typical strategy is to query each shard asynchronously.  
+However, there are times where a synchronous approach offers more control of the resultset size.    
+In most cases, sharding is a Data Access Layer (DAL) concept, abstracting most of the intricacies from the higher-level application logic. 
+
+
+
+4. How did the architecture of Farmville on-line game change over time? Why the change?
+
+In 2009 when the company learnt that they had run out of data center space, they decided to use Amazon's Elastic Compute Cloud. 
+The company actually expected to rack up 200,000 daily active users in the first two months, however the game added 1 million users 
+every week. Without the scalability of cloud computing, farmville could very well have crashed and burned. This change was made 
+because the number of users of the games was expanding tremendously that the data center was not able to handle that much amount
+of load. When cloud came in the problem of scalability vanished and it is able to handle the request even as the load is 
+increasing.
+There are two fundamental characteristics that make FarmVille a unique scaling challenge: it is the largest game in the world and it is the 
+largest application on a web platform. Both of these aspects present a unique set of scaling challenges that FarmVille has had to overcome. 
+In terms of technology investment, FarmVille primarily utilizes open source components and is at its core built off the LAMP stack.
+FarmVille has an extremely heavy write workload. The ratio of data reads to writes 3:1, which is an incredibly high write rate. 
+A majority of the requests hitting the backend for FarmVille in some way modifies the state of the user playing the game. 
+To make this scalable, we have worked to make our application interact primarily with cache components. 
+Additionally, the release of new content and features tends to cause usage spikes since we are effectively extending the game. 
+The load spikes can be as large as 50% the day of a new feature's release. We have to be able to accommodate this spikey traffic.
+The other piece is making FarmVille scale as the largest application on a web platform and is as large as some of the largest websites in the world. 
+Since the game is run inside of the Facebook platform, we are very sensitive to latency and performance variance of the platform.
+FarmVille has worked to put a lot of caching in front of high latency components. Highly variable latency is another challenge as it requires a 
+rethinking of how the application relies on pieces of its architecture which normally have an acceptable latency. Just about every component is 
+susceptible to this variable latency, some more than others. Because of FarmVille's nature, where the workload is very write and transaction heavy, 
+variability in latency has a magnified effect on user experience compared with a traditional web application. The way FarmVille has handled these 
+scenarios is through thinking about every single component as a degradable service. Memcache, Database, REST Apis, etc. are all treated as degradable 
+services. The way in which services degrade are to rate limit errors to that service and to implement service usage throttles. 
+The key ideas are to isolate troubled and highly latent services from causing latency and performance issues elsewhere through use of error and 
+timeout throttling, and if needed, disable functionality in the application using on/off switches and functionality based throttles.
+To help manage and monitor FarmVille's web farm, we utilize a number of open source monitoring and management tools. 
+We use nagios for alerting, munin for monitoring, and puppet for configuration. 
+We heavily utilize internal stats systems to track performance of the services the application uses, such as Facebook, DB, and Memcache. 
+Additionally, when we see performance degradation, we profile a request's IO events on a sampled basis.
+
+
+5. How is Membase different than Memcached?
+
+Memcached is a cahe memory which stores most recently used data for easy access to increase the read performance. Membas is a
+database which stores values in it and retreives them on a request. Membase supports data persistence and replication while 
+Memcached doesnot provide data persistence or replication. In Membase if you try to insert data when there is no space, an error
+will be thrown as there is no physical space while Memcached will make room for the new data by deleting the least used data. 
+Membase also provides replication so that you always have access to your data in the event of a failure. Memcached runs only 
+out of RAM and has no replication so the loss of a server will result in the loss of that cache.
+CouchDB has the ability to create structured documents and do map-reduce queries on those documents.
+Membase server is memcached with persistence and very simple cluster management interface. It's strengths are the ability to do very 
+low latency queries as well as the ability to easily add and remove servers from a cluster.
+Couchbase Server is a fit if:
+
+A single-server solution is enough to support your users and data
+Advanced querying and indexing is important
+You demand peer-to-peer sync
+
+Membase Server is a fit if:
+
+You have large number of users 
+Multiple servers are necessary to support growing user population and data set
+Low latency, high throughput are needed for snappy interactive experience.
+
+Cold Cache	 		Slowdown or collapse of the data service layer due to heavily overloaded RDBMS when memcached nodes go down 
+		 		(on failure or for maintenance)	
+		 		Data is automatically replicated across the Couchbase cluster, providing high availability of data even on failures
+Heavy RDBMS Contention	Multiple requests for data items that do not exist in the cache results in sudden shifting of load to 
+				the relational database causing heavy contention	 By replicating data across the cluster, 
+				Couchbase Server provides consistent performance without shifting load to the RDBMS layer
+Lack of Scalability	 	Adding or removing memcached nodes is complicated and causes unpredictable application performance degradation	 
+			 	Auto-sharding and online rebalancing in Couchbase Server provides easy non-disruptive expansion of the cluster
+Complex Monitoring		Management of individual memcached nodes increases the complexity of operations and lacks a single consistent view of the caching layer	 
+				Couchbase Server provides an in-built admin console for cluster wide management and monitoring as well as RESTful APIs 
+				for easy automation and third-party integration
+
+
+
+6. How is Couchdb different than Couchbase?
+
+Couchdb is open source while Couchbase is not. Couchbase has the feature to do conditional updates while Couchdb doesnt support 
+conditional updates. Couchbase is horizontally scalable which Couchdb is not. Couchbase supports sharding while Couchdb does not. 
+Couchbase is used in interactive web applicationwhile Couchdb is used in CRM and CMS systems. Couchbase can be used in Unix 
+platform whereas Couchdb cannot be. Couchdb providesbetter Database consistency compared to Couchbase. Couchdb is partition 
+tolerant while Couchbase is not. Couchbase provides built in data caching while Couchdb does not. Couchdb uses HTTP for data access
+while Couchbase does not. Couchbase has high-performance storage management components while Couchdb does not. Couchbase provides
+clustering while Couchdb does not.
+The Couchbase Server is not entirely open-source/free software. There are two versions: Community Edition (free but no latest bug fixes) 
+and Enterprise Edition (there are restrictions on usage, confidentiality provisions, audits by Couchbase Inc. 
+that "will be conducted during regular business hours at Licensee's facilities" and other terms typical to proprietary software that
+many people may find unacceptable).
+CouchDB is an open-source/free software (no strings attached) project of The Apache Software Foundation and is released under the 
+Apache License, Version 2.0 (DFSG-compatible, FSF-approved, OSI-approved, GPL-compatible, non-copyleft, commercial-friendly).
+CouchDB is an AP type system (provides Availability and Partition tolerance).
+Couchbase Server is EITHER a CP type system (according to Wikipedia) OR a CA type system.
+a list of CouchDB features that are not supported by the Couchbase Server:
+
+no RESTful API (only for views, not for CRUD operations)
+no _changes feed
+no peer-to-peer replication
+no CouchApps
+no Futon (there is a different administration interface available)
+no document IDs
+no notion of databases (there are only buckets)
+no replication between a CouchDB database and Couchbase Server
+no explicit attachments (you have to store additional files as new key/value pairs)
+no HTTP API for everything (you need to use the Couchbase Server SDKs or one of the Experimental Client Libraries at 
+Couchbase Develop so no experiments with curl and wget)
+no CouchDB API (it uses the Memcached API instead)
+you can't do everything from the browser (you have to write a server-side application)
+no two-tier architecture for Web apps is possible (you have to write a server-side application to sit between the browser and the database, 
+like with relational databases)
+no eventual consistency
+not entirely open-source/free software
+not a drop-in replacement for CouchDB (seems like a drop-in replacement for Memcached instead)
+Those features of CouchDB may or may not be important to you so whether the lack of them is a disadvantage or not is strictly subjective, 
+but I think that the decision whether to switch from CouchDB to Couchbase Server or not should be based on those differences and your 
+dependence on those feature in your current CouchDB deployments. 
+
+
+7. How does eventual consistency work for web apps? Be sure and give specific examples.
+
+Eventual consistency work for web applications with the use of a technique called incremental replications. In this, the databases
+need not have to stay in constant communication for achieving consistency. Changes in the databases can be synchronized later. 
+If in case same document in both the databases are changed, Couchdb's automatic conflict detection and resolution is used to find
+which is the latest one and that is copied while the other version is stored for later use if required. Thus incremental replication
+is used to maintain consistency between databases. 
+Eventual consistency provides few guarantees. Informally, it guarantees that, if no additional updates are made to a given data item, 
+all reads to that item will eventually return the same value. This is a particularly weak model. At no given time can the user rule out 
+the possibility of inconsistent behavior: the system can return any data and still be eventually consistent—as it might "converge" 
+at some later point. The only guarantee is that, at some point in the future, something good will happen. Yet, despite this apparent 
+lack of useful guarantees, scores of usable applications and profitable businesses are built on top of eventually consistent infrastructure. 
+By simplifying the design and operation of distributed services, eventual consistency improves availability and performance at the cost of 
+semantic guarantees to applications. While eventual consistency is a particularly weak property, eventually consistent stores often deliver 
+consistent data, and new techniques for measurement and prediction grant us insight into the behavior of eventually consistent stores. 
+Concurrently, new research and prototypes for building eventually consistent data types and programs are easing the burden of reasoning 
+about disorder in distributed systems. These techniques, coupled with new results that push the boundaries of highly available systems—including 
+causality and transactions—make a strong case for the continued adoption of weakly consistent systems. While eventual consistency and its weakly 
+consistent cousins are not perfect for every task, their performance and availability will likely continue to accrue admirers and advocates in the future.
+
+
+8. What are the advantages and disadvantages of the document-style nosql databases?
+
+Adavantages: In a document style database, the document can map almost directly to the programming language's class structure. 
+This makes programming easier.Document style database has more flexible approach to schema changes. In a document database, an 
+application can modify the document structure whenever it wants. The document style database encourages scalability.
+With Mongo, your records are stored as a binary form of JSON (called BSON). JSON stands for JavaScript Object Notation,
+and its syntax is basically the same as the object notation in JavaScript. For example, a single record might look like this:
+{
+“_id” : ObjectId(“4fccbf281168a6aa3c215443?),
+“first_name” : “Thomas”,
+“last_name” : “Jefferson”,
+“address” : {
+“street” : “1600 Pennsylvania Ave NW”,
+“city” : “Washington”,
+“state” : “DC”
+}
+}
+ese records are called documents. They’re not necessarily documents in the sense of a word processing document,
+although you can store binary data (such as a word processing document) in any of the fields in the document. 
+You can also modify the structure of any document on the fly by adding and removing members from the document, 
+either by reading the document into your program, modifying it and re-saving it, or by using various update commands.
+This schema-less approach can be both a blessing and a curse. 
+
+The different language drivers for Mongo allow you to read documents into an object with a specific structure, 
+and write documents from objects with a specific structure. In strongly-typed languages, this means you create an instance of a class, 
+and then save that instance right to the collection. And if you do want to allow some leniency, you can use a Mongo-specific class 
+in your code that works like a map, letting you add members on the fly. (The name of this class varies between languages.) Or you 
+can create a strongly-typed class and include a member whose type is that Mongo-specific class; that member serves as a “catch-all” 
+for data that doesn’t match the class’s schema.(As for weakly-typed languages, such as JavaScript in Node.JS, it’s harder to force the 
+programmer into a schema, but there are libraries that add class-like schema support.)In the end, like so many tools, document storage 
+in a NoSQL database can be easy to abuse; but when handled with care, it can become a powerful feature.
+
+Disadvantages: There is an issue with Data integrity as most data are duplicated. The popularity of the document model is driven 
+more by programmatic elegance than by scalability and performance. It's not clear that these databases can outperform SQL databases 
+at large scale. 
+
+
+
+
+9. How does a cookie-based add-fill application work using nosql technology?
+
+A cookie based add-fill application has to check the HTTP request and check the behavioral segments associated with the user. Based 
+on these details the ad has to be generated. And all this process has to be performed fifty milliseconds. This is where the role of 
+NoSQL comes. NoSQL databases have very high scalability. It also has extremely low latency for operations closest to the users's 
+browser. The data is stored in a linearly like a tree structure hence it is accessed extremely fast. But this type of linear 
+scalability cannot be found in RDBMS, hence No SQL is used. As said the delay is extremely less. The time between the input and the 
+output is unnoticeable.  The data aggregations also performed the map reduce feature of NoSQL. The average size of the data would 
+actually be close to 1-5 TB/day. Hence NoSQL map/reduce is the best solution for aggregation of this data. It works well together 
+with RDBMS to provide high throughput.
+Map reduce is just one paradigm for processing large data sets. Use it only if your application needs to process a large number 
+of data records with a mapper and then needs to combine results together with a reducer. That's all it really does. 
+As to when the paradigm is applicable and when it is not, simply look at your use case.
+
+
+
+10. How are workers used in mapreduce? How does cloud deployment relate to this?
+
+Worker nodes are used in mapreduce to divide the program from the master node into sub-program and pass to the sub nodes of the 
+worker node which will work as another worker node. This will lead to a multi-level tree structure. Then the worker node processes
+the program and passes it to its master node. Thus the sub-programs will be processed and retreived by the main master node which
+will have the fully processed program. Cloud architecture has both master and slave nodes. In this implementation, a main 
+server is maintained that gets client requests and handles them depending on the type of request. The master node is present in 
+main server and the slave nodes in secondary server. Search requests are forwarded to the NameNode of Hadoop, present in main 
+server. The Hadoop NameNode then takes care of the searching and indexing operation by initiating a large number of Map and 
+Reduce processes. Once the MapReduce operation for a particular search key is completed, the NameNode returns the output value to 
+the server and in turn to the client.worker nodes only report the hash code of task result to the master, we resort to the
+commitment-based protocol to assume the hash code is consistent with the actual result accepted by the master. 
+First, since each task isreplicated, the naïve malicious worker that does not collude 
+with others can be easily eliminated. Second, the holdand-test approach can efficiently reduce the success rate 
+of collusion.
+For each task, the first worker has to return the  result  before  the  replicate  task  is  assigned  to the 
+second  worker.  Suppose  the  first  worker  is  controlled by  the  adversary,  since  the  assignment  of  task  is  random,  
+the  adversary  cannot  predict  whether  the  second worker is also under his control. Since the benign worker takes the majority portion, 
+asking the first worker to return a wrong result under this situation is very  likely 
+to  reveal  it.  Even  worse,  when  a  malicious  worker  received a task, it cannot tell whether the task is the original or the replicated 
+one if the adversary hasn’t seen this  before:  it  is  possible  the  original  task  is  assigned  to  a 
+benign worker.  So the best  strategy to evade detection  over a long run is to return correct result. 
+For the malicious workers who try to return incorrect result in a hope of not being discovered, the verification and credit 
+based  approach  guarantee  very  low  probability  of introducing errors to the final result: malicious workers 
+who  return  erroneous  results  frequently  will  be  caught before  his buffered results are  accepted by the  master; 
+Malicious  workers  who  return  erroneous  results  rarely may introduce some error to the final results,
+
+
+
+
+11. What is MVCC? How does it work in couchdb?
+
+The full form of MVCC is Multi Version Concurrency Control. MVCC is a feature which is used to provide concurrent access to the 
+database when multiple users try to access at the sametime without implementing any locks on the data. This feature greatly improves 
+the performance of the DB in a multi-user environment. The data is also consistent at a given point of time and the other users will 
+not experience any change until the transaction is being committed. All the documents in CouchDB has a version associated. When you 
+change the data present in the document and save it, the CouchDB will create a new version of that document and save it over the old 
+one. Hence, you end up with two versions of the same document, one is the old and the other is the new current version. Hence if a 
+document has 3 requestors at the same time and the version is 1.0, then all the requestors would be having the version 1.0 of the 
+document. In the mean time if the second requestor makes some changes to the document and saves it, the version of the document would 
+become 2.0. So now if a fourth requestor tries to access the document, then he/she would have the version 2.0 of the document while the 
+first and third requestor still reads the version 1.0 of the document. Which implies that a read request will always see the most recent 
+version of your database at the time of the beginning of the request.
+CouchDB implements a form of Multi-Version Concurrency Control (MVCC) in order to avoid the need to lock the database file during writes. 
+Conflicts are left to the application to resolve. Resolving a conflict generally involves first merging data into one of the documents, 
+then deleting the stale one.
+MVCC (multiversion concurrency control) is an important part of CouchDB’s design, and a key part of how replication works. 
+Every write to a document in CouchDB creates a new version of that document in the database. The old versions of the document stick around, 
+eating up disk space, until they are cleaned up by running a compaction operation on that database.
+
+Database compactions themselves can be resource intensive and time consuming operations. If you’re not taking advantage of the benefits provided by MVCC, then the work required compact your database, and the extra disk space used by the older versions of the documents, are simply overhead. This is especially true in a write heavy database.

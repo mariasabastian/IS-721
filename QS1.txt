@@ -1,0 +1,266 @@
+1.What are the major issues related to ORM for NoSQL databases?
+
+	•The main purposes of NoSQL Databases are to store simple data structures which are less complex. 
+	•Object Relational Mapping is mainly used for retrieving data after complex manipulation.
+	•The main issue we are facing in ORM for NoSQL database is that we are compelled to modify our data, which is unnecessary. 
+	 Making one solution for many common-looking problems requires some really tough generalizations and abstractions. 
+	•Design is going to be a challenge as abstractions sometimes snatch away (or at least makes it difficult to put in front) many powers of NoSQL.
+	•NoSQL databases are built for performance and scalability.  
+	 ORM tools have to employ techniques that don’t put too much burden on performance which users would otherwise get while using plain vanilla 
+	 driver available with the database.
+	•Many ORM standards (like JPA and JDO) were written for relational databases that don’t always provide ways of doing certain things in NoSQL.  
+	 In fact, most of the ORM tools (like hibernate) were built to solve only 80% of the frequently used mapping problems. 
+	•Low level tweaking may prove to be crucial for applications built on NoSQL databases.  
+	 Challenge here is to provide developers hooks for solving remaining 20% of the mapping problem.
+	•Each NoSQL database has its own architecture and network  
+	 They make specific assumptions in data center, racks and disks connectivity and how data is stored and distributed on them. 
+	•NoSQL databases are distributed. It’s a real challenge to provide these above configuration using ORM specifications.
+	•ORM is a leaky abstraction. Mapping to a relational database involves lots of repetitive, boiler-plate code. 
+	
+
+2.What are the major issues with schema for NoSQL?
+
+	•As NoSQL uses distributed networks and data distributed along the nodes, database schema cannot be formed.
+	•With a schema, you have to figure out in advance what you need to store, but that can be hard to do.
+	•A schema puts all rows of a table into a straightjacket, which becomes awkward if you have different kinds of data in different rows. 
+	 You either end up with lots of columns that are usually null 	(a sparse table), or you end up with meaningless columns.
+	•This implicit schema is a set of assumptions about the data’s structure in the code that manipulates the data. 
+	 Having the implicit schema in the application code results in some problems. 
+	 It means that in order to understand what data is present you have to dig into the application code. 
+	 If that code is well structured you should be able to find a clear place from which to deduce 	the schema. 
+	 But there are no guarantees; it all depends on how clear the application code is.
+        Furthermore, the database remains ignorant of the schema—it can’t use the schema to help it decide how to store and retrieve data efficiently. 
+	 It can’t apply its own validations upon that data to ensure that different applications don’t manipulate data in an inconsistent way.
+
+3.What are the major issues with querying for NoSQL?
+
+	•Unlike SQL in which querying database is very easy, NoSQL faces the problem in querying database as it follows a distributed environment in which 
+	 data is spread throughout the network and retrieving a particular tuple is difficult.
+	•It is difficult to implement certain kinds of basic queries using SQL and relational databases, such as the shortest path between two points.
+	•Many of the NoSQL DB today is based on the DHT (Distributed Hash Table) model, which provides a hash table access semantics. To access or modify 
+	 any object data, the client is required to supply the primary key of the object, then the DB will look up the object using an equality match to 
+	 the supplied key.
+	•For example, if we use DHT to implement a customer DB, we can choose the customer id as the key. And then we can get/set/operate on any customer 
+	 object if we know its id
+
+	cust_data = DHT.get(cust_id)
+	DHT.set(cust_id, modified_cust_data)
+	DHT.execute(cust_id, func(cust) {cust.add_credit(200)})
+	•In the real world, we may want to search data based on other attributes than its primary key, we may also search attributes based on "greater/less 
+	 than" relationship, or we may want to combine multiple search criteria using a boolean expression.
+
+	Using our customer DB example, we may do ...
+		o Lookup customers within a zip code
+		o Lookup customers whose income is above 200K
+		o Lookup customer using keywords "chief executives"
+	•Although query processing and indexing technique is pretty common in RDBMS world, it is seriously lacking in the NoSQL world because of the very
+	 nature of the "distributed architecture" underlying most of NoSQL DB.
+	•NoSQL databases offer few facilities for queries and analysis since they do not work with SQL. Things that would otherwise require simple queries
+	 in RDBMS require significant programming 	expertise when using NoSQL databases. Furthermore, commonly used Business Intelligence (BI) tools
+	 do not provide connectivity to NoSQL. However, some work is being done to provide 	query capabilities to a variety of NoSQL databases.
+	•The tradeoff is that developers must write more complicated code in order to do certain things explicitly.
+
+4.What are the major issues with transactions for NoSQL?
+	•Transactions at the single document level are known as “atomic transactions” transactions involving more than one operation are not possible; 
+	 it would require separate products to do the 	multiple transactions( ex: RavenDB)
+	•Eventual consistency and MVCC(Multiple Version Concurrency Control) require that programmers think differently about the data they are managing
+ 	 in the application layer .Both introduce the potential that data read in a transaction may not be entirely up-to-date even though it may be 
+	 consistent.
+	•NoSQL databases first started out as in-house solutions to real problems in companies Cassandra, Yahoo! PNUTS, and others and found that 
+	 they didn’t meet their requirements. In particular,these companies faced unprecedented transaction volumes.
+	•ACID Transactions, in order to run effectively on a cluster, most NoSQL databases have limited transactional capability. 
+	 Often this is enough, but not always.
+	•CouchDB has the properties of atomicity, consistency, isolation, and durability (ACID). But you can’t have transactions across 
+	 document boundaries and you can’t have transactions across multiple servers (although BigCouch does have quorum reads and writes).
+	•No transactions. NoSQL proponents are correct to point out that transactional complexity 
+	 (especially in terms of locking and blocking considerations) can be tricky to manage. 
+	 However, most business applications require complexity in order to manage typical workflows. 
+	 For example, when it comes to payment processing or order placement, developers commonly need to perform operation A, then B, and then C.
+	 But they need to be able to roll back all operations if operation C fails or encounters an error. 
+	 Without the ability to easily enlist in transactions facilitated by the underlying data storage platform, NoSQL developers. 
+
+5.What are the major issues with consistency for NoSQL?
+
+	•To get good consistency, you need to involve many nodes in data operations, but this increases latency. So you often have to trade off 
+	 consistency versus latency.
+	•Write-write conflicts occur when two clients try to write the same data at the same time. Read-write conflicts occur when one client reads
+	 inconsistent data in the middle of another client's write.
+	•Clients usually want read-your-writes consistency, which means a client can write and then immediately read the new value. This can be 
+	 difficult if the read and the write happen on different nodes.
+	•NoSQL database requires a consistency check after a crash (guess which one). This can be a very slow process, causing additional downtime.
+	•With NoSQL, any indirection needed to handle versioning requirements needs to be architected and implemented directly by developers.
+	 (For example, something as simple as using different stored procedures won't work.) 
+	 More importantly, while relational databases have to maintain transactional consistency during schema modifications, 
+	 NoSQL implementations typically have very poor support for changes to underlying structure. 
+	 In most cases, NoSQL services have to be restarted in order to facilitate any changes to underlying data structure. 
+	 NoSQL's inability to deftly handle versioning requirements means that it just won't meet the constantly changing needs of most business 
+	 applications today.
+
+6.What are the major issues with concurrency for NoSQL?
+	•Razor, as it stands today, has some issues in the storage engine implementation that make it unsafe under load counted operations such as 
+	 limits on the number of machines that a policy apply to can be violated if multiple matching machines concurrently check-in to the system. 
+	•In a concurrent environment (connection pools, etc), you may have a subsequent read fail after a write has “finished”;
+	 there is no barrier condition to know at what point the database will recognize a write commitment.
+	•In concurrent environment caching could throw problems when you need the freshest version of a record:
+		o if you have only one JVM and one thread Caches can't be unaligned so always leave them on to improve performance
+		o if you have only one JVM but multiple threads each thread owns a database instance with its Level-1 cache. 
+		  Different Level-1 caches could contain different version of the same record. 
+		  For this reason if you always need the last version of a record you can:
+			§ completely Disable Level-1 cache or unpin the record you don't want reside in cache using the Manual control or, 
+			  in Java, reload the record by using the API record.reload()
+	•if you have multiple JVMs also Level-2 cache could be unaligned. For this reason if you always need the last version of a record you can:
+		o completely Disable Level-1 cache and Disable Level-2 cache or unpin the record you don't want reside in cache 
+		  using the Manual control or, in Java, reload the record by using the API record.reload()
+
+
+7.What are the major issues with durability for NoSQL?
+
+	•Within a CouchDB server, not all NoSQL databases are durable (at least with default settings).If you want the best possible guarantee of 
+	 durability,you can change CouchDB’s delayed_commits configuration option from true (the default) to false. 
+	 Basically, this will cause CouchDB to do an explicit fsync after each operation which is very expensive and slow).
+	•Durability often isn’t done correctly.  If you are using a DBMS that uses a transaction log for durability, you either have to turn off 
+	 hardware buffering or have a battery backed RAID controller.  Without hardware buffering, transaction logs are very slow.  Battery backed raid
+	 controllers will work well, but you have to really have one.  
+	 With the move towards the cloud and outsourced hosting, custom hardware is not always an option.
+	•If you have durability through a transaction log, then you have to replay it to come back up.  
+	 If you have a master and slave in the same data center and you lose power, both will have to recover which could take 5-30 minutes.
+	•A key tenet of most NoSQL databases is that they throw out atomicity, consistency, isolation, durability (ACID) in favor of 
+	 Basically Available data with Soft state that becomes Eventually consistent (BASE). 
+	 On the plus side, developers are freed from issues of managing locking and blocking. 
+	 However, on the negative side, consistency and durability issues risk causing problems with end-user interactions. 
+	 Many IT professionals with real-world experience almost completely dismiss the use of NoSQL because of 
+	 its inability to manage complex business needs, workflows, or interactions (more on this shortly).
+
+8.What are the major issues with sharding for NoSQL?
+	
+	•The introduced complexity of database sharding causes the following potential problems: 
+		o Increased complexity of SQL - Increased bugs because the developers have to write more complicated SQL to handle sharding logic.	
+		o Sharding introduces complexity - The sharding software that partitions, balances, coordinates, and ensures integrity can fail.
+		o Single point of failure - Corruption of one shard due to network/hardware/systems problems causes failure of the entire table.	
+		o Failover servers more complex - Failover servers must themselves have copies of the fleets of database shards.
+		o Backups more complex - Database backups of the individual shards must be coordinated with the backups of the other shards.
+		o Operational complexity added - Adding/removing indexes, adding/deleting columns, modifying the schema becomes much more difficult.
+	•Shard Exhaustion: Shards are often fixed sized. If data is continually written to a fixed sized shard, or a particular value becomes too large,
+	 the shard will exceed its capacity. Imagine a User object that stores the social network for a popular user, it could have millions of entries,
+	 which could easily blow out the resources for a shard. 
+	•Shard Allocation Imbalance: Data is not spread evenly across a shard set. This happens when keys hash into one shard more than others. 
+	 Key examples: date, user ID,geo-location, phone number. 
+	 It's difficult for developers to know the distribution of a key apriori, so a dis-proportionate amount of data can be written to just a
+	 few shards while the other shards are left relatively empty. This can lead to shard and node exhaustion. 
+	•Developer has to write more code to be able to handle sharding logic (this is actually lessened with projects such as Hive DB.)
+	•Operational issues become more difficult (backing up, adding indexes, changing schema).
+
+9.How does the business model determine approaches to trade-offs with NoSQL?
+
+	•NoSQL data modeling often starts from the application-specific queries as opposed to relational modeling:
+		o Relational modeling is typically driven by the structure of available data. The main design theme is “What answers do I have?” 
+		o NoSQL data modeling is typically driven by application-specific access patterns, i.e. the types of queries to be supported. 
+	 The main design theme is “What questions do I have?”  
+	•NoSQL data modeling often requires a deeper understanding of data structures and algorithms than relational database modeling does. 
+	 In this article I describe several well-known data structures that are not specific for NoSQL, but are very useful in practical NoSQL modeling.
+	•Data duplication and denormalization are first-class citizens.
+	•Relational databases are not very convenient for hierarchical or graph-like data modeling and processing. 
+	 Graph databases are obviously a perfect solution for this area, but actually most of NoSQL solutions are surprisingly strong for such problems. 
+	 That is why the current article devotes a separate section to hierarchical data modeling.
+	•Although data modeling techniques are basically implementation agnostic, this is a list of the particular systems that 
+	 I had in mind while working on this article:
+		o Key-Value Stores: Oracle Coherence, Redis, Kyoto Cabinet
+		o BigTable-style Databases: Apache HBase, Apache Cassandra
+		o Document Databases: MongoDB, CouchDB
+		o Full Text Search Engines: Apache Lucene, Apache Solr
+		o Graph Databases: neo4j, FlockDB
+	•Key-Value storage is a very simplistic, but very powerful model. Many techniques that are described below are perfectly applicable to this model. 
+	 One of the most significant shortcomings of the Key-Value model is a poor applicability to cases that require processing of key ranges. 
+	 Ordered Key-Value model overcomes this limitation and significantly improves aggregation 	capabilities.
+	•Ordered Key-Value model is very powerful, but it does not provide any framework for value modeling.
+	 In general, value modeling can be done by an application,but Big Table-style databases go further and model values 
+	 as a map-of-maps-of-map, namely, column families, columns, and time stamped versions.
+	•Document databases advance the Big Table model offering two significant improvements. 
+	 The first one is values with schemes of arbitrary complexity, not just a map-of-maps. 
+	 The second 	one is database-managed indexes, at least in some implementations. 
+	•Full Text Search Engines can be considered a related species in the sense that they also offer flexible schema and automatic indexes. 
+	 The main difference is that Document database group indexes by field names, as opposed to Search Engines that group indexes by field values. 
+	 It is also worth noting that some Key-Value stores
+	 like Oracle Coherence gradually move towards 	Document databases via addition of indexes and in-database entry processors.
+	•Finally, Graph data models can be considered as a side branch of evolution that origins from the Ordered Key-Value models. 
+	 Graph databases allow one model business entities very transparently (this depends on that), 
+	 but hierarchical modeling techniques make other data models very competitive in this area too. 
+	 Graph databases are related to Document databases because many implementations allow one model a value as a map or document.
+
+10.	What are the major drivers for the decision to use NoSQL?
+
+	•NoSQL performance and scalability. Putting data into RAM via document, graph, or key-value architectures is a fantastic idea. 
+	 Effectively, it amounts to keeping highly selective data directly in memory where it can be quickly accessed. 
+	 Likewise, spreading data over multiple machines to keep it in RAM (instead of dropping it to disk and incurring I/O or paging overhead)
+	 is another highly efficient approach to data storage. Not only does it allow for cost-efficient, scale-out capabilities that can readily 
+	 grow with the need to handle huge amounts of data, but it can also be a great way to achieve fault tolerance and availability. 
+	 In fact, this approach to high-performance data retrieval makes so much sense that it is commonly used in the form of caching tiers that
+	 sit atop relational databases. In this way, relational databases achieve most of the benefits of NoSQL implementations without the costly 
+	 tradeoffs.
+	•Compromising Reliability for Better Performance” As an example of such a scenario favoring performance over reliability, 
+	 HTTP session data which “needs to be shared between various web servers but since the data is transient in nature 
+	 there is no need to store it in persistent storage.
+	•Horizontal Scalability and Running on Commodity Hardware The three problem areas of current relational databases that 
+	 NoSQL databases are trying to address 
+		o Scale out data (e. g. 3 TB for the green badges feature at Digg, 50 GB for the inbox search at Facebook or 2 PB in total at eBay)
+		o Performance of single servers.
+		o Rigid schema design
+
+	•In contrast to relational database management systems most NoSQL databases are designed to scale well in the horizontal direction and 
+	 not rely on highly available hardware. Machines can be added and removed (or crash) without causing the same operational efforts to perform
+	 sharding in RDBMS cluster-solutions; some NoSQL data stores even provide automatic sharding (such as MongoDB)
+	•High Throughput Some NoSQL databases provide a signi?cantly higher data throughput than traditional
+	•RDBMSs. For instance, the column-store Hypertable which pursues Google’s Bigtable approach allows the local search engine Zvent to store one
+	 billion data cells per day. To give another example, Google is able to process 20 petabyte a day stored in Bigtable via it’s MapReduce approach.
+	•Avoidance of Unneeded Complexity: Relational databases provide a variety of features and strict data consistency. 
+	 But this rich feature set and the ACID properties implemented by RDBMSs might be more than necessary for particular applications and use cases. 
+	 As an example, Adobe’s ConnectNow holds three copies of user session data; these replicas do not neither have to undergo all consistency checks 
+	 of a relational database management systems nor do they have to be persisted. Hence, it is fully su?cient to hold them in memory.
+	•Complexity and Cost of Setting up Database Clusters : NoSQL databases are designed in a way that “PC clusters can be easily and cheaply expanded 
+	 without the complexity and cost of ’sharding,’ which involves cutting up databases into multiple tables to run on large clusters or grids”.
+	•Avoidance of Expensive Object-Relational Mapping: Most of the NoSQL databases are designed to store data structures that are either simple or more 
+	 similar to the ones of object-oriented programming languages compared to relational data structures. They do not make expensive object-relational 
+	 mapping necessary (such as Key/Value-Stores or Document-Stores). This is particularly important for applications with data structures of low 
+	 complexity that can hardly bene?t from the features of a relational database.
+	•The real advantage of NoSQL databases is not that they are BASE or ACID or web scale – the advantage is that they let you retrieve and 
+	 manipulate objects. 
+	 These databases still store data in collections , as key-value pairs and even have indices to help fast search. 
+	 They offer many of the advantages of the RDBMS world, but they let you manipulate objects.
+	•Since you manipulate objects in the code and store them as it is in the database, no time is spent in converting from one format 
+	 to another format. This speeds up applications. 
+	 If you extracted an object from the database and performed an operation on it to change its state, then when you save
+	 the object back, the state is implicitly stored. You do not have to store the state separately.
+	•For example, lets say you created a user object to store in the database. The user is not yet active because he has not clicked the activate link. 
+	 If you used an object database, then you can store the inactive flag and the state that the activation is not complete on the same object. 
+	 You do not have to store them in separate tables – this is needed in some cases.
+	•If you had to store object trees like a user object with a list of all entities he owned or the user profile image as an image field on 
+	 the user object – then you can easily store and retrieve the data from a NoSQL database without an ORM or having to put the file name in database 
+	 and the file somewhere else on a file system.
+	•Vertically and Horizontally Scalable - relational databases (traditionally) reside on one server which can be scaled by adding more processors, 
+	 memory and storage to provide scalability.  Relational databases residing on multiple servers usually use replication to keep the 
+	 databases synchronized. NoSQL databases can reside on a single server but more often are designed to work across a cloud of servers.
+	 (NoSQL: Distributed and Scalable Non-Relational Database Systems)
+	•Columns, Key/Value Store, Tuple Store - relational databases are usually comprised of a collection of columns in a table and/or view 
+	 (fixed schema, join operations).  NoSQL databases often store a combination of key and value pairs or Tuples 
+	 (schema free, an ordered list of elements).
+	•In-Memory Dataset, On-Disk Storage - relational databases almost always reside on a disk drive or a storage area network.  
+	 Sets of database rows are brought into memory as part of SQL select or stored procedure operations.  Some (but not all) of the 
+	 NoSQL databases are designed to exist in memory for speed and can be persisted to disk.
+	•Document-Oriented, Collection-Oriented, Column-Oriented, Object-Oriented, Set-Oriented, 
+	 Row-Oriented - Document-oriented databases contain records of documents, fields and XML.  
+	 Collection-oriented datasets provide closer affinity to object-oriented programming languages.  
+	 Relational databases are characterized by data organized in tables, rows and columns (Column-Oriented).  
+	 SQL select operations normally return cursors to a single row or a set of rows containing the columns specified.  
+	 Object-Oriented databases have been around since the dawn of object-oriented programming but relational databases are by far the dominant database 
+	 architecture in use today (and for years to come).  Are object databases NoSQL databases?  
+	 The rise of object-relational mapping (ORM) frameworks marries object-oriented programming to the larger number of relational databases. 
+	 NoSQL databases data are often organized into objects, key/value pairs or tuples.  
+	 NoSQL database election operations are often done in code or an interface.
+	•Finally, a key to NoSQL's performance and scalability is that most NoSQL implementations store data exclusively in RAM. 
+	 By sharing RAM across multiple servers, NoSQL picks up the ability for easy scale-out operations while also benefiting from 
+	 increased redundancy or higher-availability through fault tolerance. 
+	 NoSQL's scale-out strategy also picks up additional cost benefits because most implementations are open source. 
+	 Licensing considerations are significantly less than those involving relational databases attempting scale-out architectures.
+
+
+

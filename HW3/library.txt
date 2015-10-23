@@ -1,0 +1,129 @@
+QUERY 1
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books1.php
+Books for MySQL
+Title: MySQL
+Author: Paul DuBois
+Publisher: New Riders
+Retrieved from the Database
+
+real	0m0.184s
+user	0m0.000s
+sys	0m0.144s
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books1.php
+Books for MySQL
+Title: MySQL
+Author: Paul DuBois
+Publisher: New Riders
+Retrieved From Cache
+
+real	0m0.252s
+user	0m0.016s
+sys	0m0.148s
+
+QUERY 2
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books2.php
+Books that cost more than 45
+Title: MySQL
+Author: Paul DuBois
+Publisher: New Riders
+Retrieved from the Database
+
+real	0m0.296s
+user	0m0.000s
+sys	0m0.168s
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books2.php
+Books that cost more than 45
+Title: MySQL
+Author: Paul DuBois
+Publisher: New Riders
+Retrieved From Cache
+
+real	0m0.192s
+user	0m0.004s
+sys	0m0.160s
+
+QUERY 3
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books3.php
+Free books
+Title: Thinking in Java
+Author: Bruce Eckel
+Publisher: Prentice Hall
+Topic: Java
+Comment: Well written, free on the web
+Price: 0
+Retrieved from the Database
+
+real	0m0.196s
+user	0m0.004s
+sys	0m0.160s
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books3.php
+Free books
+Title: Thinking in Java
+Author: Bruce Eckel
+Publisher: Prentice Hall
+Topic: Java
+Comment: Well written, free on the web
+Price: 0
+Retrieved From Cache
+
+real	0m0.220s
+user	0m0.000s
+sys	0m0.160s
+
+QUERY 4
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books4.php
+Published by Wrox
+Title: David Hunter
+Author: Wrox
+Publisher: XML
+Topic: Well recommended, fairly comprehensive
+Comment: 39.99
+Price:
+Retrieved from the Database
+
+real	0m0.228s
+user	0m0.004s
+sys	0m0.176s
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books4.php
+Published by Wrox
+Title: Beginning XML
+Author: David Hunter
+Publisher: Wrox
+Topic: XML
+Comment: Well recommended, fairly comprehensive
+Price: 39.99
+Retrieved From Cache
+
+real	0m0.260s
+user	0m0.008s
+sys	0m0.176s
+
+QUERY 5
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books5.php
+Book written by Larry
+Author: Larry Wall
+Publisher: O'Reilly
+Retrieved from the Database
+
+real	0m0.248s
+user	0m0.016s
+sys	0m0.176s
+
+maraips1@maraips1-VirtualBox:~$ time lynx -dump http://localhost/books5.php
+Book written by Larry
+Author: Larry Wall
+Publisher: O'Reilly
+Retrieved From Cache
+
+real	0m0.224s
+user	0m0.016s
+sys	0m0.160s

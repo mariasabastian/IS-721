@@ -1,0 +1,9 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop fs -cat ../output/part*
+Warning: $HADOOP_HOME is deprecated.
+
+Canada	not so good	1
+Canada	valued	3
+United Kingdom	not so good	1
+United Kingdom	valued	1
+United States	not bad	2
+JA - Unkown Country	not so bad	1

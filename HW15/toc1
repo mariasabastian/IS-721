@@ -1,0 +1,19 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -copyFromLocal /tmp/mariaps123-gutenberg /user/hduser/mariaps123-gutenberg
+Warning: $HADOOP_HOME is deprecated.
+
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -ls
+Warning: $HADOOP_HOME is deprecated.
+
+Found 3 items
+drwxr-xr-x   - hduser supergroup          0 2013-12-08 20:42 /user/hduser/mariaps12-gutenberg
+drwxr-xr-x   - hduser supergroup          0 2013-12-08 20:54 /user/hduser/mariaps12-gutenberg-output
+drwxr-xr-x   - hduser supergroup          0 2013-12-0821:15 /user/hduser/mariaps123-gutenberg
+
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -ls /user/hduser/mariaps123-gutenberg
+Warning: $HADOOP_HOME is deprecated.
+
+Found 3 items
+-rw-r--r--   1 hduser supergroup     674566 2013-12-08 21:15 /user/hduser/mariaps123-gutenberg/mariaps123-pg20417.txt
+-rw-r--r--   1 hduser supergroup    1573150 2013-12-08 21:15 /user/hduser/mariaps123-gutenberg/mariaps123-pg4300.txt
+-rw-r--r--   1 hduser supergroup    1423801 2013-12-08 21:15 /user/hduser/mariaps123-gutenberg/mariaps123-pg5000.txt
+

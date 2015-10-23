@@ -1,0 +1,122 @@
+
+Question 1:
+The issue is it was having the same key for all the readings generated in the 
+inner loop. This was solved by initializing the key value inside the inner loop.
+Question 2:
+To perform time compassion with timeuuid, we can use the function maxTimeuuid or minTimeuuid which 
+converts the time to uuid format and then can compare it with the existing values of timeuuid in the table
+
+Transcript:
+
+mariaps1@mariaps1:~/Downloads/dsc-cassandra-2.0.2$ bin/cqlsh
+Connected to Test Cluster at localhost:9160.
+[cqlsh 4.1.0 | Cassandra 2.0.2 | CQL spec 3.1.1 | Thrift protocol 19.38.0]
+Use HELP for help.
+cqlsh> use sensor ;
+cqlsh:sensor> CREATE TABLE stock_entries (stock_id uuid PRIMARY KEY, time_taken timeuuid, reading text, stock_type int);
+cqlsh:sensor> quit
+mariaps1@mariaps1:~/Downloads/dsc-cassandra-2.0.2$ cd pylib/
+mariaps1@mariaps1:~/Downloads/dsc-cassandra-2.0.2/pylib$ vim gen.py 
+mariaps1@mariaps1:~/Downloads/dsc-cassandra-2.0.2/pylib$ sudo python ./gen.py
+mariaps1@mariaps1:~/Downloads/dsc-cassandra-2.0.2/pylib$ cd ..
+mariaps1@mariaps1:~/Downloads/dsc-cassandra-2.0.2$ bin/cqlsh
+Connected to Test Cluster at localhost:9160.
+[cqlsh 4.1.0 | Cassandra 2.0.2 | CQL spec 3.1.1 | Thrift protocol 19.38.0]
+Use HELP for help.
+cqlsh> USE sensor ;
+cqlsh:sensor> select * from stock_entries ;
+
+ stock_id                             | stock_type | reading                   | time_taken
+--------------------------------------+------------+---------------------------+--------------------------------------
+ cc600598-5c3b-4e01-8075-effaba1f3dd3 |          1 | random sample from 7 is 0 | e82deb60-59fa-11e3-975d-a4173173171b
+ 845e698b-1a2d-4cf8-aedd-deb42e7ef10e |          1 | random sample from 4 is 9 | e50217e0-59fa-11e3-975d-a4173173171b
+ 5dcfc20e-45da-4509-bd10-8f176b18fd0c |          1 | random sample from 8 is 6 | ea998828-59fa-11e3-975d-a4173173171b
+ b627dcc5-c09c-41ac-bb2e-a40df40d5128 |          1 | random sample from 2 is 1 | e0c5f82c-59fa-11e3-975d-a4173173171b
+ d6c8b6f3-c67d-4baa-9e25-9c723c62271f |          1 | random sample from 4 is 7 | e4b4fdd4-59fa-11e3-975d-a4173173171b
+ 5c1d06e8-d0cc-4a4d-92b4-efb3ec8ae80b |          1 | random sample from 0 is 2 | dde31cac-59fa-11e3-975d-a4173173171b
+ 90bbdaca-09b8-4b9c-9a07-6e2addab1345 |          1 | random sample from 4 is 2 | e3f3696c-59fa-11e3-975d-a4173173171b
+ fc7cbdfd-7071-4a43-b254-864a51b54cf8 |          1 | random sample from 7 is 9 | e98a5f16-59fa-11e3-975d-a4173173171b
+ a130b436-c52f-4ebe-ae3d-3d9e934f3202 |          1 | random sample from 3 is 2 | e270ff5a-59fa-11e3-975d-a4173173171b
+ b7a8565d-5d06-4018-883c-be54927571ed |          1 | random sample from 8 is 2 | e9fe92fa-59fa-11e3-975d-a4173173171b
+ 23c2281d-d5c8-4e91-ae1f-60f4d3491129 |          1 | random sample from 7 is 4 | e8c8d152-59fa-11e3-975d-a4173173171b
+.
+.
+.
+ 4acdfd31-799b-457b-88c7-0f915896542e |          1 | random sample from 5 is 6 | e610d66c-59fa-11e3-975d-a4173173171b
+ 950706ff-a23f-4fef-bb34-6bcd70078619 |          1 | random sample from 5 is 0 | e528d308-59fa-11e3-975d-a4173173171b
+ 6a3a5fd6-5e7c-4249-ac5b-5385d3b9e526 |          1 | random sample from 8 is 1 | e9d7da70-59fa-11e3-975d-a4173173171b
+ 35401da0-2362-4cac-86fd-7dacbc80abb3 |          1 | random sample from 4 is 0 | e3a6402e-59fa-11e3-975d-a4173173171b
+ 6896d4a5-f460-4ee1-90f4-1d750c5077f5 |          1 | random sample from 8 is 7 | eac043fa-59fa-11e3-975d-a4173173171b
+ 362b2352-7751-4426-91ca-cde4fcf7950f |          1 | random sample from 7 is 5 | e8ef8df6-59fa-11e3-975d-a4173173171b
+ 84d532b9-857f-497c-b96b-56b7d317ff2e |          1 | random sample from 1 is 2 | df6874aa-59fa-11e3-975d-a4173173171b
+ 9ca296d7-71f5-415e-9ee5-7f77bfc153df |          1 | random sample from 7 is 3 | e8a21fbc-59fa-11e3-975d-a4173173171b
+ a04605b4-c1cb-448c-9ba8-c0d5249acc0b |          1 | random sample from 4 is 1 | e3ccfb9c-59fa-11e3-975d-a4173173171b
+
+(100 rows)
+
+cqlsh:sensor> select count(*) from stock_entries where stock_type = 1 and time_taken > maxTimeuuid('2013-11-30 20:06:26+0000') allow filtering;
+ count
+-------
+    54
+
+cqlsh:sensor> select count(*) from stock_entries where stock_type = 1 and time_taken < minTimeuuid('2013-11-30 20:06:26+0000') allow filtering;
+
+ count
+-------
+    46
+
+cqlsh:sensor> select * from stock_entries where stock_type = 1 and time_taken > maxTimeuuid('2013-11-30 20:06:26+0000') allow filtering;
+
+ stock_id                             | stock_type | reading                   | time_taken
+--------------------------------------+------------+---------------------------+--------------------------------------
+ cc600598-5c3b-4e01-8075-effaba1f3dd3 |          1 | random sample from 7 is 0 | e82deb60-59fa-11e3-975d-a4173173171b
+ 845e698b-1a2d-4cf8-aedd-deb42e7ef10e |          1 | random sample from 4 is 9 | e50217e0-59fa-11e3-975d-a4173173171b
+ 5dcfc20e-45da-4509-bd10-8f176b18fd0c |          1 | random sample from 8 is 6 | ea998828-59fa-11e3-975d-a4173173171b
+.
+.
+.
+ 6896d4a5-f460-4ee1-90f4-1d750c5077f5 |          1 | random sample from 8 is 7 | eac043fa-59fa-11e3-975d-a4173173171b
+ 362b2352-7751-4426-91ca-cde4fcf7950f |          1 | random sample from 7 is 5 | e8ef8df6-59fa-11e3-975d-a4173173171b
+ 9ca296d7-71f5-415e-9ee5-7f77bfc153df |          1 | random sample from 7 is 3 | e8a21fbc-59fa-11e3-975d-a4173173171b
+
+(54 rows)
+
+cqlsh:sensor> select * from stock_entries where stock_type = 1 and time_taken > maxTimeuuid('2013-11-30 20:06:26+0000') and time_taken < minTimeuuid('2013-11-30 20:06:29+0000') allow filtering;
+
+ stock_id                             | stock_type | reading                   | time_taken
+--------------------------------------+------------+---------------------------+--------------------------------------
+ 845e698b-1a2d-4cf8-aedd-deb42e7ef10e |          1 | random sample from 4 is 9 | e50217e0-59fa-11e3-975d-a4173173171b
+ d6c8b6f3-c67d-4baa-9e25-9c723c62271f |          1 | random sample from 4 is 7 | e4b4fdd4-59fa-11e3-975d-a4173173171b
+ 097f8d83-2030-44fb-b0c0-1561bc7fda34 |          1 | random sample from 5 is 5 | e5ea6be4-59fa-11e3-975d-a4173173171b
+ 4a0f089a-63e4-447b-aab7-5cb4b8581a90 |          1 | random sample from 5 is 4 | e5c363be-59fa-11e3-975d-a4173173171b
+ a25089b1-d738-4031-943d-ce1e24b87b93 |          1 | random sample from 5 is 2 | e575efd0-59fa-11e3-975d-a4173173171b
+ 152520e6-43e2-4268-8189-858700fce467 |          1 | random sample from 4 is 6 | e48e323a-59fa-11e3-975d-a4173173171b
+ 85966e06-2e65-46cd-953d-2ff5658f7b9d |          1 | random sample from 5 is 3 | e59ca7c4-59fa-11e3-975d-a4173173171b
+ 383a83a1-e89e-4afe-9164-348fa3cddebf |          1 | random sample from 4 is 8 | e4db6f64-59fa-11e3-975d-a4173173171b
+ 8294b10f-8bd5-44f4-8021-905573d44236 |          1 | random sample from 5 is 1 | e54f82c8-59fa-11e3-975d-a4173173171b
+ 4acdfd31-799b-457b-88c7-0f915896542e |          1 | random sample from 5 is 6 | e610d66c-59fa-11e3-975d-a4173173171b
+ 950706ff-a23f-4fef-bb34-6bcd70078619 |          1 | random sample from 5 is 0 | e528d308-59fa-11e3-975d-a4173173171b
+
+(11 rows)
+
+cqlsh:sensor> select * from stock_entries where stock_type = 1 and time_taken > maxTimeuuid('2013-11-30 20:06:26+0000') and time_taken < minTimeuuid('2013-11-30 20:06:27+0000') allow filtering;
+
+ stock_id                             | stock_type | reading                   | time_taken
+--------------------------------------+------------+---------------------------+--------------------------------------
+ d6c8b6f3-c67d-4baa-9e25-9c723c62271f |          1 | random sample from 4 is 7 | e4b4fdd4-59fa-11e3-975d-a4173173171b
+ 152520e6-43e2-4268-8189-858700fce467 |          1 | random sample from 4 is 6 | e48e323a-59fa-11e3-975d-a4173173171b
+ 383a83a1-e89e-4afe-9164-348fa3cddebf |          1 | random sample from 4 is 8 | e4db6f64-59fa-11e3-975d-a4173173171b
+
+(3 rows)
+
+cqlsh:sensor> select dateOf(time_taken) from stock_entries where order_type = 1 and time_taken > maxTimeuuid('2013-11-30 20:06:26+0000') and time_taken < minTimeuuid('2013-11-30 20:06:27+0000') allow filtering;
+
+ dateOf(time_taken)
+--------------------------
+ 2013-11-30 15:06:26-0500
+ 2013-11-30 15:06:26-0500
+ 2013-11-30 15:06:26-0500
+
+(3 rows)
+
+

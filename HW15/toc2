@@ -1,0 +1,22 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop jar contrib/streaming/hadoop-*streaming*.jar -file /home/hduser/mapper.py -mapper /home/hduser/mapper.py -file /home/hduser/reducer.py -reducer /home/hduser/reducer.py -input /user/hduser/gowtham-gutenberg/* -output /user/hduser/gowtham-gutenberg-output
+Warning: $HADOOP_HOME is deprecated.
+
+packageJobJar: [/home/hduser/mapper.py, /home/hduser/reducer.py, /app/hadoop/tmp/hadoop-unjar290193078929532859/] [] /tmp/streamjob7091003218683479567.jar tmpDir=null
+2013/12/07 21:19:33 INFO util.NativeCodeLoader: Loaded the native-hadoop library
+2013-12-08 21:19:33 WARN snappy.LoadSnappy: Snappy native library not loaded
+2013-12-08 21:19:33 INFO mapred.FileInputFormat: Total input paths to process : 3
+2013-12-08 21:19:34 INFO streaming.StreamJob: getLocalDirs(): [/app/hadoop/tmp/mapred/local]
+2013-12-08 21:19:34 INFO streaming.StreamJob: Running job: job_201212072101_0001
+2013-12-08 21:19:34 INFO streaming.StreamJob: To kill this job, run:
+2013-12-08 21:19:34 INFO streaming.StreamJob: /home/mariaps1/hadoop/libexec/../bin/hadoop job  -Dmapred.job.tracker=localhost:54311 -kill job_201212072101_0001
+2013-12-08 21:19:34 INFO streaming.StreamJob: Tracking URL: http://localhost:50030/jobdetails.jsp?jobid=job_201212072101_0001
+2013-12-08 21:19:35 INFO streaming.StreamJob:  map 0%  reduce 0%
+2013-12-08 21:20:01 INFO streaming.StreamJob:  map 36%  reduce 0%
+2013-12-08 21:20:04 INFO streaming.StreamJob:  map 67%  reduce 0%
+2013-12-08 21:20:22 INFO streaming.StreamJob:  map 100%  reduce 0%
+2013-12-08 21:20:29 INFO streaming.StreamJob:  map 100%  reduce 33%
+2013-12-08 21:20:32 INFO streaming.StreamJob:  map 100%  reduce 73%
+2013-12-08 21:20:38 INFO streaming.StreamJob:  map 100%  reduce 100%
+2013-12-08 21:20:44 INFO streaming.StreamJob: Job complete: job_201212072101_0001
+2013-12-08 21:20:44 INFO streaming.StreamJob: Output: /user/hduser/mariaps123-gutenberg-output
+

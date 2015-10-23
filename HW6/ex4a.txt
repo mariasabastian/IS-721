@@ -1,0 +1,26 @@
+#!/usr/bin/php -q Getting databases infos : $databases = $client->listDatabases(); Database list fetched : Array ( [0] => _users [1] => catalog-b [2] => catalog-c [3] => books2 [4] => books1 [5] => mycouchshop1 [6] => books [7] => students [8] => catalog-a ) Creating database http://localhost:5984/example: $result = $client->createDatabase(); We issued the request, but couch server returned an error. We can have HTTP Status code returned by couchDB using $e->getCode() : 302 We can have error message returned by couchDB using $e->getMessage() : Moved Temporarily (PUT /example []) Finally, we can have CouchDB's complete response body using $e->getBody() : 
+
+
+
+#!/usr/bin/php -q
+Getting databases infos : $databases = $client->listDatabases();
+Database list fetched : 
+Array
+(
+    [0] => _users
+    [1] => catalog-b
+    [2] => catalog-c
+    [3] => books2
+    [4] => books1
+    [5] => mycouchshop1
+    [6] => books
+    [7] => students
+    [8] => catalog-a
+)
+
+Creating database http://localhost:5984/example: $result = $client->createDatabase();
+We issued the request, but couch server returned an error.
+We can have HTTP Status code returned by couchDB using $e->getCode() : 302
+We can have error message returned by couchDB using $e->getMessage() : Moved Temporarily (PUT /example [])
+Finally, we can have CouchDB's complete response body using $e->getBody() : 
+

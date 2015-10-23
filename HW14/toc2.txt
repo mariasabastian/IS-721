@@ -1,0 +1,17 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/start-all.sh
+starting namenode, logging to /home/mariaps1/hadoop/libexec/../logs/hadoop-hduser-namenode-mariaps1-VirtualBox.out
+hduser@localhost's password: 
+localhost: starting datanode, logging to /home/mariaps1/hadoop/libexec/../logs/hadoop-hduser-datanode-mariaps1-VirtualBox.out
+hduser@localhost's password: 
+localhost: starting secondarynamenode, logging to /home/mariaps1/hadoop/libexec/../logs/hadoop-hduser-secondarynamenode-mariaps1-VirtualBox.out
+starting jobtracker, logging to /home/mariaps1/hadoop/libexec/../logs/hadoop-hduser-jobtracker-mariaps1-VirtualBox.out
+hduser@localhost's password: 
+localhost: starting tasktracker, logging to /home/mariaps1/hadoop/libexec/../logs/hadoop-hduser-tasktracker-mariaps1-VirtualBox.out
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ jps
+3371 DataNode
+3695 JobTracker
+3134 NameNode
+3939 TaskTracker
+3621 SecondaryNameNode
+4009 Jps
+

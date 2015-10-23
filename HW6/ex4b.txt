@@ -1,0 +1,11 @@
+#!/usr/bin/php -q #### Creating database http://localhost:5984/example: $result = $client->createDatabase(); We issued the request, but couch server returned an error. We can have HTTP Status code returned by couchDB using $e->getCode() : 302 We can have error message returned by couchDB using $e->getMessage() : Moved Temporarily (PUT /example []) Finally, we can have CouchDB's complete response body using $e->getBody() : Are you sure that your CouchDB server is at http://localhost:5984/, and that database example does not exist ? 
+
+
+#!/usr/bin/php -q
+#### Creating database http://localhost:5984/example: $result = $client->createDatabase();
+We issued the request, but couch server returned an error.
+We can have HTTP Status code returned by couchDB using $e->getCode() : 302
+We can have error message returned by couchDB using $e->getMessage() : Moved Temporarily (PUT /example [])
+Finally, we can have CouchDB's complete response body using $e->getBody() : 
+Are you sure that your CouchDB server is at http://localhost:5984/, and that database example does not exist ?
+

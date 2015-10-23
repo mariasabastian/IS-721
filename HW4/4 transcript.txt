@@ -1,0 +1,143 @@
+maria@maria-VirtualBox:~$ redis-cli ping
+PONG
+
+maria@maria-VirtualBox:~$ redis-cli set mykey "my binary safe value"
+OK
+
+maria@maria-VirtualBox:~$ redis-cli get mykey
+"my binary safe value"
+
+maria@maria-VirtualBox:~$ redis-cli set counter 100
+OK
+
+maria@maria-VirtualBox:~$ redis-cli incr counter
+(integer) 101
+
+maria@maria-VirtualBox:~$ redis-cli incr counter
+(integer) 102
+
+maria@maria-VirtualBox:~$ redis-cli incrby counter 10
+(integer) 112
+
+maria@maria-VirtualBox:~$ redis-cli rpush messages "Hello how are you?"
+(integer) 4
+
+maria@maria-VirtualBox:~$ redis-cli rpush messages "Fine thanks. I'm having fun with Redis"
+(integer) 5
+
+maria@maria-VirtualBox:~$ redis-cli rpush messages "I should look into this NOSQL thing ASAP"
+(integer) 6
+
+maria@maria-VirtualBox:~$ redis-cli lrange messages 0 2
+1) " hello, whats up"
+2) " How was your weekend?"
+3) " Had fun,went for a drive"
+
+maria@maria-VirtualBox:~$ redis-cli incr next.news.id
+(integer) 2
+
+maria@maria-VirtualBox:~$ redis-cli set news:1:title "Redis is simple"
+OK
+
+maria@maria-VirtualBox:~$ redis-cli set news:1:url "http://code.google.com/p/redis"
+OK
+
+maria@maria-VirtualBox:~$ redis-cli lpush submitted.news 1
+(integer) 4
+
+maria@maria-VirtualBox:~$ redis-cli sadd myset 1
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd myset 2
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd myset 3
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli smembers myset
+1) "1"
+2) "2"
+3) "3"
+
+maria@maria-VirtualBox:~$ redis-cli sismember myset 3
+(integer) 1
+
+maria@maria-VirtualBox:~$ redis-cli sismember myset 30
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd news:1000:tags 1
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd news:1000:tags 2
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd news:1000:tags 2
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd news:1000:tags 5
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd news:1000:tags 77
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd tag:1:objects 1000
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd tag:2:objects 1000
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd tag:5:objects 1000
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli sadd tag:77:objects 1000
+(integer) 0
+
+maria@maria-VirtualBox:~$ redis-cli smembers news:1000:tags
+1) "1"
+2) "2"
+3) "3"
+4) "5"
+5) "77"
+
+maria@maria-VirtualBox:~$ redis-cli zadd hackers 1940 "Alan Kay"
+(integer) 1
+
+maria@maria-VirtualBox:~$ redis-cli zadd hackers 1953 "Richard Stallman"
+(integer) 1
+
+maria@maria-VirtualBox:~$ redis-cli zadd hackers 1965 "Yukihiro Matsumoto"
+(integer) 1
+
+maria@maria-VirtualBox:~$ redis-cli zadd hackers 1916 "Claude Shannon"
+(integer) 1
+
+maria@maria-VirtualBox:~$ redis-cli zadd hackers 1969 "Linus Torvalds"
+(integer) 1
+
+maria@maria-VirtualBox:~$ redis-cli zadd hackers 1912 "Alan Turing"
+(integer) 1
+
+maria@maria-VirtualBox:~$ redis-cli zrange hackers 0 -1
+1) "Alan Turing"
+2) "Claude Shannon"
+3) "Alan Kay"
+4) "Richard Stallman"
+5) "Yukihiro Matsumoto"
+6) "Linus Torvalds"
+
+maria@maria-VirtualBox:~$ redis-cli zrevrange hackers 0 -1
+1) "Linus Torvalds"
+2) "Yukihiro Matsumoto"
+3) "Richard Stallman"
+4) "Alan Kay"
+5) "Claude Shannon"
+6) "Alan Turing"
+
+maria@maria-VirtualBox:~$ redis-cli zrangebyscore hackers -inf 1950
+1) "Alan Turing"
+2) "Claude Shannon"
+3) "Alan Kay"
+
+maria@maria-VirtualBox:~$ redis-cli zremrangebyscore hackers 1940 1960
+(integer) 2
+

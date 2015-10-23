@@ -1,0 +1,25 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop jar contrib/streaming/hadoop-streaming-1.0.4.jar -D mapred.reduce.tasks=4 -file smplMapper.py -mapper smplMapper.py -file smplReducer.py -reducer smplReducer.py -input customers.dat -input countries.dat -output ../output -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner -jobconf stream.map.output.field.separator=^ -jobconf stream.num.map.output.key.fields=4 -jobconf map.output.key.field.separator=^ -jobconf num.key.fields.for.partition=1
+Warning: $HADOOP_HOME is deprecated.
+
+2013-12-08 19:44:58 WARN streaming.StreamJob: -jobconf option is deprecated, please use -D instead.
+packageJobJar: [smplMapper.py, smplReducer.py, /app/hadoop/tmp/hadoop-unjar168031190531715574/] [] /tmp/streamjob1611671762315835646.jar tmpDir=null
+2013-12-08 19:45:00 INFO util.NativeCodeLoader: Loaded the native-hadoop library
+2013-12-08 19:45:00 WARN snappy.LoadSnappy: Snappy native library not loaded
+2013-12-08 19:45:00 INFO mapred.FileInputFormat: Total input paths to process : 2
+2013-12-08 19:45:01 INFO streaming.StreamJob: getLocalDirs(): [/app/hadoop/tmp/mapred/local]
+2013-12-08 19:45:01 INFO streaming.StreamJob: Running job: job_201212081736_0007
+2013-12-08 19:45:01 INFO streaming.StreamJob: To kill this job, run:
+2013-12-08 19:45:01 INFO streaming.StreamJob: /home/mariaps1/hadoop/libexec/../bin/hadoop job  -Dmapred.job.tracker=localhost:54311 -kill job_201212081736_0007
+2013-12-08 19:45:01 INFO streaming.StreamJob: Tracking URL: http://localhost:50030/jobdetails.jsp?jobid=job_201212081736_0007
+2013-12-08 19:45:02 INFO streaming.StreamJob:  map 0%  reduce 0%
+2013-12-08 19:45:32 INFO streaming.StreamJob:  map 67%  reduce 0%
+2013-12-08 19:45:51 INFO streaming.StreamJob:  map 100%  reduce 0%
+2013-12-08 19:45:59 INFO streaming.StreamJob:  map 100%  reduce 25%
+2013-12-08 19:46:02 INFO streaming.StreamJob:  map 100%  reduce 50%
+2013-12-08 19:46:20 INFO streaming.StreamJob:  map 100%  reduce 75%
+2013-12-08 19:46:24 INFO streaming.StreamJob:  map 100%  reduce 100%
+2013-12-08 19:46:33 INFO streaming.StreamJob: Job complete: job_201212081736_0007
+2013-12-08 19:46:33 INFO streaming.StreamJob: Output: ../output
+
+
+

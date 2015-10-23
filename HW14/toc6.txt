@@ -1,0 +1,15 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ mkdir /tmp/mariaps12-gutenberg-output
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop dfs -getmerge /user/hduser/mariaps12-gutenberg-output /tmp/mariaps12-gutenberg-output
+12/12/02 21:06:50 INFO util.NativeCodeLoader: Loaded the native-hadoop library
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ head /tmp/mariaps12-gutenberg-output/mariaps12-gutenberg-output
+"(Lo)cra"	1
+"1490	1
+"1498,"	1
+"35"	1
+"40,"	1
+"A	2
+"AS-IS".	1
+"A_	1
+"Absoluti	1
+"Alack!	1
+

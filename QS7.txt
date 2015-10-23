@@ -1,0 +1,169 @@
+1.How does hadoop rack awareness affect streaming vs. random access?
+
+A rack is a collection of nodes that are physically stored close together and connected to the same switch. Network bandwidth between any two nodes in rack is greater 
+than bandwidth between two nodes on different racks. A Hadoop Cluster is a collection of racks. Hadoop has awareness of the topology of the network. This allows it to 
+optimize where it sends the computations to be applied to the data. Placing the work as close as possible to the data it operates on maximizes the bandwidth available 
+for reading the data. When deciding which TaskTracker should receive a MapTask that reads data from node, the best option is to choose the TaskTracker that runs on the
+same node as the data. If we can't place the computation on the same node, our next best option is to place it on a node in the same rack as the data. The worst case 
+that Hadoop currently supports is when the computation must be done from a node in a different rack than the data. When rack-awareness is configured for your cluster, 
+Hadoop will always try to run the task on the TaskTracker node with the highest bandwidth access to the data. Let us walk through an example of how a file gets written 
+to HDFS. First, the client submits a "create" request to the NameNode. The NameNode checks that the file does not already exist and the client has permission to write 
+the file. If that succeeds, the NameNode determines the DataNode to write the first block to. If the client is running on a DataNode, it will try to place it there. 
+Otherwise, it chooses at random. By default, data is replicated to two other places in the cluster. A pipeline is built between the three DataNodes that make up the 
+pipeline. The second DataNode is a randomly chosen node on a rack other than that of the first replica of the block. This is to increase redundancy. The final replica 
+is placed on a random node within the same rack as the second replica. The data is piped from the second DataNode to the third. To ensure the write was successful 
+before continuing, acknowledgment packets are sent back from the third DataNode to the second, From the second DataNode to the first And from the first DataNode to the 
+client. This process occurs for each of the blocks that make up the file, in this case, the second and the third block. Notice that, for every block, there is a 
+replica on at least two racks. When the client is done writing to the DataNode pipeline and has received acknowledgements, it tells the NameNode that it is complete. 
+The NameNode will check that the blocks are at least minimally replicated before responding. 
+
+
+
+2.What is heartbeat and how and why is it used in a hadoop cluster?
+
+Decision regarding Replication of blocks is done by NameNode. It periodically receives a Heartbeat and a Blockreport from each of the DataNodes in the cluster. Receipt 
+of a Heartbeat implies that the DataNode is functioning properly. A Blockreport contains a list of all blocks on a DataNode. On startup, the NameNode enters a special 
+state called Safemode. Replication of data blocks does not occur when the NameNode is in the Safemode state. The NameNode receives Heartbeat and Blockreport messages 
+from the DataNodes. A Blockreport contains the list of data blocks that a DataNode is hosting. Each block has a specified minimum number of replicas. A block is 
+considered safely replicated when the minimum number of replicas of that data block has checked in with the NameNode. After a configurable percentage of safely 
+replicated data blocks checks in with the NameNode (plus an additional 30 seconds), the NameNode exits the Safemode state. It then determines the list of data blocks 
+(if any) that still have fewer than the specified number of replicas. The NameNode then replicates these blocks to other DataNodes.
+Each DataNode sends a Heartbeat message to the NameNode periodically. A network partition can cause a subset of DataNodes to lose connectivity with the NameNode. The 
+NameNode detects this condition by the absence of a Heartbeat message. The NameNode marks DataNodes without recent Heartbeats as dead and does not forward any new IO 
+requests to them. Any data that was registered to a dead DataNode is not available to HDFS any more. DataNode death may cause the replication factor of some blocks to 
+fall below their specified value. The NameNode constantly tracks which blocks need to be replicated and initiates replication whenever necessary. The necessity for 
+re-replication may arise due to many reasons: a DataNode may become unavailable, a replica may become corrupted, a hard disk on a DataNode may fail, or the replication 
+factor of a file may be increased.
+When the replication factor of a file is reduced, the NameNode selects excess replicas that can be deleted. The next Heartbeat transfers this information to the 
+DataNode. The DataNode then removes the corresponding blocks and the corresponding free space appears in the cluster. Once again, there might be a time delay between 
+the completion of the setReplication API call and the appearance of free space in the cluster.
+
+
+
+3.Compare using pig, hive, jaql, java, and python as query languages for hadoop.
+What are the differences, advantages for each?
+
+Differences-
+Pig is developed at yahoo and moves into the Apache Software foundation. Pig is a platform for analyzing large data sets. It is a high level language for expressing 
+data analysis. It is a data flow language - this is the kind of language in which you program by connecting things together. Pig can operate on complex data structures, 
+even those that can have levels of nesting.Turing complete when extended with Java UDFs.
+Hive is a technology developed at Facebook that turns Hadoop into a data warehouse complete with a dialect of SQL for querying. Hive provides data warehousing tools to 
+extract, transform and load data, and query this data stored in Hadoop files. It is a declarative language, here there is no need to specify the data flow, but the 
+result needed should be described so  that hive figures out how to build a data flow to achieve it. Another difference is, a schema is required,for hive but not limited
+to one schema. And it is not a Turing complete language
+Jaql, or jackal was developed at IBM. It is a query language for JavaScript open notation. It is also a data flow language like PigLatin but its native data structure 
+format is JavaScript Object Notation, or JSON. Schemas are optional and the Jaql language itself is Turing complete on its own without the need for extension through 
+User defined functions. 
+Java is also a high level language. Hadoop is written in Java programming language. HDFS is Hadoop file system that is written in Java for the 
+Hadoop Framework. Java is less dynamic than python and more effort should be put to make it a faster language. 
+Python and more effort has been put into its VM, making it a faster language. Python is also held back by its Global Interpreter Lock, meaning it cannot push threads of 
+a single process onto different core.
+Advantages-
+Pig- Pig is very simple, easy for the system and the users, exposes opportunities for parallelism and reuse and is well suited for processing unstructured data because 
+it does not require that the data have a schema. It is at least as powerful as relational algebra because pigLatin is relationally complete, which means Turing 
+completeness requires looping constructs, an infinite memory model, and conditional constructs.
+It simplifies the common tasks of working with hadoop like loading data, expressing transformations on the data and storing the final results.
+Hive- Queries can be made faster by using partitioning bucketing and sampling options. Hive's core capabilities are extensible. It superimposes structure on data in 
+HDFs. Hive CLI is implemented in python. It uses MetaStore Thrift API.
+
+
+
+7.Describe the steps for a scenario where hadoop is used for text analytics like log analysis. Be specific about the steps.
+
+Text Analytics: It is the process of extracting business intelligence from unstructured or datastructured text. Text Extraction Engine takes an input document and then
+it is fed into business analytics engine for further analysis.
+The steps involved in the process of Text Analytics are:
+Language Identification- This is the first step involved in text analytics where it identifies the language of the document. 
+Segmentation- It splits up the text document into words. It is also known as tokenization since it involves breaking down the text document in to tokens.
+Normalization- In this step, it involves in process of expanding the acronyms, replacing several multiple words that means a single synonym word.
+Classification- Classification is a process of classifying the text in to several categories like person name,organisation, date , email id. Domain specific rules are 
+written to perform classification.
+Disambiguation- Disambiguation is a process context sensitive interpretation of words. For example: Minute-time unit.
+Relationship Extraction- This step is one of the important step. It identifies the relationship between the extracted entities.
+Log analytics can be used to analyse huge volumes of click stream data from web application such as ecommerce to gain insights into user browsing style, shopping nature
+
+
+
+8.What is hadoop streaming? How is it relevant to our python examples?
+
+Hadoop streaming is a utility that comes with Hadoop distribution. This allows to create and run map/reduce jobs with any executable or script as the mapper/reducer. 
+This utility will create a MapReduce job, submit the job to an appropriate cluster, and monitor the progress of the job until it completes. Using the streaming system 
+you can develop working hadoop jobs with extremely limited knowldge of Java. 
+    $HADOOP_HOME/bin/hadoop  jar $HADOOP_HOME/hadoop-streaming.jar \
+    -input myInputDirs \
+    -output myOutputDir \
+    -mapper /bin/cat \
+    -reducer /bin/wc
+
+Other than Java, Map and Reduce function can be written in other languages and can be 
+invoked using an API called Hadoop Streaming. This is based on the concept of UNIX streaming, where input is read from standard input, and output is written into 
+standard output. These data streams is the interface between Hadoop and the application. The interface can be used best to simple applications you would typically 
+develop using scripting language such as Python
+
+
+
+9.What is Hbase and what is the relationship to hdfs? Describe when it would be used.
+
+Hbase is a distributed column-oriented database built on top of HDFS.It is the Hadoop application to use when real time read/write random access for very large datasets 
+are required.Hbase is not relational and does not support SQL, but given the proper problem space, it is able to do what an RDBMS cannot.
+Relationship to HDFS-
+It is one of the approaches to make HDFS more usable. It uses the HDFS as its data storage engine. The advantage of this approach is then HBase does not worry about 
+data replication, data consistency because HDFS has handled it already. HDFS is the storge system for HBase that is why it is capable of storing a large volume of data 
+through fault tolerant, distributed nodes.
+Uses-HBase isn't suitable for every problem.
+First, make sure you have enough data. If you have billions of rows, then HBase is a good candidate. If you only have a few thousand/million rows, then using a 
+traditional RDBMS might be a better choice due to the fact that all of your data might wind up on a single node and the rest of the cluster may be sitting idle.
+Second, make sure you can live without all the extra features that an RDBMS provides like typed columns, secondary indexes, transactions, advanced query 
+languages. An application built against an RDBMS cannot be "ported" to HBase by simply changing a JDBC driver, for example. Consider moving from an RDBMS to 
+HBase as a complete redesign as opposed to a port. Third, make sure you have enough hardware. Even HDFS doesn't do well with anything less than 5 DataNodes (due to 
+things such as HDFS block replication which has a default of 3), plus a NameNode. HBase can run quite well stand-alone on a laptop - but this should be considered a 
+development configuration only.
+
+
+
+10.Compare cassandra and Hbase. What are the differences, similarities,
+and what is the best use of each?
+
+Differences- Cassandra is open source tool of a standalone system initially coded by Facebook, while which implementing the BigTable data model, uses a system inspired 
+by Amazon's Dynamo for storing data while HBase is derived from Google files system designs.
+Cassandra is a competely symmetric system, where there is no master nodes or region servers unlike HBase.
+Cassandra is suitable for real time transaction processing and serving of interactive data while HBase is suitable for data warehousing and large scale data processing 
+and analytics.
+Cassandra opts Availability and Partition Tolerance while HBase opts Consistency and Partition Tolerance.
+Cassandra does not have the concept of tables while HBase has the concept of tables where every table has its own key space.
+In Cassandra sorting of columns is possible while in HBase we cannot sort columns. 
+Cassandra has the concept of Supercolumns with which flexible, and complex schemas can be designed while HBase doesnt have the concept of Supercolumns.
+Similarities- Cassandra and HBase are both column oriented databases. Cassandra and HBase are both influenced by Google's BigTable. Cassandra and HBase are complex. In 
+cassandra we cant find the complexity while HBase is very obviously complex.
+Uses- Cassandra can be used when there is a need for high availability, fault tolerance, scale writes. HBase is used when an application has a variable schema where 
+each row is slightly different. If key based access is needed to data when storing ot retrieving then Hbase can be used.
+
+	               
+
+11.What is an embedded table? What is it used for in hadoop-related technology?
+
+Embedded tables are nested tables where tables can be inside an already existing table. A column-oriented store database, which he describes as a "single, giant 
+database table, with embedded tables of data found within." Hadoop, Cassandra and Google's BigTable are column-oriented store databases. 
+Tables in HBase can serve as the input and output for MapReduce jobs run in Hadoop. Embedded tables are used in appropriate scenario like maintaining a webtable which 
+contains crawled web pages and their attributes. Webtable is very vast with row count which touches billions. Batch analytics and parsing Mapreduce job are continuously 
+run againts web table, deriving statistics and adding new columns of verified MIME type and parsed text content for indexing which will be later used. Concurrently, the
+table is randomly accessed by crawlers running at various rates and updating random rows while random pages are served in real time as users click on chached page 
+features. 
+
+
+
+4.Do the pig command-line task in the part2 video. Submit the url to the transcript as the answer for this question.
+
+http://userpages.umbc.edu/~mariaps1/IS721/pigcmd
+
+
+
+5.Do the hive command-line task in the part3 video. Submit the url to the transcript as the answer for this question.
+
+http://userpages.umbc.edu/~mariaps1/IS721/hivecmd
+
+
+
+6.Do the jaql command-line task in the part4 video. Submit the url to the transcript as the answer for this question.
+
+http://userpages.umbc.edu/~mariaps1/IS721/jaqlcmd

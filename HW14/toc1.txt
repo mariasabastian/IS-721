@@ -1,0 +1,26 @@
+hduser@mariaps1-VirtualBox:/home/mariaps1/hadoop$ bin/hadoop namenode -format
+12/12/02 19:52:08 INFO namenode.NameNode: STARTUP_MSG: 
+/************************************************************
+STARTUP_MSG: Starting NameNode
+STARTUP_MSG:   host = mariaps1-VirtualBox/127.0.1.1
+STARTUP_MSG:   args = [-format]
+STARTUP_MSG:   version = 1.0.4
+STARTUP_MSG:   build = https://svn.apache.org/repos/asf/hadoop/common/branches/branch-1.0 -r 1393290; compiled by 'hortonfo' on Dec 02  3 05:13:58 UTC 2013
+************************************************************/
+13/12/02 19:52:09 INFO util.GSet: VM type       = 32-bit
+13/12/02 19:52:09 INFO util.GSet: 2% max memory = 19.33375 MB
+13/12/02 19:52:09 INFO util.GSet: capacity      = 2^22 = 4194304 entries
+13/12/02 19:52:09 INFO util.GSet: recommended=4194304, actual=4194304
+13/12/02 19:52:10 INFO namenode.FSNamesystem: fsOwner=hduser
+13/12/02 19:52:10 INFO namenode.FSNamesystem: supergroup=supergroup
+13/12/02 19:52:10 INFO namenode.FSNamesystem: isPermissionEnabled=true
+13/12/02 19:52:10 INFO namenode.FSNamesystem: dfs.block.invalidate.limit=100
+13/12/02 19:52:10 INFO namenode.FSNamesystem: isAccessTokenEnabled=false accessKeyUpdateInterval=0 min(s), accessTokenLifetime=0 min(s)
+13/12/02 19:52:10 INFO namenode.NameNode: Caching file names occuring more than 10 times 
+13/12/02 19:52:11 INFO common.Storage: Image file of size 112 saved in 0 seconds.
+13/12/02 19:52:11 INFO common.Storage: Storage directory /app/hadoop/tmp/dfs/name has been successfully formatted.
+13/12/02 19:52:11 INFO namenode.NameNode: SHUTDOWN_MSG: 
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at mariaps1-VirtualBox/127.0.1.1
+************************************************************/
+

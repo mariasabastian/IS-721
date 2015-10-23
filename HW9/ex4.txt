@@ -1,0 +1,30 @@
+QUERY E
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq5.xq
+for $x in doc("plant_catalog.xml")/CATALOG/PLANT where $x/ZONE="4" order by $x/COMMON return $x/COMMON
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq5.xq
+<?xml version="1.0" encoding="UTF-8"?><COMMON>Adder's-Tongue</COMMON><COMMON>Bee Balm</COMMON><COMMON>Bergamont</COMMON><COMMON>Bloodroot</COMMON><COMMON>Blue Gentian</COMMON><COMMON>Buttercup</COMMON><COMMON>Cowslip</COMMON><COMMON>Crowfoot</COMMON><COMMON>Gentian</COMMON><COMMON>Hepatica</COMMON><COMMON>Jack-In-The-Pulpit</COMMON><COMMON>Liverleaf</COMMON><COMMON>Marsh Marigold</COMMON><COMMON>Trout Lily</COMMON><COMMON>Violet, Dog-Tooth</COMMON>
+
+QUERY F
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq6.xq
+<ul> { for $x in doc("plant_catalog.xml")/CATALOG/PLANT/COMMON order by $x return <li>{$x}</li> } </ul>
+
+mariaps1@mariaps1VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq6.xq
+<?xml version="1.0" encoding="UTF-8"?><ul><li><COMMON>Adder's-Tongue</COMMON></li><li><COMMON>Anemone</COMMON></li><li><COMMON>Bee Balm</COMMON></li><li><COMMON>Bergamont</COMMON></li><li><COMMON>Black-Eyed Susan</COMMON></li><li><COMMON>Bloodroot</COMMON></li><li><COMMON>Blue Gentian</COMMON></li><li><COMMON>Buttercup</COMMON></li><li><COMMON>Butterfly Weed</COMMON></li><li><COMMON>California Poppy</COMMON></li><li><COMMON>Cardinal Flower</COMMON></li><li><COMMON>Cinquefoil</COMMON></li><li><COMMON>Columbine</COMMON></li><li><COMMON>Cowslip</COMMON></li><li><COMMON>Crowfoot</COMMON></li><li><COMMON>Dutchman's-Breeches</COMMON></li><li><COMMON>Gentian</COMMON></li><li><COMMON>Ginger, Wild</COMMON></li><li><COMMON>Grecian Windflower</COMMON></li><li><COMMON>Greek Valerian</COMMON></li><li><COMMON>Hepatica</COMMON></li><li><COMMON>Jack-In-The-Pulpit</COMMON></li><li><COMMON>Jacob's Ladder</COMMON></li><li><COMMON>Liverleaf</COMMON></li><li><COMMON>Marsh Marigold</COMMON></li><li><COMMON>Mayapple</COMMON></li><li><COMMON>Phlox, Blue</COMMON></li><li><COMMON>Phlox, Woodland</COMMON></li><li><COMMON>Primrose</COMMON></li><li><COMMON>Shooting Star</COMMON></li><li><COMMON>Snakeroot</COMMON></li><li><COMMON>Spring-Beauty</COMMON></li><li><COMMON>Trillium</COMMON></li><li><COMMON>Trout Lily</COMMON></li><li><COMMON>Violet, Dog-Tooth</COMMON></li><li><COMMON>Wake Robin</COMMON></li></ul>
+
+QUERY G
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq7.xq
+<ul> { for $x in doc("plant_catalog.xml")/CATALOG/PLANT/COMMON order by $x return <li>{data($x)}</li> } </ul>
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq7.xq
+<?xml version="1.0" encoding="UTF-8"?><ul><li>Adder's-Tongue</li><li>Anemone</li><li>Bee Balm</li><li>Bergamont</li><li>Black-Eyed Susan</li><li>Bloodroot</li><li>Blue Gentian</li><li>Buttercup</li><li>Butterfly Weed</li><li>California Poppy</li><li>Cardinal Flower</li><li>Cinquefoil</li><li>Columbine</li><li>Cowslip</li><li>Crowfoot</li><li>Dutchman's-Breeches</li><li>Gentian</li><li>Ginger, Wild</li><li>Grecian Windflower</li><li>Greek Valerian</li><li>Hepatica</li><li>Jack-In-The-Pulpit</li><li>Jacob's Ladder</li><li>Liverleaf</li><li>Marsh Marigold</li><li>Mayapple</li><li>Phlox, Blue</li><li>Phlox, Woodland</li><li>Primrose</li><li>Shooting Star</li><li>Snakeroot</li><li>Spring-Beauty</li><li>Trillium</li><li>Trout Lily</li><li>Violet, Dog-Tooth</li><li>Wake Robin</li></ul>
+
+QUERY H
+mariaps1@mariaps1-VirtualBox:/var/www$ cat xq8.xq
+for $x in doc("plant_catalog.xml")/CATALOG/PLANT return if ($x/PRICE<5)
+then <cheap>{data($x/COMMON)}</cheap> else <costly>{data($x/COMMON)}</costly>
+
+mariaps1@mariaps1-VirtualBox:/var/www$ java -cp saxon9he.jar net.sf.saxon.Query -q:xq8.xq
+<?xml version="1.0" encoding="UTF-8"?><cheap>Bloodroot</cheap><costly>Columbine</costly><costly>Marsh Marigold</costly><costly>Cowslip</costly><costly>Dutchman's-Breeches</costly><costly>Ginger, Wild</costly><cheap>Hepatica</cheap><cheap>Liverleaf</cheap><cheap>Jack-In-The-Pulpit</cheap><cheap>Mayapple</cheap><cheap>Phlox, Woodland</cheap><costly>Phlox, Blue</costly><costly>Spring-Beauty</costly><cheap>Trillium</cheap><cheap>Wake Robin</cheap><costly>Violet, Dog-Tooth</costly><costly>Trout Lily</costly><costly>Adder's-Tongue</costly><costly>Anemone</costly><costly>Grecian Windflower</costly><cheap>Bee Balm</cheap><costly>Bergamont</costly><costly>Black-Eyed Susan</costly><cheap>Buttercup</cheap><costly>Crowfoot</costly><cheap>Butterfly Weed</cheap><costly>Cinquefoil</costly><costly>Primrose</costly><costly>Gentian</costly><costly>Blue Gentian</costly><costly>Jacob's Ladder</costly><cheap>Greek Valerian</cheap><costly>California Poppy</costly><costly>Shooting Star</costly><costly>Snakeroot</costly><cheap>Cardinal Flower</cheap>
+
+

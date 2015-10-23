@@ -1,0 +1,42 @@
+<?php
+
+require_once 'src/redisent/Redis.php';
+$redis = new redisent\Redis('redis://localhost');
+
+$redis->set('awesome2', 'absolutely');
+echo "Is Redisent awesome? ", $redis->get('awesome2'), "\n";
+$particles = $redis->lrange('particles2', 0, -1);
+$field1 =0;
+$field2 =0;
+$field3 =0;
+foreach ($particles as $particle)
+{
+	if(!strcmp($particle,'proton2'))
+		{
+			$field1 = 1;
+		}
+	if(!strcmp($particle,'electron2'))
+		{
+			$field2 = 1;
+		}
+	if(!strcmp($particle,'neutron2'))
+		{
+			$field3 = 1;
+		}
+}
+if ($field1 == 0)
+	$redis->rpush('particles2', 'proton2');
+if ($field2 == 0)
+	$redis->rpush('particles2', 'electron2');
+if ($field3 == 0)
+	$redis->rpush('particles2', 'neutron2');
+$particles = $redis->lrange('particles2', 0, -1);
+$particle_count = $redis->llen('particles2');
+echo "<p>The {$particle_count} particles that make up atoms are:</p>";
+echo "<ul>";
+foreach ($particles as $particle) {
+  echo "<li>{$particle}</li>";
+}
+echo "</ul>";
+?>
+

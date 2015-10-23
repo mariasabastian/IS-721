@@ -1,0 +1,84 @@
+
+Query 1 :
+
+PREFIX p: <http://dbpedia.org/property/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> 
+PREFIX type: <http://dbpedia.org/class/yago/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+CONSTRUCT {
+?country p:commonName ?cname.
+}
+WHERE {
+?country a type:EuropeanCountries;
+           p:commonName ?cname.
+}
+
+Query 2.
+
+PREFIX p: <http://dbpedia.org/property/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> 
+PREFIX type: <http://dbpedia.org/class/yago/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+CONSTRUCT {
+?country p:areaCode ?acode.
+}
+WHERE {
+?country a type:EuropeanCountries;
+           p:areaCode ?acode.
+}
+
+Query 3.
+
+PREFIX p: <http://dbpedia.org/property/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> 
+PREFIX type: <http://dbpedia.org/class/yago/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+CONSTRUCT {
+?country p:currencyCode ?ccode.
+}
+WHERE {
+?country a type:EuropeanCountries;
+           p:currencyCode ?ccode.
+}
+
+Query 4.
+
+PREFIX p: <http://dbpedia.org/property/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> 
+PREFIX type: <http://dbpedia.org/class/yago/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+CONSTRUCT {
+?country p:areaRank ?arank.
+}
+WHERE {
+?country a type:EuropeanCountries;
+           p:areaRank ?arank.
+}
+
+Query 5.
+
+PREFIX p: <http://dbpedia.org/property/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> 
+PREFIX type: <http://dbpedia.org/class/yago/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+CONSTRUCT {
+?country p:percentWater ?water.
+}
+WHERE {
+?country a type:EuropeanCountries;
+           p:percentWater ?water.
+}
+
+Query 6.
+
+PREFIX p: <http://dbpedia.org/property/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> 
+PREFIX type: <http://dbpedia.org/class/yago/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+CONSTRUCT {
+?country p:giniYear ?year.
+}
+WHERE {
+?country a type:EuropeanCountries;
+           p:giniYear ?year.
+}

@@ -1,0 +1,288 @@
+
+cqlsh:mykeyspace> CREATE TABLE songs (
+              ...   id uuid PRIMARY KEY,
+              ...   title text,
+              ...   album text,
+              ...   artist text,
+              ...   data blob
+              ...  );
+cqlsh:mykeyspace> CREATE TABLE playlists (
+              ...   id uuid,
+              ...   song_order int,
+              ...   song_id uuid,
+              ...   title text,
+              ...   album text,
+              ...   artist text,
+              ...   PRIMARY KEY  (id, song_order ) );
+cqlsh:mykeyspace> SELECT * FROM playlists;
+
+(0 rows)
+
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77204, 1,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e34d4, 'La Grange', 'ZZ Top', 'Tres Hombres');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77204, 2,
+              ...   8a172618-b121-4136-bb10-f665cfc469eb, 'Moving in Stereo', 'Fu Manchu', 'We Must Obey');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77204, 3,
+              ...   2b09185b-fb5a-4734-9b56-49077de9edbf, 'Outside Woman Blues', 'Back Door Slam', 'Roll Away');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77204, 4,
+              ...   7db1a490-5878-11e2-bcfd-0800200c9a66,
+              ...   'Ojo Rojo', 'Fu Manchu', 'No One Rides for Free');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77205, 1,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e34e5, 'Corpses Symphony', 'Amduscia', 'Dead or Alive');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77205, 2,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e34e6, 'More', 'Thumb', '3');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77205, 3,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e34e7, 'Bombay Vice', 'Safri Duo', '3');
+cqlsh:mykeyspace> 
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77206, 1,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e3123, 'Threat', 'Against All Authority', 'Nothing New For Trash Like You');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77206, 2,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e3124, 'When It Comes Down To You', 'Against All Authority', 'Nothing New For Trash Like You');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77206, 3,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e3125, 'Papercut', 'Linkin Park', 'Hybrid Theory');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77206, 4,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e3126, 'Foreword', 'Linkin Park', 'Meteora');
+cqlsh:mykeyspace> 
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77207, 1,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e34a6, 'Bar Hoppin', 'The Ozark Mountain Daredevils', '13');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77207, 2,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e34a5, 'Bad Bad Girl', 'Brian Setzer', '13');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77207, 3,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e34a7, 'The Hennepin Avenue Bridge', 'Brian Setzer', '13');
+cqlsh:mykeyspace> 
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77208, 1,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e3467, 'Radio Waves', 'Against All Authority', 'The Restoration Of Chaos & Order');
+cqlsh:mykeyspace> INSERT INTO playlists (id, song_order, song_id, title, artist, album)
+              ...   VALUES (62c36092-82a1-3a00-93d1-46196ee77208, 2,
+              ...   a3e64f8f-bd44-4f28-b8d9-6938726e3469, 'ALBA', 'Against All Authority', 'Nothing New For Trash Like You');
+
+cqlsh:mykeyspace> CREATE INDEX ON playlists(artist );
+cqlsh:mykeyspace> ALTER TABLE songs ADD tags set<text>;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'2007'}
+              ...   WHERE id = 8a172618-b121-4136-bb10-f665cfc469eb;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'covers'}
+              ...   WHERE id = 8a172618-b121-4136-bb10-f665cfc469eb;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'1973'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34d4;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'blues'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34d4;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'rock'}
+              ...   WHERE id = 7db1a490-5878-11e2-bcfd-0800200c9a66;
+cqlsh:mykeyspace> ALTER TABLE songs ADD reviews list<text>;
+cqlsh:mykeyspace> ALTER TABLE songs ADD venue map<timestamp, text>;
+cqlsh:mykeyspace> UPDATE songs
+              ...   SET tags = tags + {'rock'}
+              ...   WHERE id = 7db1a490-5878-11e2-bcfd-0800200c9a66;
+cqlsh:mykeyspace> 
+cqlsh:mykeyspace> UPDATE songs
+              ...   SET tags = tags + {'rock'}
+              ...   WHERE id = 7db1a490-5878-11e2-bcfd-0800200c9a66;
+cqlsh:mykeyspace> UPDATE songs
+              ...   SET reviews = reviews + [ 'hot dance music' ]
+              ...   WHERE id = 7db1a490-5878-11e2-bcfd-0800200c9a66;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'1952'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e5;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'rock'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e5;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'jazz'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e5;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'hiphop'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e6;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'metal'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e6;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'pop'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e6;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'alternative'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e7;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'african'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e7;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'ethenic'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34e7;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'asian'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3123;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'1980'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3123;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'blue'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3123;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'trans'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3124;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'balley'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3124;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'american'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3124;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'hiphop'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3125;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'pop'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3125;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'rock'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3125;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'metal'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3126;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'alternative'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3126;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'rap'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e3126;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'spiritual'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a6;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'instrumental'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a6;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'religious'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a6;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'orchestra'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a5;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'techno'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a5;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'dance'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a5;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'oldies'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a7;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'disco'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a7;
+cqlsh:mykeyspace> UPDATE songs SET tags = tags + {'punk'}
+              ...   WHERE id = a3e64f8f-bd44-4f28-b8d9-6938726e34a7;
+
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (7db1a490-5878-11e2-bcfd-0800200c9a66,
+              ...   { '2013-9-22 12:01'  : 'The Fillmore',
+              ...   '2013-10-1 18:00' : 'The Apple Barrel'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e34e5,
+              ...   { '2010-11-14 21:46'  : 'DC9 Nightclub',
+              ...   '2010-11-13 20:15' : 'Black Cat'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e34e6,
+              ...   { '2012-10-01 22:01'  : 'Music Center At Strathmore'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e34e7,
+              ...   { '2011-8-15 21:21'  : 'The Black Squirrel'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e3123,
+              ...   { '2011-8-20 15:11'  : 'U Street Music Hall'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e3124,
+              ...   { '2012-4-12 14:18'  : 'The Pinch'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e3125,
+              ...   { '2012-5-13 17:01'  : 'Cultural Arts Center'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e3126,
+              ...   { '2011-7-12 12:01'  : 'Howard Theatre'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e34a6,
+              ...   { '2011-11-30 23:48'  : 'Velvet Lounge'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e34a5,
+              ...   { '2011-12-30 22:48'  : 'Echostage'});
+cqlsh:mykeyspace> INSERT INTO songs (id, venue)
+              ...   VALUES (a3e64f8f-bd44-4f28-b8d9-6938726e34a7,
+              ...   { '2012-1-25 18:48'  : 'Pure Lounge'});
+
+cqlsh:mykeyspace> select id,venue from songs;
+
+ id                                   | venue
+--------------------------------------+----------------------------------------------------------------------------------------------
+ 7db1a490-5878-11e2-bcfd-0800200c9a66 | {'2013-09-22 12:01:00-0400': 'The Fillmore', '2013-10-01 18:00:00-0400': 'The Apple Barrel'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34a5 |                                                    {'2011-12-30 22:48:00-0500': 'Echostage'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34e6 |                                   {'2012-10-01 22:01:00-0400': 'Music Center At Strathmore'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34d4 |                                                                                         null
+ a3e64f8f-bd44-4f28-b8d9-6938726e34e5 |       {'2010-11-13 20:15:00-0500': 'Black Cat', '2010-11-14 21:46:00-0500': 'DC9 Nightclub'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34e7 |                                           {'2011-08-15 21:21:00-0400': 'The Black Squirrel'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34a6 |                                                {'2011-11-30 23:48:00-0500': 'Velvet Lounge'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34a7 |                                                  {'2012-01-25 18:48:00-0500': 'Pure Lounge'}
+ 8a172618-b121-4136-bb10-f665cfc469eb |                                                                                         null
+ a3e64f8f-bd44-4f28-b8d9-6938726e3123 |                                          {'2011-08-20 15:11:00-0400': 'U Street Music Hall'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e3126 |                                               {'2011-07-12 12:01:00-0400': 'Howard Theatre'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e3124 |                                                    {'2012-04-12 14:18:00-0400': 'The Pinch'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e3125 |                                         {'2012-05-13 17:01:00-0400': 'Cultural Arts Center'}
+
+(13 rows)
+cqlsh:mykeyspace> select id,tags from songs;
+
+ id                                   | tags
+--------------------------------------+--------------------------------------------
+ 7db1a490-5878-11e2-bcfd-0800200c9a66 |                                   {'rock'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34a5 |           {'dance', 'orchestra', 'techno'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34e6 |                 {'hiphop', 'metal', 'pop'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34d4 |                          {'1973', 'blues'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34e5 |                   {'1952', 'jazz', 'rock'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34e7 |      {'african', 'alternative', 'ethenic'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34a6 | {'instrumental', 'religious', 'spiritual'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e34a7 |                {'disco', 'oldies', 'punk'}
+ 8a172618-b121-4136-bb10-f665cfc469eb |                         {'2007', 'covers'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e3123 |                  {'1980', 'asian', 'blue'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e3126 |            {'alternative', 'metal', 'rap'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e3124 |            {'american', 'balley', 'trans'}
+ a3e64f8f-bd44-4f28-b8d9-6938726e3125 |                  {'hiphop', 'pop', 'rock'}
+
+(13 rows)
+
+cqlsh:mykeyspace> select * from playlists;
+
+ id                                   | song_order | album                            | artist                        | song_id                              | title
+--------------------------------------+------------+----------------------------------+-------------------------------+--------------------------------------+----------------------------
+ 62c36092-82a1-3a00-93d1-46196ee77208 |          1 | The Restoration Of Chaos & Order |         Against All Authority | a3e64f8f-bd44-4f28-b8d9-6938726e3467 |                Radio Waves
+ 62c36092-82a1-3a00-93d1-46196ee77208 |          2 |   Nothing New For Trash Like You |         Against All Authority | a3e64f8f-bd44-4f28-b8d9-6938726e3469 |                       ALBA
+ 62c36092-82a1-3a00-93d1-46196ee77205 |          1 |                    Dead or Alive |                      Amduscia | a3e64f8f-bd44-4f28-b8d9-6938726e34e5 |           Corpses Symphony
+ 62c36092-82a1-3a00-93d1-46196ee77205 |          2 |                                3 |                         Thumb | a3e64f8f-bd44-4f28-b8d9-6938726e34e6 |                       More
+ 62c36092-82a1-3a00-93d1-46196ee77205 |          3 |                                3 |                     Safri Duo | a3e64f8f-bd44-4f28-b8d9-6938726e34e7 |                Bombay Vice
+ 62c36092-82a1-3a00-93d1-46196ee77206 |          1 |   Nothing New For Trash Like You |         Against All Authority | a3e64f8f-bd44-4f28-b8d9-6938726e3123 |                     Threat
+ 62c36092-82a1-3a00-93d1-46196ee77206 |          2 |   Nothing New For Trash Like You |         Against All Authority | a3e64f8f-bd44-4f28-b8d9-6938726e3124 |  When It Comes Down To You
+ 62c36092-82a1-3a00-93d1-46196ee77206 |          3 |                    Hybrid Theory |                   Linkin Park | a3e64f8f-bd44-4f28-b8d9-6938726e3125 |                   Papercut
+ 62c36092-82a1-3a00-93d1-46196ee77206 |          4 |                          Meteora |                   Linkin Park | a3e64f8f-bd44-4f28-b8d9-6938726e3126 |                   Foreword
+ 62c36092-82a1-3a00-93d1-46196ee77207 |          1 |                               13 | The Ozark Mountain Daredevils | a3e64f8f-bd44-4f28-b8d9-6938726e34a6 |                 Bar Hoppin
+ 62c36092-82a1-3a00-93d1-46196ee77207 |          2 |                               13 |                  Brian Setzer | a3e64f8f-bd44-4f28-b8d9-6938726e34a5 |               Bad Bad Girl
+ 62c36092-82a1-3a00-93d1-46196ee77207 |          3 |                               13 |                  Brian Setzer | a3e64f8f-bd44-4f28-b8d9-6938726e34a7 | The Hennepin Avenue Bridge
+ 62c36092-82a1-3a00-93d1-46196ee77204 |          1 |                     Tres Hombres |                        ZZ Top | a3e64f8f-bd44-4f28-b8d9-6938726e34d4 |                  La Grange
+ 62c36092-82a1-3a00-93d1-46196ee77204 |          2 |                     We Must Obey |                     Fu Manchu | 8a172618-b121-4136-bb10-f665cfc469eb |           Moving in Stereo
+ 62c36092-82a1-3a00-93d1-46196ee77204 |          3 |                        Roll Away |                Back Door Slam | 2b09185b-fb5a-4734-9b56-49077de9edbf |        Outside Woman Blues
+ 62c36092-82a1-3a00-93d1-46196ee77204 |          4 |            No One Rides for Free |                     Fu Manchu | 7db1a490-5878-11e2-bcfd-0800200c9a66 |                   Ojo Rojo
+
+(16 rows)
+
+cqlsh:mykeyspace> select * from playlists where song_order=1 allow filtering;
+
+ id                                   | song_order | album                            | artist                        | song_id                              | title
+--------------------------------------+------------+----------------------------------+-------------------------------+--------------------------------------+------------------
+ 62c36092-82a1-3a00-93d1-46196ee77208 |          1 | The Restoration Of Chaos & Order |         Against All Authority | a3e64f8f-bd44-4f28-b8d9-6938726e3467 |      Radio Waves
+ 62c36092-82a1-3a00-93d1-46196ee77205 |          1 |                    Dead or Alive |                      Amduscia | a3e64f8f-bd44-4f28-b8d9-6938726e34e5 | Corpses Symphony
+ 62c36092-82a1-3a00-93d1-46196ee77206 |          1 |   Nothing New For Trash Like You |         Against All Authority | a3e64f8f-bd44-4f28-b8d9-6938726e3123 |           Threat
+ 62c36092-82a1-3a00-93d1-46196ee77207 |          1 |                               13 | The Ozark Mountain Daredevils | a3e64f8f-bd44-4f28-b8d9-6938726e34a6 |       Bar Hoppin
+ 62c36092-82a1-3a00-93d1-46196ee77204 |          1 |                     Tres Hombres |                        ZZ Top | a3e64f8f-bd44-4f28-b8d9-6938726e34d4 |        La Grange
+
+(5 rows)
+
+cqlsh:mykeyspace> select * from playlists where id=62c36092-82a1-3a00-93d1-46196ee77205 order by song_order DESC;
+
+ id                                   | song_order | album         | artist    | song_id                              | title
+--------------------------------------+------------+---------------+-----------+--------------------------------------+------------------
+ 62c36092-82a1-3a00-93d1-46196ee77205 |          3 |             3 | Safri Duo | a3e64f8f-bd44-4f28-b8d9-6938726e34e7 |      Bombay Vice
+ 62c36092-82a1-3a00-93d1-46196ee77205 |          2 |             3 |     Thumb | a3e64f8f-bd44-4f28-b8d9-6938726e34e6 |             More
+ 62c36092-82a1-3a00-93d1-46196ee77205 |          1 | Dead or Alive |  Amduscia | a3e64f8f-bd44-4f28-b8d9-6938726e34e5 | Corpses Symphony
+
+(3 rows)
+
+cqlsh:mykeyspace> select * from playlists where artist='Linkin Park';
+
+ id                                   | song_order | album         | artist      | song_id                              | title
+--------------------------------------+------------+---------------+-------------+--------------------------------------+----------
+ 62c36092-82a1-3a00-93d1-46196ee77206 |          3 | Hybrid Theory | Linkin Park | a3e64f8f-bd44-4f28-b8d9-6938726e3125 | Papercut
+ 62c36092-82a1-3a00-93d1-46196ee77206 |          4 |       Meteora | Linkin Park | a3e64f8f-bd44-4f28-b8d9-6938726e3126 | Foreword
+
+(2 rows)
+
+
